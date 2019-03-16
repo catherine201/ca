@@ -1,0 +1,35 @@
+{
+    "appenders": {
+      "console": {
+        "type": "console"
+      },
+      "app": {
+        "type": "dateFile",
+        "filename": "logs/app.log",
+        "pattern": "-yyyy-MM-dd",
+        "maxLogSize" : 10
+      },
+      "file": {
+        "type": "file",
+        "filename": "logs/errors.log"
+      }
+    },
+    "categories": {
+      "default": {
+        "appenders": [
+          "console",
+          "app",
+          "file"
+        ],
+        "level": "all"
+      },
+      "file": {
+        "appenders": [
+          "file"
+        ],
+        "level": "error"
+      }
+    },
+    "pm2" : true
+  }
+  

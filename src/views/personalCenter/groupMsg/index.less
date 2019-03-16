@@ -1,0 +1,124 @@
+// index
+.groupMsg_wrapper{
+    padding: 10px 20px;
+    width: 100%;
+    .result_top{
+      height: 60px;
+      line-height: 60px;
+    }
+    .query{
+        // display: none;
+        padding-bottom: 20px;
+      .main_title{
+          margin-bottom: 10px;
+      }
+      .query_line{
+          padding-left:25px;
+      }
+    }
+}
+// addEditGroup
+.groupMsg_modal_wrapper{
+    .dotSpan{
+        float: left;
+        display: inline-block;
+        width: 150px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap; 
+    }
+}
+// reviseControl
+.reviseControl_modal_wrapper{
+    display: flex;
+    > div{
+        width: 50%;
+        height: calc(~"100vh - 400px");
+        &.reviseControl_modal_right{
+         border-left: 1px solid #999;
+         padding-left: 25px;
+        }
+        &.reviseControl_modal_left{
+            padding-right: 25px;
+            .search_tab{
+                margin-bottom: 20px;
+            }
+           }
+    }
+}
+
+:global{
+    .user_tab{
+        table, .ant-table-thead > tr > th{
+            text-align: center;
+        }
+    }
+p, h2{
+    margin-bottom: 0;
+}
+.groupMsg_modal{
+&.noFooter{
+    // display: none;
+    .ant-modal-footer{
+        display: none;
+    }
+}
+} 
+// index
+.groupMsg_wrapper{
+    .action{
+        .ant-btn{
+            margin-right: 20px;
+        }
+    }
+    .ant-divider-horizontal{
+        margin: 0px 0;
+    }
+    .query{
+        .ant-input-affix-wrapper{
+         width: auto;
+         margin-right:30px;
+         .ant-input{
+            width: 180px;
+        }
+        .anticon-close-circle {
+            cursor: pointer;
+            color: #ccc;
+            transition: color 0.3s;
+            font-size: 12px;
+          }
+          .anticon-close-circle:hover {
+            color: #999;
+          }
+          .anticon-close-circle:active {
+            color: #666;
+          }
+        }
+    }
+}
+// addEidtGroup
+.ant-modal-title{
+   text-align: center
+}
+.groupMsg_modal_wrapper{
+.anticon{
+    cursor: pointer;
+       svg{
+           color: #999;
+       }
+    }
+}
+// reviseControl
+.reviseControl_modal_wrapper{
+  .reviseControl_modal_left{
+    .ant-input-affix-wrapper{
+        margin: 10px 0;
+    }
+  }
+  .reviseControl_modal_right,.reviseControl_modal_left{
+    h2{
+        margin-bottom: 25px;
+    }
+  }
+}
+}

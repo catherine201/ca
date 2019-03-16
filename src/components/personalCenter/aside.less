@@ -1,0 +1,77 @@
+.account-msg{
+    height: 70px;
+    line-height: 70px;
+    padding-left: 25px;
+    background-color: #D9DEE4;
+    font-weight: 800;
+    font-size: 16px;
+}
+.aside-menu{
+    width: 250px;
+    background: #ECF0F5;
+    .list-item{
+        height: 40px;
+        font-size: 16px;
+    }
+    .list-item-active{
+        background: #e6f7ff;
+
+}
+}
+.personalShow{
+    width: 250px;
+    overflow: hidden;
+    transition: width 0.2s;
+    // transition: all 1s;
+
+}
+.personalHide{
+    width: 0px;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.2s;
+}
+:global{
+    /* 个人信息那里的展开收缩 */
+.ant-layout-content .anticon-menu-fold{
+    width: 25px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    // left: 225px;
+    left: 305px;
+    cursor: pointer;
+  }
+  .ant-layout-content .menu-fold-right{
+    transform: rotate(180deg);
+    left: 80px;
+    &.collap{
+        left: 200px;
+    }
+  }
+  .ant-layout-content .menu-fold-left{
+    &.collap{
+        left: 450px;
+    }
+  }
+  .ant-layout-content .anticon-menu-fold svg{
+    width: 25px;
+    height: 50px;
+    color: #29A0F2;
+    transition: all .1s;
+  }
+  .ant-layout-content .anticon-menu-fold svg:hover{
+    width: 30px;
+    height: 80px;
+  }
+  .ant-menu-vertical .ant-menu-item{
+      font-size: 16px;
+  }
+  .app_layout_left_side{
+  background-color: #ECF0F5;
+  }
+}

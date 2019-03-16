@@ -1,0 +1,75 @@
+.console_wrapper{
+    padding: 10px 20px;
+    width: 100%;
+    .drag_wrapper{
+        .row{
+            border: 1px solid #333;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            .rowTop{
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .address{
+                  margin-bottom: 0;
+                }
+                .fold_btn{
+                    padding: 10px 30px;
+                    margin-right: 20px;
+                }
+                .deleteIcon{
+                    svg{
+                        width: 20px;
+                        height: 20px;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .foldContent{
+                border-top: 1px solid #333;
+                padding-bottom: 20px;
+                width: 90%;
+                margin: auto;
+                .name_revise{
+                    text-align: right;
+                }
+                .foldName{
+                    padding: 10px 15px 15px 15px;
+                    margin: 20px 0;
+                    background-color: #fff;
+                    border: 1px solid #333;
+                    // p{
+                    //     height: 35px;
+                    //     line-height: 35px;
+                    // }
+                    .userLi{
+                        height: 35px;
+                        line-height: 35px;
+                        font-size: 16px;
+                        font-weight: 800;
+                        padding-left: 25px;
+                    }
+                }
+            }
+        }
+    }
+}
+:global{
+.drag_wrapper{
+  .DraggableTags{
+    .DraggableTags-tag{
+        color: #000;
+    }
+    .foldContent{
+        .ant-input{
+            width: 250px;
+            margin-left: 15px;
+        }
+    }
+  }
+}
+p{
+    margin-bottom: 0;
+}
+}

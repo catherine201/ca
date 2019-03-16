@@ -1,0 +1,163 @@
+
+/* @import "./iconfont.css"; */
+@import "./animate.css";
+
+/* reset */
+body,html,ol,ul,li,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,dt,form,fieldset,legend,input,textarea,select,img{margin:0;padding:0;}
+body,html{font:0.12rem "微软雅黑";color:#333;}
+h1,h2,h3,h4,h5,h6,b,strong{
+	font-weight:100;}
+i,em{font-style:normal;}
+li{list-style:none;}
+a{text-decoration:none;color:#333;}
+img{border:0;}
+input{outline:none;}
+.clearfix:after{
+	content:".";display:block;height:0;overflow:hidden;visibility:hidden;clear:both;}
+.c-666464{
+	color: #666464;
+}
+.underline:hover{
+	text-decoration: underline;
+}
+body{
+  margin: 0;
+  padding: 0;
+  color: #464c5b;
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+  /* background: #ECF0F5; */
+  box-sizing: border-box;
+}
+html body .christmas.ant-btn-primary:before{
+  display: none;
+}
+#root{
+  height: 100%;
+  overflow: auto;
+}
+/* 头部进步条的样式 */
+#nprogress .bar {
+  background: #812CB2 ;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #812CB2 ;
+  border-left-color: #812CB2 ;
+}
+/* 全局样式 */
+/* flex */
+  .flex{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .f-left{
+    float: left;
+  }
+  .f-right{
+    float: right;
+  }
+  .text-center{
+    text-align: center;
+  }
+  .text-right{
+    text-align: right;
+  }
+  .blur-0{
+    filter: blur(0px);
+  }
+  .blur-2{
+    filter: blur(2px);
+  }
+  .m-box{
+    background: #fff;
+    border-radius: 3px;
+    padding: 15px;
+    margin: 0 auto;
+    margin-bottom: 30px;
+  }
+  .m-box:last-child{
+    margin-bottom: 0px;
+  }
+  .middle-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(236,240,245);
+  }
+  .btn-block{
+    display: block;
+    width: 100%;
+  }
+  
+  .btn-block.btn-lg{
+    min-width: 200px;
+    height: 42px;
+    line-height: 42px;
+  }
+  .font16{
+    font-size: 16px;
+  }
+  .mouse_hover{
+    cursor: pointer;
+  }
+  .mb20{
+    margin-bottom: 20px;
+  }
+
+#root .app-layout .ant-layout-sider-dark{
+    background: #ECF0F5;
+    border-top: 1px solid #e8e8e8;
+    border-left: 1px solid #e8e8e8;
+    margin-right: 10px;
+}
+#root .ant-layout-header{
+    background: purple;
+    margin-bottom: 10px;
+}
+#root .app-layout{
+  padding: 10px;
+}
+#root .ant-layout{
+  background: #fff;
+}
+.common_title{
+  height: 50px;
+  line-height: 50px;
+  padding-left: 20px;
+  background: #f0f2f5;
+}
+
+.common_right_wrap{
+  width: 100%;
+}
+
+.ant-layout-content .search_form{
+  margin: 5px 0;
+}
+/* tabl样式 */
+.table_ul{
+  box-sizing: border-box;
+  width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  border-right:1px solid #333;
+  border-top: 1px solid #333; 
+}
+.table_li{
+  width: 25%;
+  height: 40px;
+  line-height: 40px;
+  border-left:1px solid #333;
+  border-bottom: 1px solid #333; 
+  text-align: center;
+}
+.table_li:nth-of-type(odd){
+  background-color: lightgray;
+}
