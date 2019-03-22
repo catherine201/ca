@@ -9,7 +9,7 @@ h1,h2,h3,h4,h5,h6,b,strong{
 	font-weight:100;}
 i,em{font-style:normal;}
 li{list-style:none;}
-a{text-decoration:none;color:#333;}
+a{text-decoration:none;color:#1890ff;}
 img{border:0;}
 input{outline:none;}
 .clearfix:after{
@@ -130,8 +130,10 @@ html body .christmas.ant-btn-primary:before{
 .common_title{
   height: 50px;
   line-height: 50px;
-  padding-left: 20px;
+  padding: 0 20px;
   background: #f0f2f5;
+  display: flex;
+  justify-content:space-between;
 }
 
 .common_right_wrap{
@@ -160,4 +162,20 @@ html body .christmas.ant-btn-primary:before{
 }
 .table_li:nth-of-type(odd){
   background-color: lightgray;
+}
+.textRight{
+  text-align: right;
+  height: 30px;
+  line-height: 30px;
+}
+.lh40{
+  height: 40px;
+  line-height: 40px;
+}
+.search_input.ant-input{
+  width: 300px;
+}
+.common_submit_btn.ant-btn{
+  padding: 0 45px;
+  margin: 30px 0 0 250px;
 }

@@ -8,20 +8,24 @@ class TotalInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      assetDetaildata: []
+      // assetDetaildata: []
     };
   }
 
+  componentDidMount() {
+    console.log(this.props.data);
+  }
+
   render() {
-    // const { test, getTest } = this.props;
-    const { assetDetaildata } = this.state;
+    const { data } = this.props;
+    // const { assetDetaildata } = this.state;
     return (
       <div className={`total_info ${styles.total_info}`}>
         <ul className={`table_ul tab1 ${styles.tab1}`}>
           {userDate.userDetail1.map(item => (
             <React.Fragment>
               <li className="table_li">{item.title}</li>
-              <li className="table_li">464646464</li>
+              <li className="table_li">{data[item.key]}</li>
             </React.Fragment>
           ))}
         </ul>
@@ -29,7 +33,7 @@ class TotalInfo extends Component {
           {userDate.userDetail2.map(item => (
             <React.Fragment>
               <li className="table_li">{item.title}</li>
-              <li className="table_li">464646464</li>
+              <li className="table_li">{data[item.key]}</li>
             </React.Fragment>
           ))}
         </ul>
@@ -37,7 +41,7 @@ class TotalInfo extends Component {
           {userDate.userDetail3.map(item => (
             <React.Fragment>
               <li className="table_li">{item.title}</li>
-              <li className="table_li">464646464</li>
+              <li className="table_li">{data[item.key]}</li>
             </React.Fragment>
           ))}
         </ul>
@@ -45,7 +49,7 @@ class TotalInfo extends Component {
           {userDate.userDetail4.map(item => (
             <React.Fragment>
               <li className="table_li">{item.title}</li>
-              <li className="table_li">464646464</li>
+              <li className="table_li">{data[item.key]}</li>
             </React.Fragment>
           ))}
         </ul>
@@ -53,14 +57,14 @@ class TotalInfo extends Component {
           {userDate.userDetail5.map(item => (
             <React.Fragment>
               <li className="table_li">{item.title}</li>
-              <li className="table_li">464646464</li>
+              <li className="table_li">{data[item.key]}</li>
             </React.Fragment>
           ))}
         </ul>
         {this.props.children}
-        <p>资产明细</p>
-        <Table columns={userDate.assetDetail} dataSource={assetDetaildata} />
-        <p>合计人民币资产：0.0</p>
+        <p className="lh40">资产明细:</p>
+        <Table columns={userDate.assetDetail} dataSource={data.balances} />
+        <p className="textRight">合计人民币资产：0.0</p>
       </div>
     );
   }

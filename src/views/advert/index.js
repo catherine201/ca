@@ -17,7 +17,7 @@ class Advert extends Component {
         {this.props.match.params.adId === '0' ? (
           <AdvertList />
         ) : (
-          <AdvertDetail />
+          <AdvertDetail {...this.props} />
         )}
       </div>
     );

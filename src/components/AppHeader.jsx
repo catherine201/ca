@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout } from 'antd';
+import styles from './AppLayout/app_lay_out.less';
 
 const { Header } = Layout;
 
@@ -11,7 +12,7 @@ class AppHeader extends React.Component {
   render() {
     return (
       <Header>
-        <div>BNB</div>
+        <div className={styles.header_top}>BNB</div>
       </Header>
     );
   }

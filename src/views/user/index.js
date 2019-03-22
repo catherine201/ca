@@ -15,7 +15,11 @@ class User extends Component {
     console.log(this.props);
     return (
       <div className="user_wrapper common_right_wrap">
-        {this.props.match.params.userId === '0' ? <UserList /> : <UserDetail />}
+        {this.props.match.params.userId === '0' ? (
+          <UserList />
+        ) : (
+          <UserDetail {...this.props} />
+        )}
       </div>
     );
   }

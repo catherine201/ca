@@ -1,10 +1,11 @@
 :global{
-    .menu_wrap{
+    .menu_wrap, .common_right_wrap{
         position: relative;
       // min-height: calc(~"100% - 50px");
-      min-height: calc(100vh - 50px);
+      max-height: calc(100vh - 81px);
       height: auto;
-      _height: calc(100vh - 50px);
+      _height: calc(100vh - 81px);
+      overflow-y:auto;
       .ant-menu-inline{
         // min-height: calc(~"100% - 50px");
       }
@@ -130,4 +131,10 @@
       font-size: 18px;
       font-weight: 100;
     } 
+  }
+  .header_top{
+    padding-left: 23px;
+    font-size: 24px;
+    color: #000;
+    font-weight: 500;
   }

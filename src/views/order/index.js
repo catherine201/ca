@@ -17,7 +17,7 @@ class UserList extends Component {
         {this.props.match.params.orderId === '0' ? (
           <OrderList />
         ) : (
-          <OrderDetail />
+          <OrderDetail {...this.props} />
         )}
       </div>
     );

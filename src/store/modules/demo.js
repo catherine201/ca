@@ -2,7 +2,10 @@ import createApi from '../../api/demo/index';
 // import '../../api/demo/index';
 const test = {
   state: {
-    countLoadingArr: [],
+    countLoadingArr:
+      (sessionStorage.getItem('store') &&
+        JSON.parse(sessionStorage.getItem('store')).demo.countLoadingArr) ||
+      [],
     test: '',
     num: 1,
     type: 2

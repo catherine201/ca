@@ -8,11 +8,11 @@ const adDetail1 = [
     title: '广告类型'
   },
   {
-    key: 'person',
+    key: 'createPerson',
     title: '创建人'
   },
   {
-    key: 'createID',
+    key: 'createPersonId',
     title: '创建人UID'
   },
   {
@@ -24,77 +24,77 @@ const adDetail1 = [
     title: '广告费率'
   },
   {
-    key: 'createTime',
+    key: 'createdTime',
     title: '创建时间'
   },
   {
-    key: 'last',
+    key: 'updatedTime',
     title: '最后编辑时间'
   }
 ];
 
 const adDetail2 = [
   {
-    key: 'id',
+    key: 'coinType',
     title: '币种'
   },
   {
-    key: 'type',
+    key: 'amountTotal',
     title: '初始数量'
   },
   {
-    key: 'person',
+    key: 'price',
     title: '单价'
   },
   {
-    key: 'createID',
+    key: 'initAmount',
     title: '初始金额'
   },
   {
-    key: 'status',
+    key: 'amount',
     title: '剩余数量'
   },
   {
-    key: 'rate',
+    key: 'balanceAmount',
     title: '剩余金额'
   },
   {
-    key: 'createTime',
+    key: 'priceControl',
     title: '交易限额'
   },
   {
-    key: 'last',
+    key: 'payMethod',
     title: '交易方式'
-  },
-  {
-    key: 'last1',
-    title: '付款期限'
-  },
-  {
-    key: 'last2',
-    title: '放币期限'
   }
+  // {
+  //   key: 'last1',
+  //   title: '付款期限'
+  // },
+  // {
+  //   key: 'last2',
+  //   title: '放币期限'
+  // }
 ];
 
 const orderDetail = [
   {
-    key: 'id',
+    key: 'Unpaid',
     title: '未付款'
   },
   {
-    key: 'type',
+    key: 'WaitForTransaction',
     title: '未放币'
   },
   {
-    key: 'person',
+    key: 'Appealed',
     title: '申诉中'
   },
   {
-    key: 'createID',
+    key: 'Cancel',
     title: '已取消'
   },
   {
-    key: 'createID1',
+    key: 'Deal',
     title: '已成交'
   }
 ];
@@ -107,104 +107,104 @@ export const initOrderDetailData = {
 
 const userDetail1 = [
   {
-    key: '1',
+    key: 'openId',
     title: 'UDID'
   },
   {
-    key: '2',
+    key: 'createdTime',
     title: '注册时间'
   },
   {
-    key: '3',
+    key: 'nickName',
     title: '昵称'
   },
   {
-    key: '4',
+    key: 'phone',
     title: '手机号'
   },
   {
-    key: '5',
+    key: 'name',
     title: '姓名'
   },
+  // {
+  //   key: '6',
+  //   title: '证件类型'
+  // },
+  // {
+  //   key: '7',
+  //   title: '证件号'
+  // },
   {
-    key: '6',
-    title: '证件类型'
-  },
-  {
-    key: '7',
-    title: '证件号'
-  },
-  {
-    key: '8',
+    key: 'status',
     title: '状态'
-  },
-  {
-    key: '8',
-    title: ''
   }
+  // {
+  //   key: '8',
+  //   title: ''
+  // }
 ];
 
 const userDetail2 = [
   {
-    key: '1',
+    key: 'txTotal',
     title: '总交易次数'
   },
   {
-    key: '2',
+    key: 'dealTotal',
     title: '总成交次数'
   },
   {
-    key: '3',
+    key: 'dealRate',
     title: '总成交率'
   },
   {
-    key: '4',
+    key: 'txTotal30',
     title: '近30日交易次数'
   },
   {
-    key: '5',
+    key: 'dealTotal30',
     title: '近30日成交次数'
   },
   {
-    key: '6',
+    key: 'dealRate30',
     title: '近30日成交率'
   }
 ];
 
 const userDetail3 = [
   {
-    key: '1',
+    key: 'appealTotal',
     title: '总申诉次数'
   },
   {
-    key: '2',
+    key: 'winCaseTotal',
     title: '总胜诉次数'
   },
   {
-    key: '3',
+    key: 'winRate',
     title: '总胜诉率'
   },
   {
-    key: '4',
+    key: 'appealTotal30',
     title: '近30日申诉次数'
   },
   {
-    key: '5',
+    key: 'winCaseTotal30',
     title: '近30日胜诉次数'
   },
   {
-    key: '6',
+    key: 'winRate30',
     title: '近30日胜诉率'
   }
 ];
 
 const userDetail4 = [
   {
-    key: '1',
+    key: 'pendingOrderCnt',
     title: '待处理订单数'
   },
   {
-    key: '2',
+    key: 'pendingOrderValue',
     title: '待处理订单金额'
   },
   {
@@ -212,11 +212,11 @@ const userDetail4 = [
     title: ''
   },
   {
-    key: '3',
+    key: 'appealOrderCnt',
     title: '申诉中订单数'
   },
   {
-    key: '4',
+    key: 'appealOrderValue',
     title: '申诉中订单金额'
   },
   {
@@ -227,15 +227,15 @@ const userDetail4 = [
 
 const userDetail5 = [
   {
-    key: '1',
+    key: 'onlineOrderCnt',
     title: '在线广告数'
   },
   {
-    key: '2',
+    key: 'onlineSellOrderCnt',
     title: '在线卖出广告数'
   },
   {
-    key: '2',
+    key: 'onlineBuyOrderCnt',
     title: '在线买入广告数'
   }
 ];
@@ -248,23 +248,24 @@ const receiveType = [
   },
   {
     title: '收款方式',
-    dataIndex: 'type',
-    key: 'type'
+    dataIndex: 'bankcardNumber',
+    key: 'bankcardNumber'
   },
   {
     title: '收款人',
-    dataIndex: 'person',
-    key: 'person'
+    dataIndex: 'bankcardOwner',
+    key: 'bankcardOwner'
   },
   {
     title: '账号',
-    dataIndex: 'account',
-    key: 'account'
+    dataIndex: 'bankcardAddress',
+    key: 'bankcardAddress'
   },
   {
     title: '详情',
-    dataIndex: 'detail',
-    key: 'detail'
+    dataIndex: 'qrCodeImageUrl',
+    key: 'qrCodeImageUrl',
+    render: text => <image src={text} />
   },
   {
     title: '状态',
@@ -281,28 +282,28 @@ const assetDetail = [
   },
   {
     title: '币种',
-    dataIndex: 'type',
-    key: 'type'
+    dataIndex: 'currency',
+    key: 'currency'
   },
   {
     title: '可用',
-    dataIndex: 'person',
-    key: 'person'
+    dataIndex: 'available',
+    key: 'available'
   },
   {
     title: '冻结',
-    dataIndex: 'account',
-    key: 'account'
+    dataIndex: 'freeze',
+    key: 'freeze'
   },
   {
     title: '总余额',
-    dataIndex: 'detail',
-    key: 'detail'
+    dataIndex: 'total',
+    key: 'total'
   },
   {
     title: '人民币金额',
-    dataIndex: 'status',
-    key: 'status'
+    dataIndex: 'value',
+    key: 'value'
   }
 ];
 
@@ -322,11 +323,11 @@ export const orderDetailData = [
     title: '订单ID'
   },
   {
-    key: 'type',
+    key: 'status',
     title: '状态'
   },
   {
-    key: 'person',
+    key: 'adsID',
     title: '广告ID'
   },
   {
@@ -338,23 +339,23 @@ export const orderDetailData = [
     title: '单价'
   },
   {
-    key: 'id',
+    key: 'feeCNY',
     title: '金额'
   },
   {
-    key: 'type',
+    key: 'amount',
     title: '数量'
   },
   {
-    key: 'person',
+    key: 'referenceNO',
     title: '参考码'
   },
   {
-    key: 'createID',
+    key: 'buyer',
     title: '买方'
   },
   {
-    key: 'createID1',
+    key: 'seller',
     title: '卖方'
   },
   {
@@ -362,7 +363,7 @@ export const orderDetailData = [
     title: '交易方式'
   },
   {
-    key: 'person',
+    key: 'createdTime',
     title: '下单时间'
   },
   {
@@ -397,27 +398,27 @@ export const appealDetailData = [
     title: '申诉ID'
   },
   {
-    key: 'type',
+    key: 'status',
     title: '申诉状态'
   },
   {
-    key: 'person',
+    key: 'orderID',
     title: '订单ID'
   },
   {
-    key: 'createID',
+    key: 'adsID',
     title: '广告ID'
   },
   {
-    key: 'createID1',
+    key: 'buyer',
     title: '买方'
   },
   {
-    key: 'id',
+    key: 'seller',
     title: '卖方'
   },
   {
-    key: 'type',
+    key: 'feeCNY',
     title: '金额'
   },
   {
@@ -425,35 +426,78 @@ export const appealDetailData = [
     title: 'ETH数量'
   },
   {
-    key: 'createID',
+    key: 'payMethod',
     title: '交易方式'
   },
   {
-    key: 'createID1',
+    key: 'referenceNO',
     title: '付款参考号'
   },
   {
-    key: 'type',
+    key: 'orderCreatedTime',
     title: '订单创建时间'
   },
   {
-    key: 'person',
+    key: 'payTime',
     title: '付款确认时间'
   },
   {
-    key: 'createID1',
+    key: 'releaseCoinTime',
     title: '放币确认时间'
   },
   {
-    key: 'createID',
+    key: 'createdTime',
     title: '申诉开始时间'
   },
   {
-    key: 'createID1',
+    key: 'endTime',
     title: '申诉结束时间'
   },
   {
-    key: 'createID1',
+    key: 'orderaStatus',
     title: '订单处理结果'
+  }
+];
+
+export const authenDetailData = [
+  {
+    key: 'createID1',
+    title: 'UDID'
+  },
+  {
+    key: 'createID1',
+    title: '昵称'
+  },
+  {
+    key: 'createID1',
+    title: '手机号'
+  },
+  {
+    key: 'createID1',
+    title: '实名认证'
+  },
+  {
+    key: 'createID1',
+    title: '姓名'
+  },
+  {
+    key: 'createID1',
+    title: '证件类型'
+  },
+  {
+    key: 'createID1',
+    title: '证件号'
+  },
+  {
+    key: 'createID1',
+    title: '认证时间'
+  },
+  {
+    key: 'createID1',
+    title: '状态'
+  },
+  {
+    key: 'createID1',
+    title: ''
   }
 ];

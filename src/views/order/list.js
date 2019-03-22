@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { DatePicker, Input, Button, Table, Select, Form } from 'antd';
+import { Button, Table, Select, Form } from 'antd';
+// DatePicker, Input,
 import styles from './index.less';
+import createApi from '../../api/list';
+import { timestampToTime } from '../../utils';
+import { AdsOrderStatus } from '../../utils/map';
 
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 const Option = Select.Option;
 
 class OrderList extends Component {
@@ -12,10 +16,40 @@ class OrderList extends Component {
     super(props);
     this.state = {
       //   time: [],
+      limit: 12,
       searchName: '',
-      data: []
+      data: [],
+      pagination: {
+        defaultCurrent: 1,
+        defaultPageSize: 12
+      }
     };
   }
+
+  componentDidMount() {
+    const obj = {
+      'listOptions.limit': 12,
+      'listOptions.offset': 0
+    };
+    this.queryOrders(obj);
+  }
+
+  queryOrders = async obj => {
+    const res = await createApi.queryOrders(obj);
+    console.log(res);
+    if (res.datas) {
+      const pagination = { ...this.state.pagination };
+      pagination.total = res.paging.total - 0;
+      const data = res.datas;
+      data.map((item, index) => {
+        data[index].status = AdsOrderStatus[data[index].status];
+      });
+      this.setState({
+        pagination,
+        data
+      });
+    }
+  };
 
   onChangeTime = (date, dateString) => {
     console.log(date, dateString);
@@ -35,39 +69,61 @@ class OrderList extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        const obj = {
+          type: values.adType,
+          'listOptions.limit': 12,
+          'listOptions.offset': 0
+        };
+        this.queryOrders(obj);
       }
+    });
+  };
+
+  handleTableChange = pagination => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    console.log(pagination.current);
+    const obj = {
+      'listOptions.limit': 12,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit
+    };
+    this.queryOrders(obj);
+    this.setState({
+      pagination: pager
     });
   };
 
   render() {
     // const { test, getTest } = this.props;
-    const { data } = this.state;
+    const { data, pagination } = this.state;
     const columns = [
       {
         title: '订单ID',
-        dataIndex: 'UDID',
-        key: 'UDID',
-        render: text => <Link to={text}>{text}</Link>
+        dataIndex: 'id',
+        key: 'id',
+        render: text => <Link to={`/admin/order/1?id=${text}`}>{text}</Link>
+        // <Link to={`/admin/order/1?id=${text}`}>{text}</Link>
       },
       {
         title: '下单时间',
-        dataIndex: 'nickName',
-        key: 'nickName'
+        dataIndex: 'createdTime',
+        key: 'createdTime',
+        render: text => <span>{text ? timestampToTime(text) : ''}</span>
       },
       {
         title: '广告方',
-        dataIndex: 'phone',
-        key: 'phone'
+        dataIndex: 'adsOwner.nickname',
+        key: 'adsOwner1'
       },
       {
         title: '买方',
-        dataIndex: 'authen',
-        key: 'authen'
+        dataIndex: 'owner.nickname',
+        key: 'owner.nickname'
       },
       {
         title: '卖方',
-        dataIndex: 'all',
-        key: 'all'
+        dataIndex: 'adsOwner.nickname',
+        key: 'adsOwner.nickname'
       },
       {
         title: '币种',
@@ -81,18 +137,18 @@ class OrderList extends Component {
       },
       {
         title: '数量',
-        dataIndex: '30',
-        key: '30'
+        dataIndex: 'amount',
+        key: 'amount'
       },
       {
         title: '金额',
-        dataIndex: '30rate',
-        key: '30rate'
+        dataIndex: 'feeCNY',
+        key: 'feeCNY'
       },
       {
         title: '状态',
-        dataIndex: '30peal',
-        key: '30peal'
+        dataIndex: 'status',
+        key: 'status'
       }
     ];
     const { getFieldDecorator } = this.props.form;
@@ -104,7 +160,7 @@ class OrderList extends Component {
           onSubmit={this.handleSubmit}
           className="search_form"
         >
-          <Form.Item label="下单日期">
+          {/* <Form.Item label="下单日期">
             {getFieldDecorator('range-picker')(<RangePicker />)}
           </Form.Item>
           <Form.Item label="币种">
@@ -116,29 +172,41 @@ class OrderList extends Component {
               </Select>
             )}
           </Form.Item>
-          <br />
+          <br /> */}
           <Form.Item label="订单状态">
-            {getFieldDecorator('adType', { initialValue: 'all' })(
+            {getFieldDecorator('adType', { initialValue: '0' })(
               <Select>
-                <Option value="all">全部</Option>
-                <Option value="buy">待付款</Option>
-                <Option value="sell">待放币</Option>
-                <Option value="sell">已取消</Option>
-                <Option value="sell">已完成</Option>
-                <Option value="sell">申诉中</Option>
+                <Option value="0">全部</Option>
+                <Option value="1">待付款</Option>
+                <Option value="2">待放币</Option>
+                <Option value="7">已取消</Option>
+                <Option value="8">已完成</Option>
+                <Option value="9">申诉中</Option>
               </Select>
             )}
           </Form.Item>
-          <Form.Item>
+          {/* <Form.Item>
             {getFieldDecorator('input')(
-              <Input placeholder="输入广告ID/创建人进行search" />
+              <Input
+                placeholder="输入订单ID/广告ID/买方/卖方进行搜索"
+                className="search_input"
+              />
             )}
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item>
             <Button htmlType="submit">查询</Button>
           </Form.Item>
         </Form>
-        <Table columns={columns} dataSource={data} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={pagination}
+          onChange={this.handleTableChange}
+          rowKey={record => {
+            console.log(record.id);
+            return record.id;
+          }}
+        />
       </div>
     );
   }

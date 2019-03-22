@@ -32,7 +32,7 @@ const config = {
   },
   // 最终登录
   secondLogin: {
-    url: '/login',
+    url: '/account/login',
     method: 'post',
     options: {
       errorHandler: true,

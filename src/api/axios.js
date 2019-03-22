@@ -9,6 +9,38 @@ axios.defaults.timeout = 60000;
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 // 请求前统一添加token
 // axios.defaults.headers.common.authorization = getToken();
+
+function createDom() {
+  const containerDOM = document.createElement('div');
+  containerDOM.setAttribute('id', 'loadingContainer');
+  containerDOM.style.cssText = `width: 100%;height: 100%;position: fixed;display: block;background: #e0e0e0;bottom: 0;text-align: center;opacity: 0.5;z-index: 5000`;
+  const ImgDOM = document.createElement('img');
+  ImgDOM.style.cssText = `display: inline-block;width: 2rem; height: 2rem;position: absolute;top: 50%; left: 50%; margin-top: -1rem; margin-left: -1rem;`;
+  ImgDOM.setAttribute('src', loadingImg);
+  containerDOM.appendChild(ImgDOM);
+  document.body.appendChild(containerDOM);
+}
+
+// let loadingNum = 0;
+// 遮罩层
+export const loading = {
+  start: () => {
+    const containerDOM = document.getElementById('loadingContainer');
+    if (!containerDOM) {
+      createDom();
+    } else {
+      containerDOM.style.display = 'block';
+    }
+  },
+  end: () => {
+    setTimeout(() => {
+      const containerDOM = document.getElementById('loadingContainer');
+      if (containerDOM) {
+        containerDOM.style.display = 'none';
+      }
+    }, 1000);
+  }
+};
 let count = 0;
 // http request 拦截器
 axios.interceptors.request.use(
@@ -58,6 +90,7 @@ axios.interceptors.response.use(
     let errorMsg = '';
     console.dir(error);
     if (error.response) {
+      loading.end();
       errorMsg = error.response.data.message;
       if (error.response.status === 401) {
         window.sessionStorage.clear();
@@ -100,38 +133,6 @@ axios.interceptors.response.use(
     Promise.reject(error);
   }
 );
-
-function createDom() {
-  const containerDOM = document.createElement('div');
-  containerDOM.setAttribute('id', 'loadingContainer');
-  containerDOM.style.cssText = `width: 100%;height: 100%;position: fixed;display: block;background: #e0e0e0;bottom: 0;text-align: center;opacity: 0.5;z-index: 5000`;
-  const ImgDOM = document.createElement('img');
-  ImgDOM.style.cssText = `display: inline-block;width: 2rem; height: 2rem;position: absolute;top: 50%; left: 50%; margin-top: -1rem; margin-left: -1rem;`;
-  ImgDOM.setAttribute('src', loadingImg);
-  containerDOM.appendChild(ImgDOM);
-  document.body.appendChild(containerDOM);
-}
-
-// let loadingNum = 0;
-// 遮罩层
-export const loading = {
-  start: () => {
-    const containerDOM = document.getElementById('loadingContainer');
-    if (!containerDOM) {
-      createDom();
-    } else {
-      containerDOM.style.display = 'block';
-    }
-  },
-  end: () => {
-    setTimeout(() => {
-      const containerDOM = document.getElementById('loadingContainer');
-      if (containerDOM) {
-        containerDOM.style.display = 'none';
-      }
-    }, 1000);
-  }
-};
 
 export function fetchApi(param, options) {
   if (typeof options.showLoading !== 'boolean') {
@@ -228,7 +229,7 @@ export function fetchApi(param, options) {
 function getToken() {
   console.log(sessionStorage.getItem('user'));
   return sessionStorage.getItem('user')
-    ? JSON.parse(sessionStorage.getItem('user')).second_access_token
+    ? `JWT ${JSON.parse(sessionStorage.getItem('user')).second_access_token}`
     : '';
 }
 export function get(url, data, options) {

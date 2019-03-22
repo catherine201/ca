@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import ApplicationList from './list';
+import ApplicationDetail from './detail';
 
 class UserList extends Component {
   constructor(props) {
@@ -11,8 +13,12 @@ class UserList extends Component {
     // const { test, getTest } = this.props;
     // const { hidden, selectedTab } = this.state;
     return (
-      <div styleName="user_wrapper">
-        <p>商户申请</p>
+      <div className="application_wrapper common_right_wrap">
+        {this.props.match.params.applicationId === '0' ? (
+          <ApplicationList />
+        ) : (
+          <ApplicationDetail {...this.props} />
+        )}
       </div>
     );
   }

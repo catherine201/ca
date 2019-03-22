@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import AuthenList from './list';
+import AuthenDetail from './detail';
 
 class UserList extends Component {
   constructor(props) {
@@ -11,8 +13,12 @@ class UserList extends Component {
     // const { test, getTest } = this.props;
     // const { hidden, selectedTab } = this.state;
     return (
-      <div styleName="user_wrapper">
-        <p>实名认证</p>
+      <div className="authen_wrapper common_right_wrap">
+        {this.props.match.params.authenId === '0' ? (
+          <AuthenList />
+        ) : (
+          <AuthenDetail {...this.props} />
+        )}
       </div>
     );
   }

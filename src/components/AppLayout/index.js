@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout, BackTop } from 'antd';
-// import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import router from '../../routes';
 import AppHeader from '../AppHeader';
 import AppSider from '../AppSider';
@@ -9,19 +9,17 @@ import './app_lay_out.less';
 
 const { Content } = Layout;
 
-// const NotAuth = () => (
-//   <Redirect to="/notAccess" />
-// );
+const NotAuth = () => <Redirect to="/notAccess" />;
 class App extends Component {
   state = {};
 
   componentDidMount() {}
 
   render() {
-    // const user = sessionStorage.getItem('user');
-    // if (!user) {
-    //   return <NotAuth />;
-    // }
+    const user = sessionStorage.getItem('user');
+    if (!user) {
+      return <NotAuth />;
+    }
     return (
       <Layout className="app-layout">
         <BackTop />

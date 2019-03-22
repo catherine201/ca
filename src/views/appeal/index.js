@@ -17,7 +17,7 @@ class Appeal extends Component {
         {this.props.match.params.appealId === '0' ? (
           <AppealList />
         ) : (
-          <AppealDetail />
+          <AppealDetail {...this.props} />
         )}
       </div>
     );
