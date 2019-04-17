@@ -33,6 +33,16 @@ const router = new Router({
         { path: '/ad/:adId', component: page('advert') },
         { path: '/order/:orderId', component: page('order') },
         { path: '/appeal/:appealId', component: page('appeal') },
+        {
+          // 提币审核配置
+          path: '/withdrawalConfig/:withdrawalConfigId',
+          component: page('withdrawalConfig')
+        },
+        {
+          // 提币审核
+          path: '/withdrawalVerifi/:withdrawalVerifiId',
+          component: page('withdrawalVerifi')
+        },
         { path: '/authen/:authenId', component: page('authen') },
         { path: '/application/:applicationId', component: page('application') },
         { name: 404, component: page('404') }
