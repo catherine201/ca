@@ -9,7 +9,7 @@ function resolveIp() {
     };
   }
   return {
-    login: 'http://dash-api.tbnb.io:10101',
+    login: 'http://dash-passport-api.tbnb.io:10101',
     thirdServer: 'http://dash-otc-api.tbnb.io:10101',
     logic: 'http://dash-otc-api.tbnb.io:10101'
     // article: 'https://art-api.euen.io'
