@@ -41,9 +41,10 @@ class AppealList extends Component {
       const pagination = { ...this.state.pagination };
       pagination.total = res.paging.total - 0;
       const data = res.datas;
-      data.map((item, index) => {
-        data[index].status = appealStatus[data[index].status];
-      });
+      data &&
+        data.map((item, index) => {
+          data[index].status = appealStatus[data[index].status];
+        });
       this.setState({
         pagination,
         data

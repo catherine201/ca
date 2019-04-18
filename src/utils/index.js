@@ -240,7 +240,7 @@ export function timestampToTime(timestamp) {
 }
 
 export function getPayMethod(arr) {
-  if (!arr.length || arr === null) {
+  if (!arr || !arr.length || arr === null) {
     return '';
   }
   return arr.map(item => item.bank.name).join(',');
