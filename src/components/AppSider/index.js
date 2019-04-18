@@ -50,20 +50,20 @@ class AppSider extends React.Component {
         text: '申诉列表'
       },
       {
-        key: 'withdrawalConfig',
-        path: '/admin/withdrawalConfig/0',
-        text: '提币审核配置'
-      },
-      {
-        key: 'withdrawalVerifi',
-        path: '/admin/withdrawalVerifi/0',
-        text: '提币审核'
+        key: 'authen',
+        path: '/admin/authen/0',
+        text: '实名认证'
       }
       // {
-      //   key: 'authen',
-      //   path: '/admin/authen/0',
-      //   text: '实名认证'
+      //   key: 'withdrawalConfig',
+      //   path: '/admin/withdrawalConfig/0',
+      //   text: '提币审核配置'
       // },
+      // {
+      //   key: 'withdrawalVerifi',
+      //   path: '/admin/withdrawalVerifi/0',
+      //   text: '提币审核'
+      // }
       // {
       //   key: 'application',
       //   path: '/admin/application/0',

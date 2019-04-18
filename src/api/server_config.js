@@ -9,10 +9,10 @@ function resolveIp() {
     };
   }
   return {
-    login: 'https://passport.leekerlabs.com',
-    thirdServer: 'https://dashboard-api.leekerlabs.com',
-    logic: 'https://dashboard-api.leekerlabs.com',
-    article: 'https://art-api.euen.io'
+    login: 'https://dash-api.leekerlabs.com',
+    thirdServer: 'https://dash-otc-api.leekerlabs.com',
+    logic: 'https://dash-otc-api.leekerlabs.com'
+    // article: 'https://art-api.euen.io'
   };
 }
 export const serverIp = resolveIp();
