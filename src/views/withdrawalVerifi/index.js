@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Input, Button, Table } from 'antd';
-import WithdrawalAction from '../withdrawalAction';
+import { Input, Button, Select, DatePicker, Table } from 'antd';
+import moment from 'moment';
 import styles from './withdrawalVerifi.less';
 
 // 提币审核
@@ -8,88 +8,160 @@ export default class WithdrawalVerifi extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchword: '',
+      searchData: {
+        coin: '', // 币种
+        auditStatus: 0, // 待审核
+        withdrawDateStart: '', // 提币日期start
+        withdrawDateEnd: '', // 提币日期end
+        auditDateStart: '', // 审核日期start
+        auditDateEnd: '' // 审核日期end
+      },
+      coinOptions: [], // 币种选项
+      auditStatusOptions: [], // 审核状态选项
+      tableCheck: [0], // 表格选择项
       tableLoading: true,
       tableData: [],
       page: {
         current: 0,
         pageSize: 0,
         total: 0
-      },
-      actionType: '', // 新增add, 修改edit, 删除delete
-      withdrawalActionVisible: false
+      }
     };
   }
 
   componentDidMount = () => {
-    this.search();
+    this.getTableData();
+    this.getCoinOptions();
+    this.setState({
+      auditStatusOptions: [
+        {
+          value: '0',
+          label: '待审核'
+        },
+        {
+          value: '1',
+          label: '通过'
+        },
+        {
+          value: '2',
+          label: '驳回'
+        }
+      ]
+    });
   };
 
-  // 查询
-  search = () => {
+  // 获取币种选项
+  getCoinOptions = () => {
+    this.setState({
+      coinOptions: [
+        {
+          value: '',
+          label: '全部'
+        },
+        {
+          value: 'BTC',
+          label: 'BTC'
+        },
+        {
+          value: 'ETH',
+          label: 'ETH'
+        }
+      ]
+    });
+  };
+
+  // 选择币种
+  coinChange = coin => {
+    const search = Object.assign({}, this.state.searchData);
+    search.coin = coin;
+    this.setState({
+      searchData: search
+    });
+  };
+
+  // 审核状态选择
+  auditStatusChange = auditStatus => {
+    const search = Object.assign({}, this.state.searchData);
+    search.auditStatus = auditStatus;
+    this.setState({
+      searchData: search
+    });
+  };
+
+  // 提币审核
+  coinAudit = () => {
+    if (this.state.tableCheck[0] === 0) {
+      this.setState({
+        tableCheck: []
+      });
+    }
+  };
+
+  // 获取表格数据（查询和分页
+  getTableData = () => {
+    const { current, pageSize } = this.state.page;
+    const {
+      coin, // 币种
+      auditStatus, // 审核状态
+      withdrawDateStart, // 提币日期start
+      withdrawDateEnd, // 提币日期end
+      auditDateStart, // 审核日期start
+      auditDateEnd // 审核日期end
+    } = this.state.searchData;
+    const param = {
+      current,
+      pageSize,
+      auditStatus
+    };
     this.setState({
       tableLoading: true
     });
-    console.log('searchword: ', this.state.searchword);
+    if (coin) param.coin = coin;
+    if (withdrawDateStart) param.withdrawDateStart = withdrawDateStart;
+    if (withdrawDateEnd) param.withdrawDateEnd = withdrawDateEnd;
+    if (auditDateStart) param.auditDateStart = auditDateStart;
+    if (auditDateEnd) param.auditDateEnd = auditDateEnd;
+    /*
+      api.getData(param)
+    */
+    console.log('param: ', param);
+
     this.setState({
       tableData: [
         {
           key: '1',
-          no: '1',
+          addtime: '2019-01-01 10:10:10',
+          user: '13500001545',
           coin: 'BTC',
-          singleLimit: '100',
-          dailyLimit: '100',
-          lastModified: '2019-01-01 12:00:00',
-          finalEditor: 'ssrhjf',
-          operation: ''
+          coinNum: '10.49440',
+          status: '0',
+          auditTime: '',
+          auditor: ''
         },
         {
           key: '2',
-          no: '2',
-          coin: 'ETH',
-          singleLimit: '100',
-          dailyLimit: '100',
-          lastModified: '2019-01-01 12:00:00',
-          finalEditor: 'ssrhjf',
-          operation: '100'
+          addtime: '2019-01-01 10:10:10',
+          user: '13500001545',
+          coin: 'BTC',
+          coinNum: '10.49440',
+          status: '1',
+          auditTime: '2019-01-01 10:10:10',
+          auditor: 'rewrqwe'
+        },
+        {
+          key: '3',
+          addtime: '2019-01-01 10:10:10',
+          user: '13500001545',
+          coin: 'BTC',
+          coinNum: '10.49440',
+          status: '2',
+          auditTime: '2019-01-01 10:10:10',
+          auditor: 'rewrqwe'
         }
       ]
     });
     this.setState({
-      page: {
-        current: 1,
-        pageSize: 20,
-        total: 2
-      }
-    });
-    this.setState({
       tableLoading: false
-    });
-  };
-
-  // 新增审核币种
-  addCoin = () => {
-    this.setState({
-      withdrawalActionVisible: true,
-      actionType: 'add'
-    });
-  };
-
-  // 修改
-  edit = record => {
-    console.log('edit -- record: ', record);
-    this.setState({
-      withdrawalActionVisible: true,
-      actionType: 'edit'
-    });
-  };
-
-  // 删除
-  delete = record => {
-    console.log('delete -- record: ', record);
-    this.setState({
-      withdrawalActionVisible: true,
-      actionType: 'delete'
     });
   };
 
@@ -123,47 +195,126 @@ export default class WithdrawalVerifi extends Component {
     });
   };
 
-  // 弹窗取消
-  withdrawalActionClose = () => {
+  // 提币日期
+  withdrawDateChange = value => {
+    const search = Object.assign({}, this.state.searchData);
+    search.withdrawDateStart = !value.length
+      ? ''
+      : moment(value[0]).format('YYYY-MM-DD');
+    search.withdrawDateEnd = !value.length
+      ? ''
+      : moment(value[1]).format('YYYY-MM-DD');
     this.setState({
-      withdrawalActionVisible: false
+      searchData: search
     });
   };
 
-  // 弹窗确认
-  withdrawalActionConfirm = () => {
+  // 审核日期
+  auditDateChange = value => {
+    const search = Object.assign({}, this.state.searchData);
+    search.auditDateStart = !value.length
+      ? ''
+      : moment(value[0]).format('YYYY-MM-DD');
+    search.auditDateEnd = !value.length
+      ? ''
+      : moment(value[1]).format('YYYY-MM-DD');
     this.setState({
-      withdrawalActionVisible: false
+      searchData: search
     });
   };
 
   render() {
     const { Column } = Table;
+    const statusText = ['待审核', '通过', '驳回'];
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(
+          `selectedRowKeys: ${selectedRowKeys}`,
+          'selectedRows: ',
+          selectedRows
+        );
+        this.setState({
+          tableCheck: selectedRows
+        });
+      },
+      getCheckboxProps: record => ({
+        disabled: record.auditor !== '', // Column configuration not to be checked
+        name: record.auditor
+      })
+    };
+
+    // 禁用今天之后的日期选择
+    function disabledDate(current) {
+      // Can not select days before today and today
+      return current > moment().endOf('day');
+    }
+
     return (
       <div className={styles.withdrawalVerifi}>
         <section className={styles.title}>提币审核</section>
         <section>
-          <Input
-            placeholder="输入币种"
-            className={styles.search}
-            onBlur={e => this.setState({ searchword: e.target.value })}
-          />
-          <Button type="primary" onClick={this.search}>
-            查询
-          </Button>
-          <Button
-            type="primary"
-            className={styles.addcoin}
-            onClick={this.addCoin}
-          >
-            新增审核币种
-          </Button>
-          <WithdrawalAction
-            visible={this.state.withdrawalActionVisible}
-            actionType={this.state.actionType}
-            onClose={this.withdrawalActionClose}
-            onConfirm={this.withdrawalActionConfirm}
-          />
+          <div className={styles['search-item']}>
+            <span>币种：</span>
+            <Select
+              defaultValue=""
+              style={{ width: 120 }}
+              onChange={this.coinChange}
+            >
+              {this.state.coinOptions.map(coin => (
+                <Select.Option key={coin} value={coin.value}>
+                  {coin.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          <div className={styles['search-item']}>
+            <span>审核状态：</span>
+            <Select
+              defaultValue="0"
+              style={{ width: 120 }}
+              onChange={this.auditStatusChange}
+            >
+              {this.state.auditStatusOptions.map(coin => (
+                <Select.Option key={coin} value={coin.value}>
+                  {coin.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          <div className={styles['search-item']}>
+            <span>提币日期：</span>
+            <DatePicker.RangePicker
+              style={{ width: '240px' }}
+              disabledDate={disabledDate}
+              onChange={this.withdrawDateChange}
+            />
+          </div>
+          <div className={styles['search-item']}>
+            <span>审核日期：</span>
+            <DatePicker.RangePicker
+              style={{ width: '240px' }}
+              disabledDate={disabledDate}
+              onChange={this.auditDateChange}
+            />
+          </div>
+          <div className={styles['search-item']}>
+            <span>提币数量：</span>
+            <Input placeholder="单笔最小数量" style={{ width: '200px' }} />
+            &nbsp;至&nbsp;
+            <Input placeholder="单笔最大数量" style={{ width: '200px' }} />
+            &emsp;
+            <Input placeholder="输入提币用户" style={{ width: '200px' }} />
+          </div>
+          <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
+          &emsp;
+          <div className={styles['search-item']}>
+            <Button type="primary" onClick={this.coinAudit}>
+              提币审核
+            </Button>
+            {!this.state.tableCheck.length && (
+              <span className={styles['table-no-check']}>请选择待审核项</span>
+            )}
+          </div>
         </section>
         <br />
         <section>
@@ -172,51 +323,40 @@ export default class WithdrawalVerifi extends Component {
             loading={this.state.tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
+            rowSelection={rowSelection}
           >
-            <Column title="序号" align="center" dataIndex="no" key="no" />
+            <Column
+              title="提币时间"
+              align="center"
+              dataIndex="addtime"
+              key="addtime"
+            />
+            <Column title="用户" align="center" dataIndex="user" key="user" />
             <Column title="币种" align="center" dataIndex="coin" key="coin" />
             <Column
-              title="单笔限额"
+              title="提币数量"
               align="center"
-              dataIndex="singleLimit"
-              key="singleLimit"
+              dataIndex="coinNum"
+              key="coinNum"
             />
             <Column
-              title="日累计限额"
+              title="审核状态"
               align="center"
-              dataIndex="dailyLimit"
-              key="dailyLimit"
+              dataIndex="status"
+              key="status"
+              render={(text, row) => <span>{statusText[row.status]}</span>}
             />
             <Column
-              title="最后编辑时间"
+              title="审核时间"
               align="center"
-              dataIndex="lastModified"
-              key="lastModified"
+              dataIndex="auditTime"
+              key="auditTime"
             />
             <Column
-              title="最后编辑人"
+              title="审核人"
               align="center"
-              dataIndex="finalEditor"
-              key="finalEditor"
-            />
-            <Column
-              title="操作"
-              align="center"
-              key="action"
-              render={(text, record) => (
-                <div>
-                  <span className={styles.a} onClick={() => this.edit(record)}>
-                    修改
-                  </span>
-                  &emsp;
-                  <span
-                    className={styles.a}
-                    onClick={() => this.delete(record)}
-                  >
-                    删除
-                  </span>
-                </div>
-              )}
+              dataIndex="auditor"
+              key="auditor"
             />
           </Table>
         </section>

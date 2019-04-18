@@ -7,16 +7,30 @@ export default class WithdrawalAction extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      coin: '',
-      isDailyNoLimit: false,
-      singleLimit: 0,
-      dailyLimit: 0
+      coin: '', // 选择的币种
+      singleLimit: 0, // 单笔限额
+      dailyLimit: 0, // 日累计限额
+      isDailyNoLimit: false, // 日累计限额不限
+      isRequest: false // 正在请求
     };
   }
 
-  componentDidUpdate() {
-    // console.log('props: ', this.props);
-  }
+  componentWillMount = () => {
+    if (this.props.actionType !== 'add') {
+      const { coin, singleLimit, dailyLimit, isDailyNoLimit } = this.props.row;
+      this.setState({
+        coin,
+        singleLimit,
+        dailyLimit,
+        isDailyNoLimit
+      });
+    }
+  };
+
+  componentWillReceiveProps = () => {};
+
+  // 组件即将销毁
+  componentWillUnmount = () => {};
 
   // 选择币种
   coinChange = coin => {
@@ -53,36 +67,62 @@ export default class WithdrawalAction extends Component {
 
   // 确认
   confirm = () => {
-    this.vertify().then(() => {
-      const obj = {
-        isDailyNoLimit: this.state.isDailyNoLimit,
-        coin: this.state.coin,
-        singleLimit: this.state.singleLimit,
-        dailyLimit: this.state.dailyLimit
-      };
-      this.props.onConfirm(obj);
-    });
+    if (this.state.isRequest) return;
+    this.vertify()
+      .then(() => {
+        const obj = {
+          isDailyNoLimit: this.state.isDailyNoLimit,
+          coin: this.state.coin,
+          singleLimit: this.state.singleLimit,
+          dailyLimit: this.state.dailyLimit
+        };
+        console.log('obj: ', obj);
+        this.setState({
+          isRequest: true
+        });
+        setTimeout(() => {
+          /*
+            这里调接口
+          */
+          this.setState({
+            isRequest: false
+          });
+          const textSuccess = {
+            add: '新增成功',
+            edit: '修改成功',
+            delete: '删除成功'
+          };
+          message.success(textSuccess[this.props.actionType]);
+          this.props.onConfirm(obj);
+        }, 1000);
+      })
+      .catch(err => {
+        console.error('vertify -- err: ', err);
+      });
   };
 
+  // 校验
   vertify = () => {
-    if (this.props.actionType === 'delete') {
+    const that = this;
+    const actionType = that.props.actionType;
+    if (actionType === 'delete') {
       return Promise.resolve();
     }
     return new Promise(resolve => {
       if (
-        this.state.coin &&
-        this.state.singleLimit &&
-        (this.state.isDailyNoLimit || this.state.dailyLimit)
+        that.state.coin &&
+        this.isNumber(that.state.singleLimit) &&
+        (this.isNumber(that.state.dailyLimit) || that.state.isDailyNoLimit)
       ) {
         resolve();
-      } else if (!this.state.coin && this.props.actionType === 'add') {
-        message.error('请选择币种');
-      } else if (!this.state.singleLimit) {
-        message.error('请输入单笔限额');
-      } else if (!this.state.dailyLimit) {
-        message.error('请输入日累计限额或勾选"不限"');
       }
     });
+  };
+
+  // 判断输入的是否是数字
+  isNumber = val => {
+    if (val === '') val = '-';
+    return val - 0 === Number(val);
   };
 
   render() {
@@ -92,8 +132,9 @@ export default class WithdrawalAction extends Component {
       delete: '删除'
     };
     const isDelete = this.props.actionType === 'delete';
-    const disabledSelect =
-      this.props.actionType === 'edit' || this.props.actionType === 'delete';
+    const isEdit = this.props.actionType === 'edit';
+    const { coin, singleLimit, dailyLimit } = this.state;
+    const deleteText = `确认要删除“${coin}”的提币审核设置吗？`;
 
     return (
       <Modal
@@ -101,57 +142,89 @@ export default class WithdrawalAction extends Component {
         title={titleList[this.props.actionType]}
         visible={this.props.visible}
         onCancel={this.cancel}
-        destroyOnClose
         maskClosable={false}
         footer={
           <Button
             type="primary"
             className={styles['confirm-btn']}
             onClick={this.confirm}
+            loading={this.state.isRequest}
           >
-            {!isDelete ? '提交' : '确认'}
+            {isDelete ? '确认' : '提交'}
           </Button>
         }
       >
-        {!isDelete ? (
+        {isDelete ? (
+          <div className={styles['delete-content']}>{deleteText}</div>
+        ) : (
           <ul>
             <li className={styles['li-item']}>
               <span>
                 <i>*</i>币种：
               </span>
               <Select
-                disabled={disabledSelect}
-                defaultValue=""
+                disabled={isEdit}
+                defaultValue={isEdit ? coin : ''}
                 style={{ width: 120 }}
                 onChange={this.coinChange}
               >
-                <Select.Option value="">请选择币种</Select.Option>
-                <Select.Option value="BTC">BTC</Select.Option>
-                <Select.Option value="ETH">ETH</Select.Option>
+                {this.props.coinOptions.map(coin => (
+                  <Select.Option key={coin} value={coin.value}>
+                    {coin.label}
+                  </Select.Option>
+                ))}
               </Select>
+              <div
+                className={styles.errortext}
+                style={{
+                  visibility: this.state.coin ? 'hidden' : 'visible'
+                }}
+              >
+                <span>请选择币种</span>
+              </div>
             </li>
             <li className={styles['li-item']}>
               <span>
                 <i>*</i>单笔限额：
               </span>
-              <Input onBlur={this.singleLimitChange} />
+              <Input
+                defaultValue={isEdit ? singleLimit : ''}
+                onBlur={this.singleLimitChange}
+              />
+              <div
+                className={styles.errortext}
+                style={{
+                  visibility: this.isNumber(this.state.singleLimit)
+                    ? 'hidden'
+                    : 'visible'
+                }}
+              >
+                <span>请输入数字</span>
+              </div>
             </li>
             <li className={styles['li-item']}>
               <span>
                 <i>*</i>日累计限额：
               </span>
               <Input
+                defaultValue={isEdit ? dailyLimit : ''}
                 onBlur={this.dailyLimitChange}
                 disabled={this.state.isDailyNoLimit}
               />
               &emsp;
               <Checkbox onChange={this.noLimit}>不限</Checkbox>
+              <div
+                className={styles.errortext}
+                style={{
+                  visibility: this.isNumber(this.state.dailyLimit)
+                    ? 'hidden'
+                    : 'visible'
+                }}
+              >
+                <span>请输入数字</span>
+              </div>
             </li>
           </ul>
-        ) : (
-          <div className={styles['delete-content']}>
-            确认要删除“BTC”的提币审核设置吗？
-          </div>
         )}
       </Modal>
     );
