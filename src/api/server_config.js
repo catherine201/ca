@@ -9,9 +9,9 @@ function resolveIp() {
     };
   }
   return {
-    login: 'https://dash-api.leekerlabs.com',
-    thirdServer: 'https://dash-otc-api.leekerlabs.com',
-    logic: 'https://dash-otc-api.leekerlabs.com'
+    login: 'https://dash-api.tbnb.io:10101',
+    thirdServer: 'https://dash-otc-api.tbnb.io:10101',
+    logic: 'https://dash-otc-api.tbnb.io:10101'
     // article: 'https://art-api.euen.io'
   };
 }
