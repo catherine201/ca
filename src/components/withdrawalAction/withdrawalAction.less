@@ -1,0 +1,42 @@
+.WithdrawalAction {
+  .li-item {
+    padding: 0 0 8px;
+    > span {
+      width: 20%;
+      display: inline-block;
+      > i {
+        color: red;
+      }
+    }
+  }
+  .errortext {
+    color: red;
+    padding-left: 20%;
+  }
+  .delete-content {
+    padding: 40px 0;
+    text-align: center;
+  }
+  :global {
+    .ant-input-number {
+      width: 60%;
+    }
+    .ant-modal-header {
+      background: #eee;
+      .ant-modal-title {
+        text-align: center;
+      }
+    }
+    .ant-modal-body {
+      padding: 10px 24px 0;
+    }
+    .ant-modal-footer {
+      padding: 20px 0;
+      text-align: center;
+      border: none;
+      > button {
+        width: 100px;
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+.withdrawalVerifi {
+  width: 100%;
+  .title {
+    display: block;
+    font-size: 20px;
+    &::after {
+      content: '';
+      width: 100%;
+      height: 2px;
+      display: block;
+      margin: 6px 0 8px;
+      background: #999;
+    }
+  }
+  .search-item {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  .table-no-check {
+    position: absolute;
+    top: 106%;
+    left: 0;
+    color: red;
+    white-space: nowrap;
+  }
+  :global {
+    .ant-checkbox-wrapper-disabled {
+      display: none;
+    }
+  }
+}

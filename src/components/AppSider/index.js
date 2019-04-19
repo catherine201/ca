@@ -55,6 +55,19 @@ class AppSider extends React.Component {
         text: '实名认证'
       }
       // {
+<<<<<<< HEAD
+=======
+      //   key: 'withdrawalConfig',
+      //   path: '/admin/withdrawalConfig/0',
+      //   text: '提币审核配置'
+      // },
+      // {
+      //   key: 'withdrawalVerifi',
+      //   path: '/admin/withdrawalVerifi/0',
+      //   text: '提币审核'
+      // }
+      // {
+>>>>>>> f1e60d92c3d0bf328e0b7083d5a566c15e5a1bba
       //   key: 'application',
       //   path: '/admin/application/0',
       //   text: '商户申请'
