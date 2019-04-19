@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
-import { Input, Button, Select, DatePicker, Table } from 'antd';
+import {
+  Input,
+  InputNumber,
+  Button,
+  Select,
+  DatePicker,
+  Table,
+  LocaleProvider
+} from 'antd';
+import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
+import CustomModal from './CustomModal';
 import styles from './withdrawalVerifi.less';
 
 // 提币审核
@@ -8,22 +18,27 @@ export default class WithdrawalVerifi extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      customModalShow: false, // 显示CustomModal弹窗
+      customModalTitle: '提币审核', // customModal标题
       searchData: {
-        coin: '', // 币种
-        auditStatus: 0, // 待审核
-        withdrawDateStart: '', // 提币日期start
-        withdrawDateEnd: '', // 提币日期end
-        auditDateStart: '', // 审核日期start
-        auditDateEnd: '' // 审核日期end
+        coin: null, // 币种
+        auditStatus: 0, // 审核状态：0待审核，1通过，2驳回
+        withdrawDateStart: null, // 提币日期start
+        withdrawDateEnd: null, // 提币日期end
+        auditDateStart: null, // 审核日期start
+        auditDateEnd: null, // 审核日期end
+        coinNumMin: null, // 提币最小数量
+        coinNumMax: null, // 提币最大数量
+        coinUser: null // 提币用户
       },
       coinOptions: [], // 币种选项
       auditStatusOptions: [], // 审核状态选项
-      tableCheck: [0], // 表格选择项
+      tableCheck: null, // 表格选择项 []
       tableLoading: true,
       tableData: [],
       page: {
-        current: 0,
-        pageSize: 0,
+        current: 1,
+        pageSize: 10,
         total: 0
       }
     };
@@ -90,11 +105,25 @@ export default class WithdrawalVerifi extends Component {
 
   // 提币审核
   coinAudit = () => {
-    if (this.state.tableCheck[0] === 0) {
+    if (this.state.tableCheck === null) {
       this.setState({
         tableCheck: []
       });
     }
+    this.isTableCheckEmpty();
+    if (this.state.tableCheck && this.state.tableCheck.length) {
+      this.setState({
+        customModalShow: true,
+        customModalTitle: '提币审核'
+      });
+    }
+  };
+
+  // 关闭
+  onCustonModalCancel = () => {
+    this.setState({
+      customModalShow: false
+    });
   };
 
   // 获取表格数据（查询和分页
@@ -106,7 +135,10 @@ export default class WithdrawalVerifi extends Component {
       withdrawDateStart, // 提币日期start
       withdrawDateEnd, // 提币日期end
       auditDateStart, // 审核日期start
-      auditDateEnd // 审核日期end
+      auditDateEnd, // 审核日期end
+      coinNumMin, // 提币最小数量
+      coinNumMax, // 提币最大数量
+      coinUser // 提币用户
     } = this.state.searchData;
     const param = {
       current,
@@ -121,6 +153,9 @@ export default class WithdrawalVerifi extends Component {
     if (withdrawDateEnd) param.withdrawDateEnd = withdrawDateEnd;
     if (auditDateStart) param.auditDateStart = auditDateStart;
     if (auditDateEnd) param.auditDateEnd = auditDateEnd;
+    if (coinNumMin) param.coinNumMin = coinNumMin;
+    if (coinNumMax) param.coinNumMax = coinNumMax;
+    if (coinUser) param.coinUser = coinUser;
     /*
       api.getData(param)
     */
@@ -172,6 +207,7 @@ export default class WithdrawalVerifi extends Component {
       showSizeChanger: true,
       showQuickJumper: true,
       showTotal: () => `共${total}条`,
+      pageSizeOptions: ['10', '20', '50', '100', '500', '1000'],
       pageSize,
       current,
       total,
@@ -193,6 +229,7 @@ export default class WithdrawalVerifi extends Component {
     this.setState({
       page: pageData
     });
+    this.getTableData();
   };
 
   // 提币日期
@@ -223,6 +260,38 @@ export default class WithdrawalVerifi extends Component {
     });
   };
 
+  // 单笔最小数量
+  minNumChange = value => {
+    const search = Object.assign({}, this.state.searchData);
+    search.coinNumMin = value;
+    this.setState({
+      searchData: search
+    });
+  };
+
+  // 单笔最大数量
+  maxNumChange = value => {
+    const search = Object.assign({}, this.state.searchData);
+    search.coinNumMax = value;
+    this.setState({
+      searchData: search
+    });
+  };
+
+  // 提币用户
+  onCoinuserChange = e => {
+    const search = Object.assign({}, this.state.searchData);
+    search.coinUser = e.target.value;
+    this.setState({
+      searchData: search
+    });
+  };
+
+  // tableCheck是否为空
+  isTableCheckEmpty = () =>
+    this.state.tableCheck !== null &&
+    JSON.stringify(this.state.tableCheck) === '[]';
+
   render() {
     const { Column } = Table;
     const statusText = ['待审核', '通过', '驳回'];
@@ -233,8 +302,9 @@ export default class WithdrawalVerifi extends Component {
           'selectedRows: ',
           selectedRows
         );
+        // 只在点击提币审核的时候，没有选择项才提示
         this.setState({
-          tableCheck: selectedRows
+          tableCheck: selectedRows.length ? selectedRows : null
         });
       },
       getCheckboxProps: record => ({
@@ -283,27 +353,45 @@ export default class WithdrawalVerifi extends Component {
           </div>
           <div className={styles['search-item']}>
             <span>提币日期：</span>
-            <DatePicker.RangePicker
-              style={{ width: '240px' }}
-              disabledDate={disabledDate}
-              onChange={this.withdrawDateChange}
-            />
+            <LocaleProvider locale={zh_CN}>
+              <DatePicker.RangePicker
+                style={{ width: '240px' }}
+                disabledDate={disabledDate}
+                onChange={this.withdrawDateChange}
+              />
+            </LocaleProvider>
           </div>
           <div className={styles['search-item']}>
             <span>审核日期：</span>
-            <DatePicker.RangePicker
-              style={{ width: '240px' }}
-              disabledDate={disabledDate}
-              onChange={this.auditDateChange}
-            />
+            <LocaleProvider locale={zh_CN}>
+              <DatePicker.RangePicker
+                style={{ width: '240px' }}
+                disabledDate={disabledDate}
+                onChange={this.auditDateChange}
+              />
+            </LocaleProvider>
           </div>
           <div className={styles['search-item']}>
             <span>提币数量：</span>
-            <Input placeholder="单笔最小数量" style={{ width: '200px' }} />
+            <InputNumber
+              placeholder="单笔最小数量"
+              style={{ width: '150px' }}
+              onChange={this.minNumChange}
+            />
             &nbsp;至&nbsp;
-            <Input placeholder="单笔最大数量" style={{ width: '200px' }} />
+            <InputNumber
+              placeholder="单笔最大数量"
+              style={{ width: '150px' }}
+              onChange={this.maxNumChange}
+            />
+          </div>
+          <div className={styles['search-item']}>
             &emsp;
-            <Input placeholder="输入提币用户" style={{ width: '200px' }} />
+            <Input
+              placeholder="输入提币用户"
+              style={{ width: '200px' }}
+              onBlur={this.onCoinuserChange}
+            />
           </div>
           <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
           &emsp;
@@ -311,13 +399,13 @@ export default class WithdrawalVerifi extends Component {
             <Button type="primary" onClick={this.coinAudit}>
               提币审核
             </Button>
-            {!this.state.tableCheck.length && (
+            {this.isTableCheckEmpty() && (
               <span className={styles['table-no-check']}>请选择待审核项</span>
             )}
           </div>
         </section>
         <br />
-        <section>
+        <LocaleProvider locale={zh_CN}>
           <Table
             bordered
             loading={this.state.tableLoading}
@@ -359,7 +447,15 @@ export default class WithdrawalVerifi extends Component {
               key="auditor"
             />
           </Table>
-        </section>
+        </LocaleProvider>
+        {this.state.customModalShow && (
+          <CustomModal
+            visible={this.state.customModalShow}
+            title={this.state.customModalTitle}
+            selectedRows={this.state.tableCheck}
+            onCancel={this.onCustonModalCancel}
+          />
+        )}
       </div>
     );
   }

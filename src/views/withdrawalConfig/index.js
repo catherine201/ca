@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Input, Button, Table } from 'antd';
-import WithdrawalAction from '../withdrawalAction';
+import WithdrawalAction from '../../components/withdrawalAction';
 import styles from './withdrawalConfig.less';
 
 // 提币审核配置
@@ -131,6 +131,7 @@ export default class WithdrawalConfig extends Component {
     return {
       showSizeChanger: true,
       showQuickJumper: true,
+      pageSizeOptions: ['10', '20', '50', '100', '500', '1000'],
       showTotal: () => `共${total}条`,
       pageSize,
       current,
@@ -153,6 +154,7 @@ export default class WithdrawalConfig extends Component {
     this.setState({
       page: pageData
     });
+    this.getTableData();
   };
 
   // 弹窗取消
