@@ -33,6 +33,25 @@ const router = new Router({
         { path: '/ad/:adId', component: page('advert') },
         { path: '/order/:orderId', component: page('order') },
         { path: '/appeal/:appealId', component: page('appeal') },
+        { path: '/coinInAddr', component: page('userMsg/coinInAddr') },
+        { path: '/coinOutAddr', component: page('userMsg/coinOutAddr') },
+        {
+          path: '/platCoinInRecord',
+          component: page('financialMsg/platCoinInRecord')
+        },
+        { path: '/coinInRecord', component: page('financialMsg/coinInRecord') },
+        {
+          path: '/coinOutRecord',
+          component: page('financialMsg/coinOutRecord')
+        },
+        {
+          path: '/currSnatch',
+          component: page('transactionMsg/currSnatch')
+        },
+        {
+          path: '/snatchRecord',
+          component: page('transactionMsg/snatchRecord')
+        },
         {
           // 提币审核配置
           path: '/withdrawalConfig/:withdrawalConfigId',
