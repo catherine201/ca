@@ -4,8 +4,8 @@ module.exports = function(app) {
   app.use(
     proxy('/fangman', {
       // target: 'http://dashboard.api.leekerlabs.com/',
-      target: 'http://192.168.10.137:8000/',
-      // target: 'http://192.168.10.116:8000/',
+      // target: 'http://192.168.10.137:8000/',
+      target: 'http://192.168.10.111:8000/',
       changeOrigin: true,
       pathRewrite: {
         '^/fangman': ''
@@ -15,7 +15,8 @@ module.exports = function(app) {
   app.use(
     proxy('/log', {
       // target: 'http://passport.leekerlabs.com/',
-      target: 'http://192.168.10.86:9000/',
+      target: 'http://192.168.10.111:9000/',
+      // target: 'http://192.168.110.116:51002/',
       changeOrigin: true,
       pathRewrite: {
         '^/log': ''

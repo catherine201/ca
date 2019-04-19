@@ -37,13 +37,15 @@ class OrderList extends Component {
   queryOrders = async obj => {
     const res = await createApi.queryOrders(obj);
     console.log(res);
-    if (res.datas) {
+    if (res && res.paging) {
       const pagination = { ...this.state.pagination };
       pagination.total = res.paging.total - 0;
       const data = res.datas;
-      data.map((item, index) => {
-        data[index].status = AdsOrderStatus[data[index].status];
-      });
+      data &&
+        data.length &&
+        data.map((item, index) => {
+          data[index].status = AdsOrderStatus[data[index].status];
+        });
       this.setState({
         pagination,
         data

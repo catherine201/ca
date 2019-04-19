@@ -37,13 +37,15 @@ class AppealList extends Component {
   queryAppeal = async obj => {
     const res = await createApi.queryAppeal(obj);
     console.log(res);
-    if (res.paging) {
+    if (res && res.paging) {
       const pagination = { ...this.state.pagination };
       pagination.total = res.paging.total - 0;
       const data = res.datas;
-      data.map((item, index) => {
-        data[index].status = appealStatus[data[index].status];
-      });
+      data &&
+        data.length &&
+        data.map((item, index) => {
+          data[index].status = appealStatus[data[index].status];
+        });
       this.setState({
         pagination,
         data

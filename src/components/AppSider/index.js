@@ -48,12 +48,12 @@ class AppSider extends React.Component {
         key: 'appeal',
         path: '/admin/appeal/0',
         text: '申诉列表'
+      },
+      {
+        key: 'authen',
+        path: '/admin/authen/0',
+        text: '实名认证'
       }
-      // {
-      //   key: 'authen',
-      //   path: '/admin/authen/0',
-      //   text: '实名认证'
-      // },
       // {
       //   key: 'application',
       //   path: '/admin/application/0',
