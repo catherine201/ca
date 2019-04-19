@@ -76,6 +76,16 @@ class AppSider extends React.Component {
         path: '/admin/authen/0',
         text: '实名认证'
       },
+      // {
+      //   key: 'withdrawalConfig',
+      //   path: '/admin/withdrawalConfig/0',
+      //   text: '提币审核配置'
+      // },
+      // {
+      //   key: 'withdrawalVerifi',
+      //   path: '/admin/withdrawalVerifi/0',
+      //   text: '提币审核'
+      // }
       {
         key: 'userMsg',
         text: '用户管理',
@@ -116,16 +126,6 @@ class AppSider extends React.Component {
           { key: 'snatchRecord', path: '/admin/snatchRecord', text: '抢拍记录' }
         ]
       }
-      // {
-      //   key: 'withdrawalConfig',
-      //   path: '/admin/withdrawalConfig/0',
-      //   text: '提币审核配置'
-      // },
-      // {
-      //   key: 'withdrawalVerifi',
-      //   path: '/admin/withdrawalVerifi/0',
-      //   text: '提币审核'
-      // }
       // {
       //   key: 'application',
       //   path: '/admin/application/0',

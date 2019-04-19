@@ -37,6 +37,24 @@ const config = {
       showLoading: false
     }
   },
+  // 查询实名认证列表
+  queryVerification: {
+    url: '/account/verification',
+    method: 'get',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  },
+  // 实名认证提交
+  verificationSubmit: {
+    url: '/account/verification',
+    method: 'post',
+    options: {
+      errorHandler: true,
+      showLoading: true
+    }
+  },
   // 查询订单详情
   queryOrdersDetail: {
     url: '/otc/orders',

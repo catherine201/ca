@@ -1,6 +1,6 @@
 .WithdrawalAction {
   .li-item {
-    padding: 8px 0;
+    padding: 0 0 8px;
     > span {
       width: 20%;
       display: inline-block;
@@ -8,15 +8,19 @@
         color: red;
       }
     }
-    > input {
-      width: 60%;
-    }
+  }
+  .errortext {
+    color: red;
+    padding-left: 20%;
   }
   .delete-content {
     padding: 40px 0;
     text-align: center;
   }
   :global {
+    .ant-input-number {
+      width: 60%;
+    }
     .ant-modal-header {
       background: #eee;
       .ant-modal-title {
