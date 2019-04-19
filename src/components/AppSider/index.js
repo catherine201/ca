@@ -9,7 +9,7 @@ const { Sider } = Layout;
 function generateMenu(props, menus) {
   let items = [];
   const arr = props.location.pathname.split('/');
-  // console.log(arr[arr.length - 1]);
+  console.log(arr[arr.length - 2]);
   items = menus.map(menu => {
     if (Array.isArray(menu.subMenu)) {
       return (
@@ -91,8 +91,8 @@ class AppSider extends React.Component {
         text: '用户管理',
         // path: '/admin/user/1',
         subMenu: [
-          { key: 'coinInAddr', path: '/admin/coinInAddr', text: '充币地址' },
-          { key: 'coinOutAddr', path: '/admin/coinOutAddr', text: '提现地址' }
+          { key: 'coinInAddr', path: '/admin/coinInAddr/', text: '充币地址' },
+          { key: 'coinOutAddr', path: '/admin/coinOutAddr/', text: '提现地址' }
         ]
       },
       {
@@ -102,17 +102,17 @@ class AppSider extends React.Component {
         subMenu: [
           {
             key: 'platCoinInRecord',
-            path: '/admin/platCoinInRecord',
-            text: '平台充币记录'
+            path: '/admin/platCoinInRecord/',
+            text: '平台充币统计'
           },
           {
             key: 'coinInRecord',
-            path: '/admin/coinInRecord',
+            path: '/admin/coinInRecord/',
             text: '充币记录'
           },
           {
             key: 'coinOutRecord',
-            path: '/admin/coinOutRecord',
+            path: '/admin/coinOutRecord/',
             text: '提币记录'
           }
         ]
@@ -122,8 +122,12 @@ class AppSider extends React.Component {
         text: '交易管理',
         // path: '/admin/user/1',
         subMenu: [
-          { key: 'currSnatch', path: '/admin/currSnatch', text: '当前抢拍' },
-          { key: 'snatchRecord', path: '/admin/snatchRecord', text: '抢拍记录' }
+          { key: 'currSnatch', path: '/admin/currSnatch/', text: '当前抢拍' },
+          {
+            key: 'snatchRecord',
+            path: '/admin/snatchRecord/',
+            text: '抢拍记录'
+          }
         ]
       }
       // {
@@ -144,7 +148,12 @@ class AppSider extends React.Component {
     return (
       <Sider className="home_sider_wrap">
         <div className="menu_wrap">
-          <Menu theme="light" className={styles['aside-menu']} mode="inline">
+          <Menu
+            theme="light"
+            className={styles['aside-menu']}
+            mode="inline"
+            defaultOpenKeys={['userMsg', 'financialMsg', 'transactionMsg']}
+          >
             {generateMenu(this.props, this.state.menu)}
           </Menu>
         </div>

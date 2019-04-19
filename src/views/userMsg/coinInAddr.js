@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { DatePicker, Button, Table, Form } from 'antd';
+import createApi from '../../api/list';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -12,9 +12,35 @@ class AuthenList extends Component {
     this.state = {
       //   time: [],
       searchName: '',
-      data: []
+      data: [],
+      pagination: {
+        defaultCurrent: 1,
+        defaultPageSize: 12
+      },
+      limit: 12
     };
   }
+
+  componentDidMount() {
+    // const obj = {
+    //   'listOptions.limit': 12,
+    //   'listOptions.offset': 0
+    // };
+    // this.queryVerification(obj);
+  }
+
+  queryVerification = async () => {
+    const res = await createApi.queryVerification();
+    console.log(res.list);
+    if (res && res.paging) {
+      const pagination = { ...this.state.pagination };
+      pagination.total = res.paging.total - 0;
+      this.setState({
+        pagination,
+        data: res.list
+      });
+    }
+  };
 
   onChangeTime = (date, dateString) => {
     console.log(date, dateString);
@@ -38,20 +64,38 @@ class AuthenList extends Component {
     });
   };
 
+  handleTableChange = pagination => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    const obj = {
+      'listOptions.limit': 12,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit
+    };
+    this.queryVerification(obj);
+    this.setState({
+      pagination: pager
+    });
+  };
+
   render() {
     // const { test, getTest } = this.props;
-    const { data } = this.state;
+    const { data, pagination } = this.state;
     const columns = [
       {
-        title: 'UDID',
-        dataIndex: 'UDID',
-        key: 'UDID',
-        render: text => <Link to={text}>{text}</Link>
+        title: '序号',
+        // dataIndex: 'UDID',
+        key: 'index',
+        render: text => <span>{text}</span>
       },
       {
-        title: '昵称',
-        dataIndex: 'nickName',
-        key: 'nickName'
+        title: 'ID',
+        dataIndex: 'ID',
+        key: 'ID'
+      },
+      {
+        title: '用户名',
+        dataIndex: 'userName',
+        key: 'userName'
       },
       {
         title: '手机号',
@@ -59,45 +103,24 @@ class AuthenList extends Component {
         key: 'phone'
       },
       {
-        title: '实名认证',
+        title: '币种',
+        dataIndex: 'coinType',
+        key: 'coinType'
+      },
+      {
+        title: '充值地址',
         dataIndex: 'authen',
         key: 'authen'
       },
       {
-        title: '姓名',
-        dataIndex: 'all',
-        key: 'all'
-      },
-      {
-        title: '证件类型',
-        dataIndex: 'rate',
-        key: 'rate'
-      },
-      {
-        title: '证件号',
-        dataIndex: 'appeal',
-        key: 'appeal'
-      },
-      {
-        title: '认证时间',
-        dataIndex: '30',
-        key: '30'
-      },
-      {
-        title: '状态',
-        dataIndex: '30rate',
-        key: '30rate'
-      },
-      {
-        title: '操作',
-        dataIndex: '30peal',
-        key: '30peal',
-        render: text => <Link to={text}>审核</Link>
+        title: '注册时间',
+        dataIndex: 'time',
+        key: 'time'
       }
     ];
     const { getFieldDecorator } = this.props.form;
     return (
-      <div className={styles.user_list}>
+      <div className={styles.userMsg_list}>
         <p className="common_title">充币地址</p>
         <Form
           layout="inline"
@@ -108,12 +131,23 @@ class AuthenList extends Component {
             {getFieldDecorator('range-picker')(<RangePicker />)}
           </Form.Item>
           <Form.Item>
-            <Button htmlType="submit">搜索</Button>
-            <Button>显示全部</Button>
+            <Button htmlType="submit" className="mr20">
+              搜索
+            </Button>
+            <Button className="mr20">显示全部</Button>
             <Button>导出EXCEL</Button>
           </Form.Item>
         </Form>
-        <Table columns={columns} dataSource={data} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={pagination}
+          onChange={this.handleTableChange}
+          rowKey={record => {
+            console.log(record.id);
+            return record.id;
+          }}
+        />
       </div>
     );
   }

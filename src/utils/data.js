@@ -501,3 +501,30 @@ export const authenDetailData = [
     title: ''
   }
 ];
+
+export const platCoinType = [
+  {
+    key: 'BTC',
+    title: 'BTC'
+  },
+  {
+    key: 'ETH',
+    title: 'ETH'
+  },
+  {
+    key: 'STE',
+    title: 'STE'
+  },
+  {
+    key: 'USDT',
+    title: 'USDT'
+  },
+  {
+    key: 'TE',
+    title: 'TE'
+  },
+  {
+    key: 'SE',
+    title: 'SE'
+  }
+];
