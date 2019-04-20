@@ -63,6 +63,21 @@ class AppSider extends React.Component {
       //   key: 'withdrawalVerifi',
       //   path: '/admin/withdrawalVerifi/0',
       //   text: '提币审核'
+      // },
+      // {
+      //   key: 'transactionMaintenance',
+      //   path: '/admin/transactionMaintenance/0',
+      //   text: '交易币介绍维护'
+      // },
+      // {
+      //   key: 'bitcoinCommission',
+      //   path: '/admin/bitcoinCommission/0',
+      //   text: '币币委托查询'
+      // },
+      // {
+      //   key: 'bitcoinTransaction',
+      //   path: '/admin/bitcoinTransaction/0',
+      //   text: '币币成交查询'
       // }
       // {
       //   key: 'application',

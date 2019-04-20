@@ -1,25 +1,14 @@
 import React, { Component } from 'react';
-import {
-  Input,
-  InputNumber,
-  Button,
-  Select,
-  DatePicker,
-  Table,
-  LocaleProvider
-} from 'antd';
+import { Input, Button, Select, DatePicker, Table, LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
-import CustomModal from './CustomModal';
-import styles from './withdrawalVerifi.less';
+import styles from './bitcoinTransaction.less';
 
-// 提币审核
-export default class WithdrawalVerifi extends Component {
+// 币币成交查询
+export default class BitcoinTransaction extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      customModalShow: false, // 显示CustomModal弹窗
-      customModalTitle: '提币审核', // customModal标题
       searchData: {
         coin: null, // 币种
         auditStatus: 0, // 审核状态：0待审核，1通过，2驳回
@@ -31,9 +20,7 @@ export default class WithdrawalVerifi extends Component {
         coinNumMax: null, // 提币最大数量
         coinUser: null // 提币用户
       },
-      coinOptions: [], // 币种选项
-      auditStatusOptions: [], // 审核状态选项
-      tableCheck: null, // 表格选择项 []
+      priceUnitOptions: [], // 计价单位选项
       tableLoading: true,
       tableData: [],
       page: {
@@ -47,35 +34,19 @@ export default class WithdrawalVerifi extends Component {
   componentDidMount = () => {
     this.getTableData();
     this.getCoinOptions();
-    this.setState({
-      auditStatusOptions: [
-        {
-          value: '0',
-          label: '待审核'
-        },
-        {
-          value: '1',
-          label: '通过'
-        },
-        {
-          value: '2',
-          label: '驳回'
-        }
-      ]
-    });
   };
 
   // 获取币种选项
   getCoinOptions = () => {
     this.setState({
-      coinOptions: [
+      priceUnitOptions: [
         {
           value: '',
-          label: '全部'
+          label: '计价单位'
         },
         {
-          value: 'BTC',
-          label: 'BTC'
+          value: 'USDT',
+          label: 'USDT'
         },
         {
           value: 'ETH',
@@ -100,29 +71,6 @@ export default class WithdrawalVerifi extends Component {
     search.auditStatus = auditStatus;
     this.setState({
       searchData: search
-    });
-  };
-
-  // 提币审核
-  coinAudit = () => {
-    if (this.state.tableCheck === null) {
-      this.setState({
-        tableCheck: []
-      });
-    }
-    this.isTableCheckEmpty();
-    if (this.state.tableCheck && this.state.tableCheck.length) {
-      this.setState({
-        customModalShow: true,
-        customModalTitle: '提币审核'
-      });
-    }
-  };
-
-  // 关闭
-  onCustonModalCancel = () => {
-    this.setState({
-      customModalShow: false
     });
   };
 
@@ -165,33 +113,45 @@ export default class WithdrawalVerifi extends Component {
       tableData: [
         {
           key: '1',
-          addtime: '2019-01-01 10:10:10',
-          user: '13500001545',
-          coin: 'BTC',
-          coinNum: '10.49440',
-          status: '0',
-          auditTime: '',
-          auditor: ''
+          transactionNo: 'fasfasdfsa23412', // 交易编号
+          transactionTime: '2019-01-01 10:10:10', // 交易时间
+          tradingOn: 'BTC/USDT', // 交易对
+          buyerAccount: '13800000000', // 买方账号
+          sellerAccount: '13800000000', // 卖方账号
+          transactionPrice: '3.22545454', // 成交价
+          transactionNum: '100', // 成交量
+          buyerEntrustmentNo: 'fefsadf1254', // 买方委托编号
+          buyerCommission: '2.465748748', // 买方手续费
+          sellerEntrustmentNo: 'fefsadf1254', // 卖方委托编号
+          sellerCommission: '2.465748748' // 卖方手续费
         },
         {
           key: '2',
-          addtime: '2019-01-01 10:10:10',
-          user: '13500001545',
-          coin: 'BTC',
-          coinNum: '10.49440',
-          status: '1',
-          auditTime: '2019-01-01 10:10:10',
-          auditor: 'rewrqwe'
+          transactionNo: 'fasfasdfsa23412', // 交易编号
+          transactionTime: '2019-01-01 10:10:10', // 交易时间
+          tradingOn: 'BTC/USDT', // 交易对
+          buyerAccount: '13800000000', // 买方账号
+          sellerAccount: '13800000000', // 卖方账号
+          transactionPrice: '3.22545454', // 成交价
+          transactionNum: '100', // 成交量
+          buyerEntrustmentNo: 'fefsadf1254', // 买方委托编号
+          buyerCommission: '2.465748748', // 买方手续费
+          sellerEntrustmentNo: 'fefsadf1254', // 卖方委托编号
+          sellerCommission: '2.465748748' // 卖方手续费
         },
         {
           key: '3',
-          addtime: '2019-01-01 10:10:10',
-          user: '13500001545',
-          coin: 'BTC',
-          coinNum: '10.49440',
-          status: '2',
-          auditTime: '2019-01-01 10:10:10',
-          auditor: 'rewrqwe'
+          transactionNo: 'fasfasdfsa23412', // 交易编号
+          transactionTime: '2019-01-01 10:10:10', // 交易时间
+          tradingOn: 'BTC/USDT', // 交易对
+          buyerAccount: '13800000000', // 买方账号
+          sellerAccount: '13800000000', // 卖方账号
+          transactionPrice: '3.22545454', // 成交价
+          transactionNum: '100', // 成交量
+          buyerEntrustmentNo: 'fefsadf1254', // 买方委托编号
+          buyerCommission: '2.465748748', // 买方手续费
+          sellerEntrustmentNo: 'fefsadf1254', // 卖方委托编号
+          sellerCommission: '2.465748748' // 卖方手续费
         }
       ]
     });
@@ -287,42 +247,23 @@ export default class WithdrawalVerifi extends Component {
     });
   };
 
-  // tableCheck是否为空
-  isTableCheckEmpty = () =>
-    this.state.tableCheck !== null &&
-    JSON.stringify(this.state.tableCheck) === '[]';
-
   render() {
     const { Column } = Table;
-    const statusText = ['待审核', '通过', '驳回'];
+    const statusText = ['委托中', '全部成交', '部分成交', '已撤单'];
+
     // 表格列 对应的 key和名称
     const columnText = {
-      addtime: '提币时间',
-      user: '用户',
-      coin: '币种',
-      coinNum: '提币数量',
-      status: '审核状态',
-      auditTime: '审核时间',
-      auditor: '审核人'
-    };
-
-    // 行选择
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        console.log(
-          `selectedRowKeys: ${selectedRowKeys}`,
-          'selectedRows: ',
-          selectedRows
-        );
-        // 只在点击提币审核的时候，没有选择项才提示
-        this.setState({
-          tableCheck: selectedRows.length ? selectedRows : null
-        });
-      },
-      getCheckboxProps: record => ({
-        disabled: record.auditor !== '', // Column configuration not to be checked
-        name: record.auditor
-      })
+      transactionNo: '交易编号',
+      transactionTime: '交易时间',
+      tradingOn: '交易对',
+      buyerAccount: '买方账号',
+      sellerAccount: '卖方账号',
+      transactionPrice: '成交价',
+      transactionNum: '成交量',
+      buyerEntrustmentNo: '买方委托编号',
+      buyerCommission: '买方手续费',
+      sellerEntrustmentNo: '卖方委托编号',
+      sellerCommission: '卖方手续费'
     };
 
     // 禁用今天之后的日期选择
@@ -332,31 +273,19 @@ export default class WithdrawalVerifi extends Component {
     }
 
     return (
-      <div className={styles.withdrawalVerifi}>
-        <section className={styles.title}>提币审核</section>
-        <section>
+      <div className={styles.bitcoinTransaction}>
+        <section className="common_title">币币成交查询</section>
+        <section className={styles.search_form}>
           <div className={styles['search-item']}>
-            <span>币种：</span>
+            <span>交易对：</span>
+            <Input style={{ width: 120 }} placeholder="币种" />
+            &nbsp;/&nbsp;
             <Select
               defaultValue=""
               style={{ width: 120 }}
-              onChange={this.coinChange}
-            >
-              {this.state.coinOptions.map(coin => (
-                <Select.Option key={coin} value={coin.value}>
-                  {coin.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-          <div className={styles['search-item']}>
-            <span>审核状态：</span>
-            <Select
-              defaultValue="0"
-              style={{ width: 120 }}
               onChange={this.auditStatusChange}
             >
-              {this.state.auditStatusOptions.map(coin => (
+              {this.state.priceUnitOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
                   {coin.label}
                 </Select.Option>
@@ -364,17 +293,7 @@ export default class WithdrawalVerifi extends Component {
             </Select>
           </div>
           <div className={styles['search-item']}>
-            <span>提币日期：</span>
-            <LocaleProvider locale={zh_CN}>
-              <DatePicker.RangePicker
-                style={{ width: '240px' }}
-                disabledDate={disabledDate}
-                onChange={this.withdrawDateChange}
-              />
-            </LocaleProvider>
-          </div>
-          <div className={styles['search-item']}>
-            <span>审核日期：</span>
+            <span>交易日期：</span>
             <LocaleProvider locale={zh_CN}>
               <DatePicker.RangePicker
                 style={{ width: '240px' }}
@@ -383,59 +302,43 @@ export default class WithdrawalVerifi extends Component {
               />
             </LocaleProvider>
           </div>
+          <br />
           <div className={styles['search-item']}>
-            <span>提币数量：</span>
-            <InputNumber
-              min={0}
-              placeholder="单笔最小数量"
-              style={{ width: '150px' }}
-              onChange={this.minNumChange}
-            />
-            &nbsp;至&nbsp;
-            <InputNumber
-              min={1}
-              placeholder="单笔最大数量"
-              style={{ width: '150px' }}
-              onChange={this.maxNumChange}
+            <Input
+              placeholder="买方/卖方账号"
+              style={{ width: '200px' }}
+              onBlur={this.onCoinuserChange}
             />
           </div>
           <div className={styles['search-item']}>
             <Input
-              placeholder="输入提币用户"
+              placeholder="买方/卖方账号委托编号"
               style={{ width: '200px' }}
               onBlur={this.onCoinuserChange}
             />
           </div>
           <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
-          &emsp;
-          <div className={styles['search-item']}>
-            <Button type="primary" onClick={this.coinAudit}>
-              提币审核
-            </Button>
-            {this.isTableCheckEmpty() && (
-              <span className={styles['table-no-check']}>请选择待审核项</span>
-            )}
-          </div>
         </section>
-        <br />
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
             loading={this.state.tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
-            rowSelection={rowSelection}
           >
             {Object.keys(columnText).map(key =>
-              key === 'status' ? (
+              key === 'status' ? ( // 状态列
                 <Column
                   title={columnText[key]}
                   align="center"
                   dataIndex={key}
                   key={key}
-                  render={(text, row) => <span>{statusText[row.status]}</span>}
+                  render={(text, row) => {
+                    <span>{statusText[+row.status]}</span>;
+                  }}
                 />
               ) : (
+                // 其他列
                 <Column
                   title={columnText[key]}
                   align="center"
@@ -444,49 +347,8 @@ export default class WithdrawalVerifi extends Component {
                 />
               )
             )}
-            {/* <Column
-              title="提币时间"
-              align="center"
-              dataIndex="addtime"
-              key="addtime"
-            />
-            <Column title="用户" align="center" dataIndex="user" key="user" />
-            <Column title="币种" align="center" dataIndex="coin" key="coin" />
-            <Column
-              title="提币数量"
-              align="center"
-              dataIndex="coinNum"
-              key="coinNum"
-            />
-            <Column
-              title="审核状态"
-              align="center"
-              dataIndex="status"
-              key="status"
-              render={(text, row) => <span>{statusText[row.status]}</span>}
-            />
-            <Column
-              title="审核时间"
-              align="center"
-              dataIndex="auditTime"
-              key="auditTime"
-            />
-            <Column
-              title="审核人"
-              align="center"
-              dataIndex="auditor"
-              key="auditor"
-            /> */}
           </Table>
         </LocaleProvider>
-        {this.state.customModalShow && (
-          <CustomModal
-            visible={this.state.customModalShow}
-            title={this.state.customModalTitle}
-            selectedRows={this.state.tableCheck}
-            onCancel={this.onCustonModalCancel}
-          />
-        )}
       </div>
     );
   }

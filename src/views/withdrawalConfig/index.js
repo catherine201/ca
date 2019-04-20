@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Input, Button, Table } from 'antd';
+import { Input, Button, Table, LocaleProvider } from 'antd';
+import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import WithdrawalAction from '../../components/withdrawalAction';
 import styles from './withdrawalConfig.less';
 
@@ -158,7 +159,7 @@ export default class WithdrawalConfig extends Component {
   };
 
   // 弹窗取消
-  withdrawalActionClose = () => {
+  withdrawalActionCancel = () => {
     this.setState({
       withdrawalActionVisible: false
     });
@@ -173,10 +174,21 @@ export default class WithdrawalConfig extends Component {
 
   render() {
     const { Column } = Table;
+    // 表格列 对应的 key和名称
+    const columnText = {
+      no: '序号',
+      coin: '币种',
+      singleLimit: '单笔限额',
+      dailyLimit: '日累计限额',
+      lastModified: '最后编辑时间',
+      finalEditor: '最后编辑人',
+      operation: '操作'
+    };
+
     return (
       <div className={styles.withdrawalConfig}>
         <section className={styles.title}>提币审核配置</section>
-        <section>
+        <section className="search_form">
           <Input
             placeholder="输入币种"
             className={styles.search}
@@ -194,63 +206,52 @@ export default class WithdrawalConfig extends Component {
               row={
                 this.state.actionType !== 'add' ? this.state.actionRow : null
               }
-              onClose={this.withdrawalActionClose}
+              onClose={this.withdrawalActionCancel}
               onConfirm={this.withdrawalActionConfirm}
             />
           )}
         </section>
-        <br />
-        <section>
+        <LocaleProvider locale={zh_CN}>
           <Table
             bordered
             loading={this.state.tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
           >
-            <Column title="序号" align="center" dataIndex="no" key="no" />
-            <Column title="币种" align="center" dataIndex="coin" key="coin" />
-            <Column
-              title="单笔限额"
-              align="center"
-              dataIndex="singleLimit"
-              key="singleLimit"
-            />
-            <Column
-              title="日累计限额"
-              align="center"
-              dataIndex="dailyLimit"
-              key="dailyLimit"
-            />
-            <Column
-              title="最后编辑时间"
-              align="center"
-              dataIndex="lastModified"
-              key="lastModified"
-            />
-            <Column
-              title="最后编辑人"
-              align="center"
-              dataIndex="finalEditor"
-              key="finalEditor"
-            />
-            <Column
-              title="操作"
-              align="center"
-              key="action"
-              render={(text, row) => (
-                <div>
-                  <span className={styles.a} onClick={() => this.edit(row)}>
-                    修改
-                  </span>
-                  &emsp;
-                  <span className={styles.a} onClick={() => this.delete(row)}>
-                    删除
-                  </span>
-                </div>
-              )}
-            />
+            {Object.keys(columnText).map(key =>
+              key === 'operation' ? ( // 操作列
+                <Column
+                  title={columnText[key]}
+                  align="center"
+                  dataIndex={key}
+                  key={key}
+                  render={(text, row) => (
+                    <div>
+                      <span className={styles.a} onClick={() => this.edit(row)}>
+                        修改
+                      </span>
+                      &emsp;
+                      <span
+                        className={styles.a}
+                        onClick={() => this.delete(row)}
+                      >
+                        删除
+                      </span>
+                    </div>
+                  )}
+                />
+              ) : (
+                // 其他列
+                <Column
+                  title={columnText[key]}
+                  align="center"
+                  dataIndex={key}
+                  key={key}
+                />
+              )
+            )}
           </Table>
-        </section>
+        </LocaleProvider>
       </div>
     );
   }

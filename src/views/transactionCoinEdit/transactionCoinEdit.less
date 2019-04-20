@@ -1,0 +1,44 @@
+.transactionCoinEdit {
+  width: 100%;
+  position: relative;
+  .search {
+    width: 300px;
+    margin-right: 10px;
+  }
+  .edit-content {
+    width: 900px;
+    padding: 20px 0;
+  }
+  .content-item {
+    padding-left: 30px;
+    &:not(:last-of-type) {
+      margin-bottom: 10px;
+      input {
+        width: 60%;
+      }
+    }
+    > span {
+      width: 16%;
+      display: inline-block;
+    }
+  }
+  .editor {
+    margin: 6px 0;
+    border: 1px solid #eee;
+  }
+  .actionBtn {
+    text-align: center;
+  }
+}
+.title {
+  display: block;
+  font-size: 20px;
+  &::after {
+    content: '';
+    width: 100%;
+    height: 2px;
+    display: block;
+    margin: 6px 0 8px;
+    background: #999;
+  }
+}
