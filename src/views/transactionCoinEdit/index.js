@@ -6,7 +6,7 @@ import BraftEditor from 'braft-editor';
 import 'braft-editor/dist/index.css';
 import styles from './transactionCoinEdit.less';
 
-// 提币审核配置
+// 币种编辑
 export default class TransactionCoinEdit extends Component {
   constructor(props) {
     super(props);

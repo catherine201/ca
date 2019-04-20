@@ -3,7 +3,7 @@ import { Input, Button, Table, LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import styles from './transactionMaintenance.less';
 
-// 提币审核配置
+// 交易币介绍维护
 export default class TransactionMaintenance extends Component {
   constructor(props) {
     super(props);
