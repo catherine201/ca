@@ -37,20 +37,22 @@ class AdvertList extends Component {
   queryAds = async obj => {
     const res = await createApi.queryAds(obj);
     console.log(res);
-    const pagination = { ...this.state.pagination };
-    pagination.total = res.paging.total - 0;
-    const data = res.datas;
-    data.map((item, index) => {
-      data[index].type = AdsType[data[index].type];
-      data[index].status = AdsStatus[data[index].status];
-    });
-    // data.type = AdsType[data.type];
-    // data.status = AdsStatus[data.status];
-    console.log(data);
-    this.setState({
-      pagination,
-      data
-    });
+    if (res && res.paging) {
+      const pagination = { ...this.state.pagination };
+      pagination.total = res.paging.total - 0;
+      const data = res.datas;
+      data &&
+        data.length &&
+        data.map((item, index) => {
+          data[index].type = AdsType[data[index].type];
+          data[index].status = AdsStatus[data[index].status];
+        });
+      console.log(data);
+      this.setState({
+        pagination,
+        data
+      });
+    }
   };
 
   onChangeTime = (date, dateString) => {

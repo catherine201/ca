@@ -461,43 +461,70 @@ export const appealDetailData = [
 
 export const authenDetailData = [
   {
-    key: 'createID1',
+    key: 'uid',
     title: 'UDID'
   },
   {
-    key: 'createID1',
+    key: 'nickName',
     title: '昵称'
   },
   {
-    key: 'createID1',
+    key: 'phone',
     title: '手机号'
   },
   {
-    key: 'createID1',
+    key: 'cerAuthen',
     title: '实名认证'
   },
   {
-    key: 'createID1',
+    key: 'name',
     title: '姓名'
   },
   {
-    key: 'createID1',
+    key: 'cerType',
     title: '证件类型'
   },
   {
-    key: 'createID1',
+    key: 'serialNo',
     title: '证件号'
   },
   {
-    key: 'createID1',
+    key: 'createdTime',
     title: '认证时间'
   },
   {
-    key: 'createID1',
+    key: 'accountStatus',
     title: '状态'
   },
   {
-    key: 'createID1',
+    key: '',
     title: ''
+  }
+];
+
+export const platCoinType = [
+  {
+    key: 'BTC',
+    title: 'BTC'
+  },
+  {
+    key: 'ETH',
+    title: 'ETH'
+  },
+  {
+    key: 'STE',
+    title: 'STE'
+  },
+  {
+    key: 'USDT',
+    title: 'USDT'
+  },
+  {
+    key: 'TE',
+    title: 'TE'
+  },
+  {
+    key: 'SE',
+    title: 'SE'
   }
 ];

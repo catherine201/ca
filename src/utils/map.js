@@ -36,3 +36,22 @@ export const appealStatus = {
   Processed: '处理中',
   Closed: '已处理'
 };
+
+export const cardType = {
+  '1': '身份证',
+  '2': '港澳通行证',
+  '3': '护照'
+};
+
+// 实名认证
+export const verifyStatus = {
+  '1': '未提交',
+  '2': '待审核',
+  '3': '已审核'
+};
+
+export const authenStatusType = {
+  undefined: 'UnknownStatus',
+  '1': 'Enable',
+  '2': 'Disabled'
+};

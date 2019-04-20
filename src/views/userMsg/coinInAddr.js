@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { Link } from 'react-router-dom';
-import { DatePicker, Input, Button, Table, Form } from 'antd';
-import styles from './index.less';
+import { DatePicker, Button, Table, Form } from 'antd';
 import createApi from '../../api/list';
-import { cardType, verifyStatus, authenStatusType } from '../../utils/map';
-import { timestampToTime } from '../../utils';
+import styles from './index.less';
 
 const { RangePicker } = DatePicker;
 
@@ -19,16 +16,17 @@ class AuthenList extends Component {
       pagination: {
         defaultCurrent: 1,
         defaultPageSize: 12
-      }
+      },
+      limit: 12
     };
   }
 
   componentDidMount() {
-    const obj = {
-      'listOptions.limit': 12,
-      'listOptions.offset': 0
-    };
-    this.queryVerification(obj);
+    // const obj = {
+    //   'listOptions.limit': 12,
+    //   'listOptions.offset': 0
+    // };
+    // this.queryVerification(obj);
   }
 
   queryVerification = async () => {
@@ -79,27 +77,25 @@ class AuthenList extends Component {
     });
   };
 
-  toHref = text => {
-    // this.props.handleReceivedetail(text);
-    // this.$event.$emit('authenDetailData', text);
-    sessionStorage.setItem('authenDetail', JSON.stringify(text));
-    this.props.history.push(`/admin/authen/1?id=${text.id}`);
-  };
-
   render() {
     // const { test, getTest } = this.props;
     const { data, pagination } = this.state;
     const columns = [
       {
-        title: 'UDID',
-        dataIndex: 'uid',
-        key: 'uid'
-        // render: text => <Link to={text}>{text}</Link>
+        title: '序号',
+        // dataIndex: 'UDID',
+        key: 'index',
+        render: text => <span>{text}</span>
       },
       {
-        title: '昵称',
-        dataIndex: 'nickName',
-        key: 'nickName'
+        title: 'ID',
+        dataIndex: 'ID',
+        key: 'ID'
+      },
+      {
+        title: '用户名',
+        dataIndex: 'userName',
+        key: 'userName'
       },
       {
         title: '手机号',
@@ -107,60 +103,25 @@ class AuthenList extends Component {
         key: 'phone'
       },
       {
-        title: '实名认证',
-        dataIndex: 'verifyStatus',
-        key: 'verifyStatus',
-        render: text => <span>{text ? verifyStatus[text] : '未提交'}</span>
-        // render: text => <span>{text.realNameInfoStatus}</span>
+        title: '币种',
+        dataIndex: 'coinType',
+        key: 'coinType'
       },
       {
-        title: '姓名',
-        dataIndex: 'name',
-        key: 'name'
+        title: '充值地址',
+        dataIndex: 'authen',
+        key: 'authen'
       },
       {
-        title: '证件类型',
-        dataIndex: 'cer.type',
-        key: 'cer.type',
-        render: text => <span>{cardType[text]}</span>
-      },
-      {
-        title: '证件号',
-        dataIndex: 'cer.serialNo',
-        key: 'cer.serialNo'
-      },
-      {
-        title: '认证时间',
-        dataIndex: 'createdTime',
-        key: 'createdTime',
-        render: text => <span>{text ? timestampToTime(text) : ''}</span>
-      },
-      {
-        title: '状态',
-        dataIndex: 'accountStatus',
-        key: 'accountStatus',
-        render: text => <span>{authenStatusType[text]}</span>
-      },
-      {
-        title: '操作',
-        render: text =>
-          text.verifyStatus === 2 ? (
-            <span
-              onClick={() => {
-                this.toHref(text);
-              }}
-            >
-              审核
-            </span>
-          ) : (
-            ''
-          )
+        title: '注册时间',
+        dataIndex: 'time',
+        key: 'time'
       }
     ];
     const { getFieldDecorator } = this.props.form;
     return (
-      <div className={styles.user_list}>
-        <p className="common_title">实名认证列表</p>
+      <div className={styles.userMsg_list}>
+        <p className="common_title">充币地址</p>
         <Form
           layout="inline"
           onSubmit={this.handleSubmit}
@@ -170,15 +131,11 @@ class AuthenList extends Component {
             {getFieldDecorator('range-picker')(<RangePicker />)}
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('input')(
-              <Input
-                placeholder="输入UDID/手机号/昵称/姓名搜索"
-                className="search_input"
-              />
-            )}
-          </Form.Item>
-          <Form.Item>
-            <Button htmlType="submit">查询</Button>
+            <Button htmlType="submit" className="mr20">
+              搜索
+            </Button>
+            <Button className="mr20">显示全部</Button>
+            <Button>导出EXCEL</Button>
           </Form.Item>
         </Form>
         <Table

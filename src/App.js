@@ -3,10 +3,12 @@ import { message, Modal, notification } from 'antd';
 import { init } from './utils';
 import store from './store';
 import router from './routes';
+import center from './utils/event';
 
 React.Component.prototype.$msg = message;
 React.Component.prototype.$modal = Modal;
 React.Component.prototype.$notification = notification;
+React.Component.prototype.$event = center;
 init();
 
 class App extends Component {
