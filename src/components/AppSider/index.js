@@ -9,7 +9,7 @@ const { Sider } = Layout;
 function generateMenu(props, menus) {
   let items = [];
   const arr = props.location.pathname.split('/');
-  console.log(arr[arr.length - 2]);
+  console.log(arr[2]);
   items = menus.map(menu => {
     if (Array.isArray(menu.subMenu)) {
       return (
@@ -21,7 +21,7 @@ function generateMenu(props, menus) {
             </div>
           }
           className={
-            arr[arr.length - 2] === menu.key
+            arr[2] === menu.key
               ? styles['list-item-active']
               : styles['list-item']
           }
@@ -34,9 +34,7 @@ function generateMenu(props, menus) {
       <Menu.Item
         key={menu.key}
         className={
-          arr[arr.length - 2] === menu.key
-            ? styles['list-item-active']
-            : styles['list-item']
+          arr[2] === menu.key ? styles['list-item-active'] : styles['list-item']
         }
       >
         <Link to={menu.path}>
@@ -100,7 +98,7 @@ class AppSider extends React.Component {
       //   key: 'bitcoinTransaction',
       //   path: '/admin/bitcoinTransaction/0',
       //   text: '币币成交查询'
-      // }
+      // },
       {
         key: 'userMsg',
         text: '用户管理',

@@ -10,21 +10,19 @@ export default class BitcoinCommission extends Component {
     super(props);
     this.state = {
       searchData: {
+        tradeType: null, // 交易方式
+        tradeDirection: null, // 交易方向
         coin: null, // 币种
-        auditStatus: 0, // 审核状态：0待审核，1通过，2驳回
-        withdrawDateStart: null, // 提币日期start
-        withdrawDateEnd: null, // 提币日期end
-        auditDateStart: null, // 审核日期start
-        auditDateEnd: null, // 审核日期end
-        coinNumMin: null, // 提币最小数量
-        coinNumMax: null, // 提币最大数量
-        coinUser: null // 提币用户
+        priceUnit: null, // 计价单位
+        status: null, // 状态
+        commissionTimeStart: null, // 委托日期
+        commissionTimeEnd: null, // 委托日期
+        useraccount: null // 委托人账号
       },
       tradeTypeOptions: [], // 交易方式选项
       tradeDirectionOptions: [], // 交易方向选项
       statusOptions: [], // 状态选项
       priceUnitOptions: [], // 计价单位选项
-      tableCheck: null, // 表格选择项 []
       tableLoading: true,
       tableData: [],
       page: {
@@ -120,19 +118,20 @@ export default class BitcoinCommission extends Component {
     });
   };
 
-  // 选择币种
-  coinChange = coin => {
+  // change事件
+  handlerChange = (searchKey, value) => {
     const search = Object.assign({}, this.state.searchData);
-    search.coin = coin;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 审核状态选择
-  auditStatusChange = auditStatus => {
-    const search = Object.assign({}, this.state.searchData);
-    search.auditStatus = auditStatus;
+    if (searchKey === 'commissionTime') {
+      // 委托日期
+      search.commissionTimeStart = value.length
+        ? moment(value[0]).format('YYYY-MM-DD')
+        : '';
+      search.commissionTimeEnd = value.length
+        ? moment(value[1]).format('YYYY-MM-DD')
+        : '';
+    } else {
+      search[searchKey] = value;
+    }
     this.setState({
       searchData: search
     });
@@ -142,32 +141,29 @@ export default class BitcoinCommission extends Component {
   getTableData = () => {
     const { current, pageSize } = this.state.page;
     const {
+      tradeType, // 交易方式
+      tradeDirection, // 交易方向
       coin, // 币种
-      auditStatus, // 审核状态
-      withdrawDateStart, // 提币日期start
-      withdrawDateEnd, // 提币日期end
-      auditDateStart, // 审核日期start
-      auditDateEnd, // 审核日期end
-      coinNumMin, // 提币最小数量
-      coinNumMax, // 提币最大数量
-      coinUser // 提币用户
+      priceUnit, // 计价单位
+      status, // 状态
+      commissionTimeStart, // 委托日期
+      commissionTimeEnd, // 委托日期
+      useraccount // 委托人账号
     } = this.state.searchData;
     const param = {
       current,
-      pageSize,
-      auditStatus
+      pageSize
     };
     this.setState({
       tableLoading: true
     });
-    if (coin) param.coin = coin;
-    if (withdrawDateStart) param.withdrawDateStart = withdrawDateStart;
-    if (withdrawDateEnd) param.withdrawDateEnd = withdrawDateEnd;
-    if (auditDateStart) param.auditDateStart = auditDateStart;
-    if (auditDateEnd) param.auditDateEnd = auditDateEnd;
-    if (coinNumMin) param.coinNumMin = coinNumMin;
-    if (coinNumMax) param.coinNumMax = coinNumMax;
-    if (coinUser) param.coinUser = coinUser;
+    if (tradeType) param.tradeType = tradeType;
+    if (tradeDirection) param.tradeDirection = tradeDirection;
+    if (coin && priceUnit) param.tradingOn = `${coin}/${priceUnit}`;
+    if (status) param.status = status;
+    if (commissionTimeStart) param.commissionTimeStart = commissionTimeStart;
+    if (commissionTimeEnd) param.commissionTimeEnd = commissionTimeEnd;
+    if (useraccount) param.useraccount = useraccount;
     /*
       api.getData(param)
     */
@@ -254,9 +250,12 @@ export default class BitcoinCommission extends Component {
         const obj = this.state.page;
         obj.current = current;
         obj.pageSize = pageSize;
-        this.setState({
-          page: obj
-        });
+        this.setState(
+          {
+            page: obj
+          },
+          () => this.getTableData()
+        );
       },
       onChange: current => this.changePage(current)
     };
@@ -265,71 +264,13 @@ export default class BitcoinCommission extends Component {
   // 换页
   changePage = current => {
     const pageData = Object.assign({}, this.state.page, { current });
-    this.setState({
-      page: pageData
-    });
-    this.getTableData();
+    this.setState(
+      {
+        page: pageData
+      },
+      () => this.getTableData()
+    );
   };
-
-  // 提币日期
-  withdrawDateChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.withdrawDateStart = !value.length
-      ? ''
-      : moment(value[0]).format('YYYY-MM-DD');
-    search.withdrawDateEnd = !value.length
-      ? ''
-      : moment(value[1]).format('YYYY-MM-DD');
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 审核日期
-  auditDateChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.auditDateStart = !value.length
-      ? ''
-      : moment(value[0]).format('YYYY-MM-DD');
-    search.auditDateEnd = !value.length
-      ? ''
-      : moment(value[1]).format('YYYY-MM-DD');
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 单笔最小数量
-  minNumChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinNumMin = value;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 单笔最大数量
-  maxNumChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinNumMax = value;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 提币用户
-  onCoinuserChange = e => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinUser = e.target.value;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // tableCheck是否为空
-  isTableCheckEmpty = () =>
-    this.state.tableCheck !== null &&
-    JSON.stringify(this.state.tableCheck) === '[]';
 
   render() {
     const { Column } = Table;
@@ -370,7 +311,7 @@ export default class BitcoinCommission extends Component {
             <Select
               defaultValue=""
               style={{ width: 120 }}
-              onChange={this.coinChange}
+              onChange={value => this.handlerChange('tradeType', value)}
             >
               {this.state.tradeTypeOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
@@ -384,7 +325,7 @@ export default class BitcoinCommission extends Component {
             <Select
               defaultValue=""
               style={{ width: 120 }}
-              onChange={this.auditStatusChange}
+              onChange={value => this.handlerChange('tradeDirection', value)}
             >
               {this.state.tradeDirectionOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
@@ -395,12 +336,16 @@ export default class BitcoinCommission extends Component {
           </div>
           <div className={styles['search-item']}>
             <span>交易对：</span>
-            <Input style={{ width: 120 }} placeholder="币种" />
+            <Input
+              style={{ width: 120 }}
+              placeholder="币种"
+              onChange={e => this.handlerChange('coin', e.target.value)}
+            />
             &nbsp;/&nbsp;
             <Select
               defaultValue=""
               style={{ width: 120 }}
-              onChange={this.auditStatusChange}
+              onChange={value => this.handlerChange('priceUnit', value)}
             >
               {this.state.priceUnitOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
@@ -414,7 +359,7 @@ export default class BitcoinCommission extends Component {
             <Select
               defaultValue=""
               style={{ width: 120 }}
-              onChange={this.auditStatusChange}
+              onChange={value => this.handlerChange('status', value)}
             >
               {this.state.statusOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
@@ -430,7 +375,7 @@ export default class BitcoinCommission extends Component {
               <DatePicker.RangePicker
                 style={{ width: '240px' }}
                 disabledDate={disabledDate}
-                onChange={this.auditDateChange}
+                onChange={value => this.handlerChange('commissionTime', value)}
               />
             </LocaleProvider>
           </div>
@@ -438,7 +383,7 @@ export default class BitcoinCommission extends Component {
             <Input
               placeholder="委托人账号"
               style={{ width: '200px' }}
-              onBlur={this.onCoinuserChange}
+              onBlur={e => this.handlerChange('useraccount', e.target.value)}
             />
           </div>
           <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
@@ -457,9 +402,7 @@ export default class BitcoinCommission extends Component {
                   align="center"
                   dataIndex={key}
                   key={key}
-                  render={(text, row) => {
-                    <span>{statusText[+row.status]}</span>;
-                  }}
+                  render={(text, row) => <span>{statusText[row.status]}</span>}
                 />
               ) : (
                 // 其他列

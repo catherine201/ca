@@ -11,14 +11,11 @@ export default class BitcoinTransaction extends Component {
     this.state = {
       searchData: {
         coin: null, // 币种
-        auditStatus: 0, // 审核状态：0待审核，1通过，2驳回
-        withdrawDateStart: null, // 提币日期start
-        withdrawDateEnd: null, // 提币日期end
-        auditDateStart: null, // 审核日期start
-        auditDateEnd: null, // 审核日期end
-        coinNumMin: null, // 提币最小数量
-        coinNumMax: null, // 提币最大数量
-        coinUser: null // 提币用户
+        priceUnit: null, // 计价单位
+        transactionTimeStart: null, // 交易日期start
+        transactionTimeEnd: null, // 交易日期end
+        account: null, // 买方/卖方账号
+        delegateNo: null // 买方/卖方委托编号
       },
       priceUnitOptions: [], // 计价单位选项
       tableLoading: true,
@@ -56,19 +53,20 @@ export default class BitcoinTransaction extends Component {
     });
   };
 
-  // 选择币种
-  coinChange = coin => {
+  // change事件
+  handlerChange = (searchKey, value) => {
     const search = Object.assign({}, this.state.searchData);
-    search.coin = coin;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 审核状态选择
-  auditStatusChange = auditStatus => {
-    const search = Object.assign({}, this.state.searchData);
-    search.auditStatus = auditStatus;
+    if (searchKey === 'transactionTime') {
+      // 交易日期
+      search.transactionTimeStart = value.length
+        ? moment(value[0]).format('YYYY-MM-DD')
+        : '';
+      search.transactionTimeEnd = value.length
+        ? moment(value[1]).format('YYYY-MM-DD')
+        : '';
+    } else {
+      search[searchKey] = value;
+    }
     this.setState({
       searchData: search
     });
@@ -79,31 +77,24 @@ export default class BitcoinTransaction extends Component {
     const { current, pageSize } = this.state.page;
     const {
       coin, // 币种
-      auditStatus, // 审核状态
-      withdrawDateStart, // 提币日期start
-      withdrawDateEnd, // 提币日期end
-      auditDateStart, // 审核日期start
-      auditDateEnd, // 审核日期end
-      coinNumMin, // 提币最小数量
-      coinNumMax, // 提币最大数量
-      coinUser // 提币用户
+      priceUnit, // 计价单位
+      transactionTimeStart, // 交易日期start
+      transactionTimeEnd, // 交易日期end
+      account, // 买方/卖方账号
+      delegateNo // 买方/卖方委托编号
     } = this.state.searchData;
     const param = {
       current,
-      pageSize,
-      auditStatus
+      pageSize
     };
     this.setState({
       tableLoading: true
     });
-    if (coin) param.coin = coin;
-    if (withdrawDateStart) param.withdrawDateStart = withdrawDateStart;
-    if (withdrawDateEnd) param.withdrawDateEnd = withdrawDateEnd;
-    if (auditDateStart) param.auditDateStart = auditDateStart;
-    if (auditDateEnd) param.auditDateEnd = auditDateEnd;
-    if (coinNumMin) param.coinNumMin = coinNumMin;
-    if (coinNumMax) param.coinNumMax = coinNumMax;
-    if (coinUser) param.coinUser = coinUser;
+    if (coin && priceUnit) param.tradingOn = `${coin}/${priceUnit}`; // 交易对
+    if (transactionTimeStart) param.transactionTimeStart = transactionTimeStart;
+    if (transactionTimeEnd) param.transactionTimeEnd = transactionTimeEnd;
+    if (account) param.account = account;
+    if (delegateNo) param.delegateNo = delegateNo;
     /*
       api.getData(param)
     */
@@ -175,9 +166,12 @@ export default class BitcoinTransaction extends Component {
         const obj = this.state.page;
         obj.current = current;
         obj.pageSize = pageSize;
-        this.setState({
-          page: obj
-        });
+        this.setState(
+          {
+            page: obj
+          },
+          () => this.getTableData()
+        );
       },
       onChange: current => this.changePage(current)
     };
@@ -186,65 +180,12 @@ export default class BitcoinTransaction extends Component {
   // 换页
   changePage = current => {
     const pageData = Object.assign({}, this.state.page, { current });
-    this.setState({
-      page: pageData
-    });
-    this.getTableData();
-  };
-
-  // 提币日期
-  withdrawDateChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.withdrawDateStart = !value.length
-      ? ''
-      : moment(value[0]).format('YYYY-MM-DD');
-    search.withdrawDateEnd = !value.length
-      ? ''
-      : moment(value[1]).format('YYYY-MM-DD');
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 审核日期
-  auditDateChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.auditDateStart = !value.length
-      ? ''
-      : moment(value[0]).format('YYYY-MM-DD');
-    search.auditDateEnd = !value.length
-      ? ''
-      : moment(value[1]).format('YYYY-MM-DD');
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 单笔最小数量
-  minNumChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinNumMin = value;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 单笔最大数量
-  maxNumChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinNumMax = value;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 提币用户
-  onCoinuserChange = e => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinUser = e.target.value;
-    this.setState({
-      searchData: search
-    });
+    this.setState(
+      {
+        page: pageData
+      },
+      () => this.getTableData()
+    );
   };
 
   render() {
@@ -278,12 +219,16 @@ export default class BitcoinTransaction extends Component {
         <section className={styles.search_form}>
           <div className={styles['search-item']}>
             <span>交易对：</span>
-            <Input style={{ width: 120 }} placeholder="币种" />
+            <Input
+              style={{ width: 120 }}
+              placeholder="币种"
+              onChange={e => this.handlerChange('coin', e.target.value)}
+            />
             &nbsp;/&nbsp;
             <Select
               defaultValue=""
               style={{ width: 120 }}
-              onChange={this.auditStatusChange}
+              onChange={value => this.handlerChange('priceUnit', value)}
             >
               {this.state.priceUnitOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
@@ -298,7 +243,7 @@ export default class BitcoinTransaction extends Component {
               <DatePicker.RangePicker
                 style={{ width: '240px' }}
                 disabledDate={disabledDate}
-                onChange={this.auditDateChange}
+                onChange={value => this.handlerChange('transactionTime', value)}
               />
             </LocaleProvider>
           </div>
@@ -307,14 +252,14 @@ export default class BitcoinTransaction extends Component {
             <Input
               placeholder="买方/卖方账号"
               style={{ width: '200px' }}
-              onBlur={this.onCoinuserChange}
+              onBlur={e => this.handlerChange('account', e.target.value)}
             />
           </div>
           <div className={styles['search-item']}>
             <Input
               placeholder="买方/卖方账号委托编号"
               style={{ width: '200px' }}
-              onBlur={this.onCoinuserChange}
+              onBlur={e => this.handlerChange('delegateNo', e.target.value)}
             />
           </div>
           <Button onClick={() => this.getTableData('isSearch')}>查询</Button>

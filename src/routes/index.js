@@ -69,7 +69,8 @@ const router = new Router({
         },
         {
           // 交易币介绍维护 -> 币种编辑
-          path: '/transactionCoinEdit/:transactionCoinEditId',
+          path:
+            '/transactionMaintenance/transactionCoinEdit/:transactionCoinEditId',
           component: page('transactionCoinEdit')
         },
         {

@@ -29,7 +29,7 @@ export default class TransactionMaintenance extends Component {
     console.log('edit -- row: ', row);
     row.id = 1;
     this.props.history.push({
-      pathname: `/admin/transactionCoinEdit/${row.id}`,
+      pathname: `/admin/transactionMaintenance/transactionCoinEdit/${row.id}`,
       state: {
         data: row
       }
