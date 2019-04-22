@@ -159,6 +159,15 @@ export default class TransactionMaintenance extends Component {
 
   render() {
     const { Column } = Table;
+    // 表格列 对应的 key和名称
+    const columnText = {
+      coin: '币种',
+      nameZh: '简称',
+      nameFull: '币全名',
+      website: '官网',
+      operation: '操作'
+    };
+
     return (
       <div className={styles.transactionMaintenance}>
         <section className="common_title">交易币介绍维护</section>
@@ -177,37 +186,29 @@ export default class TransactionMaintenance extends Component {
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
           >
-            <Column title="币种" align="center" dataIndex="coin" key="coin" />
-            <Column
-              title="简称"
-              align="center"
-              dataIndex="nameZh"
-              key="nameZh"
-            />
-            <Column
-              title="币全名"
-              align="center"
-              dataIndex="nameFull"
-              key="nameFull"
-            />
-            <Column
-              title="官网"
-              align="center"
-              dataIndex="website"
-              key="website"
-            />
-            <Column
-              title="操作"
-              align="center"
-              key="action"
-              render={(text, row) => (
-                <div>
-                  <span className={styles.a} onClick={() => this.edit(row)}>
-                    修改
-                  </span>
-                </div>
-              )}
-            />
+            {Object.keys(columnText).map(key =>
+              key === 'operation' ? (
+                <Column
+                  title={columnText[key]}
+                  align="center"
+                  key={key}
+                  render={(text, row) => (
+                    <div>
+                      <span className={styles.a} onClick={() => this.edit(row)}>
+                        修改
+                      </span>
+                    </div>
+                  )}
+                />
+              ) : (
+                <Column
+                  title={columnText[key]}
+                  align="center"
+                  dataIndex={key}
+                  key={key}
+                />
+              )
+            )}
           </Table>
         </LocaleProvider>
       </div>

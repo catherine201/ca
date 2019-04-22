@@ -190,8 +190,6 @@ export default class BitcoinTransaction extends Component {
 
   render() {
     const { Column } = Table;
-    const statusText = ['委托中', '全部成交', '部分成交', '已撤单'];
-
     // 表格列 对应的 key和名称
     const columnText = {
       transactionNo: '交易编号',
@@ -271,27 +269,14 @@ export default class BitcoinTransaction extends Component {
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
           >
-            {Object.keys(columnText).map(key =>
-              key === 'status' ? ( // 状态列
-                <Column
-                  title={columnText[key]}
-                  align="center"
-                  dataIndex={key}
-                  key={key}
-                  render={(text, row) => {
-                    <span>{statusText[+row.status]}</span>;
-                  }}
-                />
-              ) : (
-                // 其他列
-                <Column
-                  title={columnText[key]}
-                  align="center"
-                  dataIndex={key}
-                  key={key}
-                />
-              )
-            )}
+            {Object.keys(columnText).map(key => (
+              <Column
+                title={columnText[key]}
+                align="center"
+                dataIndex={key}
+                key={key}
+              />
+            ))}
           </Table>
         </LocaleProvider>
       </div>
