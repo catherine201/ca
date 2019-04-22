@@ -19,6 +19,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-react-app": "^6.1.0",
     "bfj": "6.1.1",
+    "braft-editor": "^2.2.9",
     "case-sensitive-paths-webpack-plugin": "2.1.2",
     "css-loader": "1.0.0",
     "dotenv": "6.0.0",
