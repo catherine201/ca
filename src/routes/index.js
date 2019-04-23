@@ -70,6 +70,27 @@ const router = new Router({
           path: '/withdrawalVerifi/:withdrawalVerifiId',
           component: page('withdrawalVerifi')
         },
+        {
+          // 交易币介绍维护
+          path: '/transactionMaintenance/:transactionMaintenanceId',
+          component: page('transactionMaintenance')
+        },
+        {
+          // 交易币介绍维护 -> 币种编辑
+          path:
+            '/transactionMaintenance/transactionCoinEdit/:transactionCoinEditId',
+          component: page('transactionCoinEdit')
+        },
+        {
+          // 币币委托查询
+          path: '/bitcoinCommission/:bitcoinCommissionId',
+          component: page('bitcoinCommission')
+        },
+        {
+          // 币币成交查询
+          path: '/bitcoinTransaction/:bitcoinTransactionId',
+          component: page('bitcoinTransaction')
+        },
         { path: '/authen/:authenId', component: page('authen') },
         { path: '/application/:applicationId', component: page('application') },
         { name: 404, component: page('404') }

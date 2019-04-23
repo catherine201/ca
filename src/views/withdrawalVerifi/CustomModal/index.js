@@ -50,7 +50,7 @@ export default class CustomModal extends Component {
           <Button
             type="primary"
             onClick={this.confirm}
-            loading={this.props.isRequest}
+            loading={this.state.isRequest}
           >
             提交
           </Button>

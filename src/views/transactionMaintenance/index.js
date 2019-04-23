@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Input, Button, Table, LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
-import WithdrawalAction from '../../components/withdrawalAction';
-import styles from './withdrawalConfig.less';
+import styles from './transactionMaintenance.less';
 
-// 提币审核配置
-export default class WithdrawalConfig extends Component {
+// 交易币介绍维护
+export default class TransactionMaintenance extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,11 +15,7 @@ export default class WithdrawalConfig extends Component {
         current: 0,
         pageSize: 0,
         total: 0
-      },
-      coinOptions: [], // 币种选项
-      actionRow: {}, // 操作行的数据
-      actionType: '', // 新增add, 修改edit, 删除delete
-      withdrawalActionVisible: false
+      }
     };
   }
 
@@ -29,52 +24,50 @@ export default class WithdrawalConfig extends Component {
     this.getCoinOptions();
   };
 
-  // 新增审核币种
-  addCoin = () => {
-    this.setState({
-      withdrawalActionVisible: true,
-      actionType: 'add'
-    });
-  };
-
   // 修改
   edit = row => {
     console.log('edit -- row: ', row);
-    this.setState({
-      withdrawalActionVisible: true,
-      actionRow: row,
-      actionType: 'edit'
+    row.id = 1;
+    this.props.history.push({
+      pathname: `/admin/transactionMaintenance/transactionCoinEdit/${row.id}`,
+      state: {
+        data: row
+      }
     });
+    // this.setState({
+    //   coinEditPanelVisible: true,
+    //   actionRow: row
+    // });
   };
 
   // 删除
-  delete = row => {
-    console.log('delete -- row: ', row);
-    this.setState({
-      withdrawalActionVisible: true,
-      actionRow: row,
-      actionType: 'delete'
-    });
-  };
+  // delete = row => {
+  //   console.log('delete -- row: ', row);
+  //   this.setState({
+  //     withdrawalActionVisible: true,
+  //     actionRow: row,
+  //     actionType: 'delete'
+  //   });
+  // };
 
   // 获取币种选项
   getCoinOptions = () => {
-    this.setState({
-      coinOptions: [
-        {
-          value: '',
-          label: '请选择币种'
-        },
-        {
-          value: 'BTC',
-          label: 'BTC'
-        },
-        {
-          value: 'ETH',
-          label: 'ETH'
-        }
-      ]
-    });
+    // this.setState({
+    //   coinOptions: [
+    //     {
+    //       value: '',
+    //       label: '请选择币种'
+    //     },
+    //     {
+    //       value: 'BTC',
+    //       label: 'BTC'
+    //     },
+    //     {
+    //       value: 'ETH',
+    //       label: 'ETH'
+    //     }
+    //   ]
+    // });
   };
 
   // 获取表格数据（查询和分页
@@ -101,23 +94,29 @@ export default class WithdrawalConfig extends Component {
       tableData: [
         {
           key: '1',
-          no: '1',
           coin: 'BTC',
-          singleLimit: '100',
-          dailyLimit: '100',
-          lastModified: '2019-01-01 12:00:00',
-          finalEditor: 'ssrhjf',
-          operation: ''
+          nameZh: '比特币', // 中文名
+          nameFull: 'BItcoin',
+          website: 'https://bitcoin.org/en',
+          issueDate: '2019-01-01', // 发行时间
+          issueQuantity: '100000', // 发行总量
+          raisePrice: '255660', // 众筹价格
+          whitePaperAddr: 'sdfdsf11215', // 白皮书地址
+          blockQueryAddr: 'sdfsdfs4564646', // 区块链查询地址
+          info: 'bitcoinbitcoinbitcoinbitcoinbitcoin' // 简介
         },
         {
           key: '2',
-          no: '2',
           coin: 'ETH',
-          singleLimit: '1200',
-          dailyLimit: '1200',
-          lastModified: '2019-01-01 12:00:00',
-          finalEditor: 'ssrhjf',
-          operation: '100'
+          nameZh: '以太坊',
+          nameFull: 'Ethereum',
+          website: 'https://bitcoin.org/en',
+          issueDate: '2019-01-01', // 发行时间
+          issueQuantity: '100000', // 发行总量
+          raisePrice: '255660', // 众筹价格
+          whitePaperAddr: 'sdfdsf11215', // 白皮书地址
+          blockQueryAddr: 'sdfsdfs4564646', // 区块链查询地址
+          info: 'bitcoinbitcoinbitcoinbitcoinbitcoin' // 简介
         }
       ]
     });
@@ -158,58 +157,27 @@ export default class WithdrawalConfig extends Component {
     this.getTableData();
   };
 
-  // 弹窗取消
-  withdrawalActionCancel = () => {
-    this.setState({
-      withdrawalActionVisible: false
-    });
-  };
-
-  // 弹窗确认
-  withdrawalActionConfirm = () => {
-    this.setState({
-      withdrawalActionVisible: false
-    });
-  };
-
   render() {
     const { Column } = Table;
     // 表格列 对应的 key和名称
     const columnText = {
-      no: '序号',
       coin: '币种',
-      singleLimit: '单笔限额',
-      dailyLimit: '日累计限额',
-      lastModified: '最后编辑时间',
-      finalEditor: '最后编辑人',
+      nameZh: '简称',
+      nameFull: '币全名',
+      website: '官网',
       operation: '操作'
     };
 
     return (
-      <div className={styles.withdrawalConfig}>
-        <section className={styles.title}>提币审核配置</section>
+      <div className={styles.transactionMaintenance}>
+        <section className="common_title">交易币介绍维护</section>
         <section className="search_form">
           <Input
-            placeholder="输入币种"
+            placeholder="币种名称/简称"
             className={styles.search}
             onBlur={e => this.setState({ searchword: e.target.value })}
           />
           <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
-          <Button className={styles.addcoin} onClick={this.addCoin}>
-            新增审核币种
-          </Button>
-          {this.state.withdrawalActionVisible && (
-            <WithdrawalAction
-              visible={this.state.withdrawalActionVisible}
-              actionType={this.state.actionType}
-              coinOptions={this.state.coinOptions}
-              row={
-                this.state.actionType !== 'add' ? this.state.actionRow : null
-              }
-              onClose={this.withdrawalActionCancel}
-              onConfirm={this.withdrawalActionConfirm}
-            />
-          )}
         </section>
         <LocaleProvider locale={zh_CN}>
           <Table
@@ -219,29 +187,20 @@ export default class WithdrawalConfig extends Component {
             pagination={this.getPaginationProps()}
           >
             {Object.keys(columnText).map(key =>
-              key === 'operation' ? ( // 操作列
+              key === 'operation' ? (
                 <Column
                   title={columnText[key]}
                   align="center"
-                  dataIndex={key}
                   key={key}
                   render={(text, row) => (
                     <div>
                       <span className={styles.a} onClick={() => this.edit(row)}>
                         修改
                       </span>
-                      &emsp;
-                      <span
-                        className={styles.a}
-                        onClick={() => this.delete(row)}
-                      >
-                        删除
-                      </span>
                     </div>
                   )}
                 />
               ) : (
-                // 其他列
                 <Column
                   title={columnText[key]}
                   align="center"

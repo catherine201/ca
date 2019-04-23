@@ -22,7 +22,7 @@ export default class WithdrawalVerifi extends Component {
       customModalTitle: '提币审核', // customModal标题
       searchData: {
         coin: null, // 币种
-        auditStatus: 0, // 审核状态：0待审核，1通过，2驳回
+        auditStatus: '0', // 审核状态：0待审核，1通过，2驳回
         withdrawDateStart: null, // 提币日期start
         withdrawDateEnd: null, // 提币日期end
         auditDateStart: null, // 审核日期start
@@ -85,24 +85,6 @@ export default class WithdrawalVerifi extends Component {
     });
   };
 
-  // 选择币种
-  coinChange = coin => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coin = coin;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 审核状态选择
-  auditStatusChange = auditStatus => {
-    const search = Object.assign({}, this.state.searchData);
-    search.auditStatus = auditStatus;
-    this.setState({
-      searchData: search
-    });
-  };
-
   // 提币审核
   coinAudit = () => {
     if (this.state.tableCheck === null) {
@@ -117,6 +99,25 @@ export default class WithdrawalVerifi extends Component {
         customModalTitle: '提币审核'
       });
     }
+  };
+
+  // change事件
+  handlerChange = (searchKey, value) => {
+    const search = Object.assign({}, this.state.searchData);
+    if (searchKey === 'withdrawDate' || searchKey === 'auditDate') {
+      // 提币日期、审核日期
+      search[`${searchKey}Start`] = value.length
+        ? moment(value[0]).format('YYYY-MM-DD')
+        : '';
+      search[`${searchKey}End`] = value.length
+        ? moment(value[1]).format('YYYY-MM-DD')
+        : '';
+    } else {
+      search[searchKey] = value;
+    }
+    this.setState({
+      searchData: search
+    });
   };
 
   // 关闭
@@ -232,61 +233,6 @@ export default class WithdrawalVerifi extends Component {
     this.getTableData();
   };
 
-  // 提币日期
-  withdrawDateChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.withdrawDateStart = !value.length
-      ? ''
-      : moment(value[0]).format('YYYY-MM-DD');
-    search.withdrawDateEnd = !value.length
-      ? ''
-      : moment(value[1]).format('YYYY-MM-DD');
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 审核日期
-  auditDateChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.auditDateStart = !value.length
-      ? ''
-      : moment(value[0]).format('YYYY-MM-DD');
-    search.auditDateEnd = !value.length
-      ? ''
-      : moment(value[1]).format('YYYY-MM-DD');
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 单笔最小数量
-  minNumChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinNumMin = value;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 单笔最大数量
-  maxNumChange = value => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinNumMax = value;
-    this.setState({
-      searchData: search
-    });
-  };
-
-  // 提币用户
-  onCoinuserChange = e => {
-    const search = Object.assign({}, this.state.searchData);
-    search.coinUser = e.target.value;
-    this.setState({
-      searchData: search
-    });
-  };
-
   // tableCheck是否为空
   isTableCheckEmpty = () =>
     this.state.tableCheck !== null &&
@@ -295,6 +241,18 @@ export default class WithdrawalVerifi extends Component {
   render() {
     const { Column } = Table;
     const statusText = ['待审核', '通过', '驳回'];
+    // 表格列 对应的 key和名称
+    const columnText = {
+      addtime: '提币时间',
+      user: '用户',
+      coin: '币种',
+      coinNum: '提币数量',
+      status: '审核状态',
+      auditTime: '审核时间',
+      auditor: '审核人'
+    };
+
+    // 行选择
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(
@@ -328,7 +286,7 @@ export default class WithdrawalVerifi extends Component {
             <Select
               defaultValue=""
               style={{ width: 120 }}
-              onChange={this.coinChange}
+              onChange={value => this.handlerChange('coin', value)}
             >
               {this.state.coinOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
@@ -342,7 +300,7 @@ export default class WithdrawalVerifi extends Component {
             <Select
               defaultValue="0"
               style={{ width: 120 }}
-              onChange={this.auditStatusChange}
+              onChange={value => this.handlerChange('auditStatus', value)}
             >
               {this.state.auditStatusOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
@@ -357,7 +315,7 @@ export default class WithdrawalVerifi extends Component {
               <DatePicker.RangePicker
                 style={{ width: '240px' }}
                 disabledDate={disabledDate}
-                onChange={this.withdrawDateChange}
+                onChange={value => this.handlerChange('withdrawDate', value)}
               />
             </LocaleProvider>
           </div>
@@ -367,30 +325,31 @@ export default class WithdrawalVerifi extends Component {
               <DatePicker.RangePicker
                 style={{ width: '240px' }}
                 disabledDate={disabledDate}
-                onChange={this.auditDateChange}
+                onChange={value => this.handlerChange('auditDate', value)}
               />
             </LocaleProvider>
           </div>
           <div className={styles['search-item']}>
             <span>提币数量：</span>
             <InputNumber
+              min={0}
               placeholder="单笔最小数量"
               style={{ width: '150px' }}
-              onChange={this.minNumChange}
+              onChange={value => this.handlerChange('coinNumMin', value)}
             />
             &nbsp;至&nbsp;
             <InputNumber
+              min={1}
               placeholder="单笔最大数量"
               style={{ width: '150px' }}
-              onChange={this.maxNumChange}
+              onChange={value => this.handlerChange('coinNumMax', value)}
             />
           </div>
           <div className={styles['search-item']}>
-            &emsp;
             <Input
               placeholder="输入提币用户"
               style={{ width: '200px' }}
-              onBlur={this.onCoinuserChange}
+              onChange={e => this.handlerChange('coinUser', e.target.value)}
             />
           </div>
           <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
@@ -413,39 +372,24 @@ export default class WithdrawalVerifi extends Component {
             pagination={this.getPaginationProps()}
             rowSelection={rowSelection}
           >
-            <Column
-              title="提币时间"
-              align="center"
-              dataIndex="addtime"
-              key="addtime"
-            />
-            <Column title="用户" align="center" dataIndex="user" key="user" />
-            <Column title="币种" align="center" dataIndex="coin" key="coin" />
-            <Column
-              title="提币数量"
-              align="center"
-              dataIndex="coinNum"
-              key="coinNum"
-            />
-            <Column
-              title="审核状态"
-              align="center"
-              dataIndex="status"
-              key="status"
-              render={(text, row) => <span>{statusText[row.status]}</span>}
-            />
-            <Column
-              title="审核时间"
-              align="center"
-              dataIndex="auditTime"
-              key="auditTime"
-            />
-            <Column
-              title="审核人"
-              align="center"
-              dataIndex="auditor"
-              key="auditor"
-            />
+            {Object.keys(columnText).map(key =>
+              key === 'status' ? (
+                <Column
+                  title={columnText[key]}
+                  align="center"
+                  dataIndex={key}
+                  key={key}
+                  render={(text, row) => <span>{statusText[row.status]}</span>}
+                />
+              ) : (
+                <Column
+                  title={columnText[key]}
+                  align="center"
+                  dataIndex={key}
+                  key={key}
+                />
+              )
+            )}
           </Table>
         </LocaleProvider>
         {this.state.customModalShow && (
