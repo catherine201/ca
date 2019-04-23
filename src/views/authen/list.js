@@ -146,6 +146,7 @@ class AuthenList extends Component {
         render: text =>
           text.verifyStatus === 2 ? (
             <span
+              className="mouse_hover"
               onClick={() => {
                 this.toHref(text);
               }}

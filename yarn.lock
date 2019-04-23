@@ -2331,6 +2331,39 @@ braces@^2.3.0, braces@^2.3.1:
     split-string "^3.0.2"
     to-regex "^3.0.1"
 
+braft-convert@^2.1.10:
+  version "2.1.12"
+  resolved "https://registry.yarnpkg.com/braft-convert/-/braft-convert-2.1.12.tgz#dc331722feb5fe3fc2392d44db0c02922c19c6b2"
+  integrity sha512-mGqlVfpUIW3HHFmYmTdV7QRI1e2bpMtvHGgIm5/sb0h4alX+kWHgIZ/vZHCHZAxPEp8bbL73+8rVjyp3NZBFtg==
+  dependencies:
+    draft-convert "^2.0.0"
+    draft-js "^0.10.3"
+
+braft-editor@^2.2.9:
+  version "2.2.9"
+  resolved "https://registry.yarnpkg.com/braft-editor/-/braft-editor-2.2.9.tgz#8990b6b638a69daebfb57e3f1f8e057166abc5be"
+  integrity sha512-F1mb9luLXfJ6Lhw7jLT+DNE9lc2qAb4fzNu+x5t2gbNKMzdmLrE99aNsqbDIGYqP4AGamgbXIiLYF7Md1+PtoQ==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    braft-convert "^2.1.10"
+    braft-finder "^0.0.18"
+    braft-utils "^3.0.8"
+    draft-convert "^2.0.0"
+    draft-js "^0.10.3"
+    draft-js-multidecorators "^1.0.0"
+    draftjs-utils "^0.9.4"
+    immutable "~3.7.4"
+
+braft-finder@^0.0.18:
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/braft-finder/-/braft-finder-0.0.18.tgz#5f43659b61290081fb2920cc3ce1f62e31e9da57"
+  integrity sha512-XtEyVywEfHDzRjAV5HOiqKFva6vEm0Rez+QHgq+EbqXpAqxuHQTci2s3LX2u7G3UicNYpDsVY/UV3nleF2VYyw==
+
+braft-utils@^3.0.8:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/braft-utils/-/braft-utils-3.0.11.tgz#8a977f47b99dde09473363b90c3fe587103f3abe"
+  integrity sha512-bCtI+vSDCi8NyHeyhmHnKeRSIg00jI/LbKcMhxJnKclC2g6Aeo+jh42ol2gks61edKhd/s+fVx5M0NJXEGD9vA==
+
 brorand@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
@@ -3854,7 +3887,22 @@ dotenv@6.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.0.0.tgz#24e37c041741c5f4b25324958ebbc34bca965935"
   integrity sha512-FlWbnhgjtwD+uNLUGHbMykMOYQaTivdHEmYwAKFjn6GKe/CqY0fNae93ZHTd20snh9ZLr8mTzIL9m0APQ1pjQg==
 
-draft-js@^0.10.0, draft-js@~0.10.0:
+draft-convert@^2.0.0:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/draft-convert/-/draft-convert-2.1.4.tgz#b8817000eaf251e95583c987adda085d67254a0d"
+  integrity sha1-uIFwAOryUelVg8mHrdoIXWclSg0=
+  dependencies:
+    immutable "~3.7.4"
+    invariant "^2.2.1"
+
+draft-js-multidecorators@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/draft-js-multidecorators/-/draft-js-multidecorators-1.0.0.tgz#6c4be8d7b78dd2b966ee51ee6cc179b9b535e612"
+  integrity sha1-bEvo17eN0rlm7lHubMF5ubU15hI=
+  dependencies:
+    immutable "*"
+
+draft-js@^0.10.0, draft-js@^0.10.3, draft-js@~0.10.0:
   version "0.10.5"
   resolved "http://registry.npm.taobao.org/draft-js/download/draft-js-0.10.5.tgz#bfa9beb018fe0533dbb08d6675c371a6b08fa742"
   integrity sha1-v6m+sBj+BTPbsI1mdcNxprCPp0I=
@@ -3862,6 +3910,11 @@ draft-js@^0.10.0, draft-js@~0.10.0:
     fbjs "^0.8.15"
     immutable "~3.7.4"
     object-assign "^4.1.0"
+
+draftjs-utils@^0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/draftjs-utils/-/draftjs-utils-0.9.4.tgz#976c61aa133dbbbfedd65ae1dd6627d7b98c6f08"
+  integrity sha512-KYjABSbGpJrwrwmxVj5UhfV37MF/p0QRxKIyL+/+QOaJ8J9z1FBKxkblThbpR0nJi9lxPQWGg+gh+v0dAsSCCg==
 
 duplexer@^0.1.1:
   version "0.1.1"
@@ -5578,7 +5631,7 @@ immer@1.7.2:
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.7.2.tgz#a51e9723c50b27e132f6566facbec1c85fc69547"
   integrity sha512-4Urocwu9+XLDJw4Tc6ZCg7APVjjLInCFvO4TwGsAYV5zT6YYSor14dsZR0+0tHlDIN92cFUOq+i7fC00G5vTxA==
 
-immutable@^3.7.4:
+immutable@*, immutable@^3.7.4:
   version "3.8.2"
   resolved "http://registry.npm.taobao.org/immutable/download/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
   integrity sha1-wkOZUUVbs5kT2vKBN28VMOEErfM=

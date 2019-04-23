@@ -63,3 +63,9 @@ export const coinTxStatus = {
   CoinTxStatusPendding: '待处理',
   CoinTxStatusRejected: '拒绝'
 };
+
+// 提币记录
+export const auctionCoinType = {
+  AuctionCoinTypeBuy: '抢购',
+  AuctionCoinTypeSell: '拍卖'
+};

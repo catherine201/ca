@@ -15,22 +15,22 @@ class AuthenList extends Component {
       data: [],
       pagination: {
         defaultCurrent: 1,
-        defaultPageSize: 12
+        defaultPageSize: 10
       },
-      limit: 12
+      limit: 10
     };
   }
 
   componentDidMount() {
     const obj = {
-      'listOptions.limit': 12,
+      'listOptions.limit': 10,
       'listOptions.offset': 0
     };
     this.queryVerification(obj);
   }
 
   queryVerification = async obj => {
-    const res = await createApi.queryUser(obj);
+    const res = await createApi.queryAuctionCoin(obj);
     console.log(res);
     if (res.paging) {
       const pagination = { ...this.state.pagination };
@@ -68,7 +68,7 @@ class AuthenList extends Component {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     const obj = {
-      'listOptions.limit': 12,
+      'listOptions.limit': 10,
       'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
     this.queryVerification(obj);
@@ -138,7 +138,15 @@ class AuthenList extends Component {
       },
       {
         title: '操作',
-        render: text => (text ? <Button>撤销</Button> : '')
+        render: text =>
+          text ? (
+            <React.Fragment>
+              <Button>编辑</Button>
+              <Button>撤销</Button>
+            </React.Fragment>
+          ) : (
+            ''
+          )
       }
     ];
     const { getFieldDecorator } = this.props.form;

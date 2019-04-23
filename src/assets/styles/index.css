@@ -175,6 +175,9 @@ html body .christmas.ant-btn-primary:before{
 .search_input.ant-input{
   width: 300px;
 }
+.number_search_input.ant-input-number{
+  width: 300px;
+}
 .common_submit_btn.ant-btn{
   padding: 0 45px;
   margin: 30px 0 0 250px;

@@ -153,10 +153,26 @@ const config = {
     options: {
       errorHandler: true
     }
-  }
+  },
   // 获取单个抢拍信息
   // 修改抢拍配置
+  // 新增抢拍配置
+  editAuctionCoin: {
+    url: '/admin/auction/coins',
+    method: 'put',
+    options: {
+      errorHandler: true
+    }
+  },
   // 获取抢拍信息list
+  queryAuctionCoin: {
+    url: '/admin/auction/coins',
+    method: 'get',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  }
 };
 
 export default createApi(config);

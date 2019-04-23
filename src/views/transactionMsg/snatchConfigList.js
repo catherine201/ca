@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { DatePicker, Button, Table, Form, Select } from 'antd';
 import createApi from '../../api/list';
 import styles from './index.less';
+import { timestampToTime } from '../../utils';
+import { auctionCoinType } from '../../utils/map';
 
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
@@ -19,7 +21,8 @@ class AuthenList extends Component {
         defaultPageSize: 10,
         current: 1
       },
-      limit: 10
+      limit: 10,
+      searchObj: {}
     };
   }
 
@@ -30,17 +33,17 @@ class AuthenList extends Component {
     };
     if (!this.props.coinType) {
       this.props.getCoinType().then(() => {
-        this.queryCoinInAddr(obj);
+        this.queryAuctionCoin(obj);
       });
     } else {
-      this.queryCoinInAddr(obj);
+      this.queryAuctionCoin(obj);
     }
     //  this.queryCoinInAddr(obj);
   }
 
-  queryCoinInAddr = async obj => {
-    console.log(this.props.coinType);
-    const res = await createApi.queryCoinInAddr(obj);
+  queryAuctionCoin = async obj => {
+    // console.log(this.props.coinType);
+    const res = await createApi.queryAuctionCoin(obj);
     console.log(res.list);
     if (res && res.paging) {
       const pagination = { ...this.state.pagination };
@@ -87,34 +90,47 @@ class AuthenList extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        this.setState({
+          searchObj: values
+        });
         const obj = {
-          coinName:
-            values.coinName === '全部' ? '' : values.coinName.toLowerCase(), // 币种
-          beginTime:
+          tradeCoin:
+            values.tradeCoin === '0' ? '' : values.tradeCoin.toLowerCase(),
+          payCoin: values.payCoin === '0' ? '' : values.payCoin.toLowerCase(),
+          type: values.type,
+          saleTime:
             values.rangePicker &&
             values.rangePicker[0] &&
             new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime(),
-          endTime:
-            values.rangePicker &&
-            values.rangePicker[1] &&
-            new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
-          accountID: values.accountID, // 用户名
+          // endTime:
+          //   values.rangePicker &&
+          //   values.rangePicker[1] &&
+          //   new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
           'listOptions.limit': 10,
           'listOptions.offset': 0
         };
-        this.queryCoinInAddr(obj);
+        this.queryAuctionCoin(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
     const pager = { ...this.state.pagination };
+    const { searchObj } = this.state;
     pager.current = pagination.current;
     const obj = {
       'listOptions.limit': 10,
-      'listOptions.offset': (pagination.current - 1) * this.state.limit
+      'listOptions.offset': (pagination.current - 1) * this.state.limit,
+      tradeCoin:
+        searchObj.tradeCoin === '0' ? '' : searchObj.tradeCoin.toLowerCase(),
+      payCoin: searchObj.payCoin === '0' ? '' : searchObj.payCoin.toLowerCase(),
+      type: searchObj.type,
+      saleTime:
+        searchObj.rangePicker &&
+        searchObj.rangePicker[0] &&
+        new Date(searchObj.rangePicker[0].format('YYYY-MM-DD')).getTime()
     };
-    this.queryCoinInAddr(obj);
+    this.queryAuctionCoin(obj);
     this.setState({
       pagination: pager
     });
@@ -136,43 +152,50 @@ class AuthenList extends Component {
       },
       {
         title: '抢拍时间',
-        dataIndex: 'id',
-        key: 'id'
+        dataIndex: 'saleTime',
+        key: 'saleTime',
+        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
       },
       {
         title: '交易币种',
-        dataIndex: 'id',
-        key: 'id'
+        dataIndex: 'tradeCoin',
+        key: 'tradeCoin'
       },
       {
         title: '支付币种',
-        dataIndex: 'id',
-        key: 'id'
+        dataIndex: 'payCoin',
+        key: 'payCoin'
       },
       {
         title: '类型',
-        dataIndex: 'id',
-        key: 'id'
+        dataIndex: 'type',
+        key: 'type',
+        render: text => <span>{text ? auctionCoinType[text] : ''}</span>
       },
       {
         title: '单价',
-        dataIndex: 'id',
-        key: 'id'
+        dataIndex: 'price',
+        key: 'price'
+      },
+      {
+        title: '数量',
+        dataIndex: 'amount',
+        key: 'amount'
       },
       {
         title: '最小限额',
-        dataIndex: 'id',
-        key: 'id'
+        dataIndex: 'limitMin',
+        key: 'limitMin'
       },
       {
         title: '最大限额',
-        dataIndex: 'id',
-        key: 'id'
+        dataIndex: 'limitMax',
+        key: 'limitMax'
       },
       {
         title: '手续费',
-        dataIndex: 'nickName',
-        key: 'nickName'
+        dataIndex: 'fee',
+        key: 'fee'
       },
       {
         title: '操作',
@@ -189,16 +212,17 @@ class AuthenList extends Component {
     ];
     const { getFieldDecorator } = this.props.form;
     return (
-      <div className={styles.userMsg_list}>
-        <p className="common_title">充币地址</p>
+      <div className={styles.snatchConfig_list}>
+        <p className="common_title">抢拍配置列表</p>
         <Form
           layout="inline"
           onSubmit={this.handleSubmit}
           className="search_form"
         >
           <Form.Item label="交易币种">
-            {getFieldDecorator('coinName', { initialValue: '全部' })(
+            {getFieldDecorator('tradeCoin', { initialValue: '0' })(
               <Select>
+                <Option value="0">请选择交易币种</Option>
                 {coinType &&
                   coinType.map(item => (
                     <Option value={item.code}>{item.code}</Option>
@@ -207,8 +231,9 @@ class AuthenList extends Component {
             )}
           </Form.Item>
           <Form.Item label="支付币种">
-            {getFieldDecorator('coinName', { initialValue: '全部' })(
+            {getFieldDecorator('payCoin', { initialValue: '0' })(
               <Select>
+                <Option value="0">请选择支付币种</Option>
                 {coinType &&
                   coinType.map(item => (
                     <Option value={item.code}>{item.code}</Option>
@@ -217,12 +242,13 @@ class AuthenList extends Component {
             )}
           </Form.Item>
           <Form.Item label="类型">
-            {getFieldDecorator('coinName', { initialValue: '全部' })(
+            {getFieldDecorator('type', {
+              initialValue: 'AuctionCoinTypeUnknow'
+            })(
               <Select>
-                {coinType &&
-                  coinType.map(item => (
-                    <Option value={item.code}>{item.code}</Option>
-                  ))}
+                <Option value="AuctionCoinTypeUnknow">请选择类型</Option>
+                <Option value="AuctionCoinTypeSell">抢购</Option>
+                <Option value="AuctionCoinTypeBuy">拍卖</Option>
               </Select>
             )}
           </Form.Item>
