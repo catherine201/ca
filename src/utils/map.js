@@ -55,3 +55,11 @@ export const authenStatusType = {
   '1': 'Enable',
   '2': 'Disabled'
 };
+
+// 提币记录
+export const coinTxStatus = {
+  CoinTxStatusSuccess: '成功',
+  CoinTxStatusFailed: '失败',
+  CoinTxStatusPendding: '待处理',
+  CoinTxStatusRejected: '拒绝'
+};

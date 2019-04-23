@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { DatePicker, Button, Table, Form } from 'antd';
+import { DatePicker, Button, Table, Form, Select, Input } from 'antd';
 import createApi from '../../api/list';
 import styles from './index.less';
+import { timestampToTime } from '../../utils';
 
 const { RangePicker } = DatePicker;
+const Option = Select.Option;
 
 class AuthenList extends Component {
   constructor(props) {
@@ -15,29 +17,55 @@ class AuthenList extends Component {
       data: [],
       pagination: {
         defaultCurrent: 1,
-        defaultPageSize: 12
+        defaultPageSize: 10,
+        current: 1
       },
-      limit: 12
+      limit: 10
     };
   }
 
   componentDidMount() {
-    // const obj = {
-    //   'listOptions.limit': 12,
-    //   'listOptions.offset': 0
-    // };
-    // this.queryVerification(obj);
+    const obj = {
+      'listOptions.limit': 10,
+      'listOptions.offset': 0
+    };
+    if (!this.props.coinType) {
+      this.props.getCoinType().then(() => {
+        this.queryCoinInAddr(obj);
+      });
+    } else {
+      this.queryCoinInAddr(obj);
+    }
+    //  this.queryCoinInAddr(obj);
   }
 
-  queryVerification = async () => {
-    const res = await createApi.queryVerification();
+  queryCoinInAddr = async obj => {
+    console.log(this.props.coinType);
+    const res = await createApi.queryCoinInAddr(obj);
     console.log(res.list);
     if (res && res.paging) {
       const pagination = { ...this.state.pagination };
       pagination.total = res.paging.total - 0;
+      //   const data = res.datas || [];
+      if (res.datas) {
+        res.datas.map((item, index) => {
+          res.datas[index].index = (res.paging.offset - 0 || 0) + index + 1;
+        });
+      }
+      console.log(res.datas);
+      console.log(pagination);
       this.setState({
         pagination,
-        data: res.list
+        data: res.datas || []
+      });
+    } else {
+      this.setState({
+        pagination: {
+          defaultCurrent: 1,
+          defaultPageSize: 10,
+          current: 1
+        },
+        data: []
       });
     }
   };
@@ -60,6 +88,22 @@ class AuthenList extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        const obj = {
+          coinName:
+            values.coinName === '全部' ? '' : values.coinName.toLowerCase(), // 币种
+          beginTime:
+            values.rangePicker &&
+            values.rangePicker[0] &&
+            new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime(),
+          endTime:
+            values.rangePicker &&
+            values.rangePicker[1] &&
+            new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
+          accountID: values.accountID, // 用户名
+          'listOptions.limit': 10,
+          'listOptions.offset': 0
+        };
+        this.queryCoinInAddr(obj);
       }
     });
   };
@@ -68,34 +112,34 @@ class AuthenList extends Component {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     const obj = {
-      'listOptions.limit': 12,
+      'listOptions.limit': 10,
       'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
-    this.queryVerification(obj);
+    this.queryCoinInAddr(obj);
     this.setState({
       pagination: pager
     });
   };
 
   render() {
-    // const { test, getTest } = this.props;
+    const { coinType } = this.props;
     const { data, pagination } = this.state;
     const columns = [
       {
         title: '序号',
-        // dataIndex: 'UDID',
-        key: 'index',
-        render: text => <span>{text}</span>
+        dataIndex: 'index',
+        key: 'index'
+        // render: text => <span>{text}</span>
       },
       {
         title: 'ID',
-        dataIndex: 'ID',
-        key: 'ID'
+        dataIndex: 'id',
+        key: 'id'
       },
       {
         title: '用户名',
-        dataIndex: 'userName',
-        key: 'userName'
+        dataIndex: 'nickName',
+        key: 'nickName'
       },
       {
         title: '手机号',
@@ -104,18 +148,19 @@ class AuthenList extends Component {
       },
       {
         title: '币种',
-        dataIndex: 'coinType',
-        key: 'coinType'
+        dataIndex: 'coinName',
+        key: 'coinName'
       },
       {
         title: '充值地址',
-        dataIndex: 'authen',
-        key: 'authen'
+        dataIndex: 'address',
+        key: 'address'
       },
       {
         title: '注册时间',
-        dataIndex: 'time',
-        key: 'time'
+        dataIndex: 'createdTime',
+        key: 'createdTime',
+        render: text => <span>{text ? timestampToTime(text) : ''}</span>
       }
     ];
     const { getFieldDecorator } = this.props.form;
@@ -127,14 +172,40 @@ class AuthenList extends Component {
           onSubmit={this.handleSubmit}
           className="search_form"
         >
-          <Form.Item label="认证日期">
-            {getFieldDecorator('range-picker')(<RangePicker />)}
+          <Form.Item>
+            {getFieldDecorator('accountID')(
+              <Input placeholder="用户名" className="search_input" />
+            )}
+          </Form.Item>
+          <Form.Item label="币种">
+            {getFieldDecorator('coinName', { initialValue: '0' })(
+              <Select>
+                <Option value="0">全部</Option>
+                {/* <Option value="0">全部</Option>
+                <Option value="1">正常</Option>
+                <Option value="2">冻结</Option> */}
+                {coinType &&
+                  coinType.map(item => (
+                    <Option value={item.code}>{item.code}</Option>
+                  ))}
+              </Select>
+            )}
+          </Form.Item>
+          <Form.Item label="">
+            {getFieldDecorator('rangePicker')(<RangePicker />)}
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" className="mr20">
               搜索
             </Button>
-            <Button className="mr20">显示全部</Button>
+            <Button
+              className="mr20"
+              onClick={() => {
+                this.queryCoinInAddr();
+              }}
+            >
+              显示全部
+            </Button>
             <Button>导出EXCEL</Button>
           </Form.Item>
         </Form>
@@ -154,11 +225,11 @@ class AuthenList extends Component {
 }
 
 const mapStateToProps = state => ({
-  test: state.demo.test
+  coinType: state.selectOption.coinType
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTest: dispatch.demo.getTest
+  getCoinType: dispatch.selectOption.getCoinType
 });
 
 export default connect(

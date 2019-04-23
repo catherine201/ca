@@ -90,7 +90,73 @@ const config = {
       errorHandler: true,
       showLoading: false
     }
+  },
+  // 充币地址
+  queryCoinInAddr: {
+    url: '/admin/recharge/addresses',
+    method: 'get',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  },
+  // 提现地址
+  queryCoinOutAddr: {
+    url: '/admin/bankcards',
+    method: 'get',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  },
+  // 充币记录 提币记录
+  queryCointxs: {
+    url: '/admin/cointxs',
+    method: 'get',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  },
+  //
+  // 提现地址操作enable
+  coinOutAddrOperate: {
+    url: '/admin/bankcards',
+    method: 'put',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  },
+  // 获取支持的币种
+  queryListCoins: {
+    url: '/configure/support/coins',
+    method: 'get',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  },
+  // 获取支持的银行
+  queryBankType: {
+    url: '/configure/support/banks',
+    method: 'get',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  },
+  // 新增抢拍配置
+  createAuctionCoin: {
+    url: '/admin/auction/coins',
+    method: 'post',
+    options: {
+      errorHandler: true
+    }
   }
+  // 获取单个抢拍信息
+  // 修改抢拍配置
+  // 获取抢拍信息list
 };
 
 export default createApi(config);

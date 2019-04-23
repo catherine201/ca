@@ -53,6 +53,14 @@ const router = new Router({
           component: page('transactionMsg/snatchRecord')
         },
         {
+          path: '/snatchConfig',
+          component: page('transactionMsg/snatchConfigList')
+        },
+        {
+          path: '/snatchDetail/:snatchId',
+          component: page('transactionMsg/snatchConfigDetail')
+        },
+        {
           // 提币审核配置
           path: '/withdrawalConfig/:withdrawalConfigId',
           component: page('withdrawalConfig')

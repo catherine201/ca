@@ -8,8 +8,9 @@ const { Sider } = Layout;
 
 function generateMenu(props, menus) {
   let items = [];
+  console.log(props.location);
   const arr = props.location.pathname.split('/');
-  console.log(arr[arr.length - 2]);
+  console.log(arr[2]);
   items = menus.map(menu => {
     if (Array.isArray(menu.subMenu)) {
       return (
@@ -21,7 +22,7 @@ function generateMenu(props, menus) {
             </div>
           }
           className={
-            arr[arr.length - 2] === menu.key
+            arr[2] === menu.key
               ? styles['list-item-active']
               : styles['list-item']
           }
@@ -34,9 +35,7 @@ function generateMenu(props, menus) {
       <Menu.Item
         key={menu.key}
         className={
-          arr[arr.length - 2] === menu.key
-            ? styles['list-item-active']
-            : styles['list-item']
+          arr[2] === menu.key ? styles['list-item-active'] : styles['list-item']
         }
       >
         <Link to={menu.path}>
@@ -122,6 +121,11 @@ class AppSider extends React.Component {
         text: '交易管理',
         // path: '/admin/user/1',
         subMenu: [
+          {
+            key: 'snatchConfig',
+            path: '/admin/snatchConfig',
+            text: '抢拍配置列表'
+          },
           { key: 'currSnatch', path: '/admin/currSnatch/', text: '当前抢拍' },
           {
             key: 'snatchRecord',

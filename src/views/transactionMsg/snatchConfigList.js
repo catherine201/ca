@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Table, Form, Select, Input, Switch } from 'antd';
+import { DatePicker, Button, Table, Form, Select } from 'antd';
 import createApi from '../../api/list';
 import styles from './index.less';
-// import { timestampToTime } from '../../utils';
 
+const { RangePicker } = DatePicker;
 const Option = Select.Option;
 
 class AuthenList extends Component {
@@ -13,8 +13,6 @@ class AuthenList extends Component {
     this.state = {
       //   time: [],
       searchName: '',
-      bankID: '',
-      accountID: '',
       data: [],
       pagination: {
         defaultCurrent: 1,
@@ -30,27 +28,31 @@ class AuthenList extends Component {
       'listOptions.limit': 10,
       'listOptions.offset': 0
     };
-    if (!this.props.bankType) {
-      this.props.getBankType().then(() => {
-        this.queryCoinOutAddr(obj);
+    if (!this.props.coinType) {
+      this.props.getCoinType().then(() => {
+        this.queryCoinInAddr(obj);
       });
     } else {
-      this.queryCoinOutAddr(obj);
+      this.queryCoinInAddr(obj);
     }
-    // this.queryCoinOutAddr(obj);
+    //  this.queryCoinInAddr(obj);
   }
 
-  queryCoinOutAddr = async obj => {
-    const res = await createApi.queryCoinOutAddr(obj);
+  queryCoinInAddr = async obj => {
+    console.log(this.props.coinType);
+    const res = await createApi.queryCoinInAddr(obj);
     console.log(res.list);
     if (res && res.paging) {
       const pagination = { ...this.state.pagination };
       pagination.total = res.paging.total - 0;
+      //   const data = res.datas || [];
       if (res.datas) {
         res.datas.map((item, index) => {
           res.datas[index].index = (res.paging.offset - 0 || 0) + index + 1;
         });
       }
+      console.log(res.datas);
+      console.log(pagination);
       this.setState({
         pagination,
         data: res.datas || []
@@ -59,7 +61,8 @@ class AuthenList extends Component {
       this.setState({
         pagination: {
           defaultCurrent: 1,
-          defaultPageSize: 10
+          defaultPageSize: 10,
+          current: 1
         },
         data: []
       });
@@ -84,162 +87,159 @@ class AuthenList extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        this.setState({
-          bankID: values.bankID === '全部' ? '' : values.bankID, // 银行type,
-          accountID: values.accountID // 用户名
-        });
         const obj = {
-          bankID: values.bankID === '全部' ? '' : values.bankID, // 银行type
+          coinName:
+            values.coinName === '全部' ? '' : values.coinName.toLowerCase(), // 币种
+          beginTime:
+            values.rangePicker &&
+            values.rangePicker[0] &&
+            new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime(),
+          endTime:
+            values.rangePicker &&
+            values.rangePicker[1] &&
+            new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
           accountID: values.accountID, // 用户名
           'listOptions.limit': 10,
           'listOptions.offset': 0
         };
-        this.queryCoinOutAddr(obj);
+        this.queryCoinInAddr(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
-    console.log(pagination);
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     const obj = {
       'listOptions.limit': 10,
       'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
-    this.queryCoinOutAddr(obj);
+    this.queryCoinInAddr(obj);
     this.setState({
       pagination: pager
     });
   };
 
-  onChangeOperate = (checked, id) => {
-    console.log(`switch to ${checked} ${id}`);
-    const obj = {
-      url: id,
-      query: {
-        enable: checked
-      }
-    };
-    this.changeOperate(obj);
-  };
-
-  changeOperate = async obj => {
-    const res = await createApi.coinOutAddrOperate(obj);
-    console.log(res);
-    if (res.success) {
-      const { limit, bankID, accountID, pagination } = this.state;
-      const searchObj = {
-        'listOptions.limit': 10,
-        'listOptions.offset': (pagination.current - 1) * limit,
-        bankID,
-        accountID
-      };
-      this.queryCoinOutAddr(searchObj);
-    }
+  toHref = id => {
+    this.props.history.push(`/admin/snatchDetail/${id}`);
   };
 
   render() {
-    const { bankType } = this.props;
+    const { coinType } = this.props;
     const { data, pagination } = this.state;
     const columns = [
       {
         title: '序号',
         dataIndex: 'index',
         key: 'index'
+        // render: text => <span>{text}</span>
       },
       {
-        title: 'ID',
+        title: '抢拍时间',
         dataIndex: 'id',
         key: 'id'
       },
       {
-        title: '用户名',
+        title: '交易币种',
+        dataIndex: 'id',
+        key: 'id'
+      },
+      {
+        title: '支付币种',
+        dataIndex: 'id',
+        key: 'id'
+      },
+      {
+        title: '类型',
+        dataIndex: 'id',
+        key: 'id'
+      },
+      {
+        title: '单价',
+        dataIndex: 'id',
+        key: 'id'
+      },
+      {
+        title: '最小限额',
+        dataIndex: 'id',
+        key: 'id'
+      },
+      {
+        title: '最大限额',
+        dataIndex: 'id',
+        key: 'id'
+      },
+      {
+        title: '手续费',
         dataIndex: 'nickName',
         key: 'nickName'
       },
       {
-        title: '开户银行',
-        dataIndex: 'bank.name',
-        key: 'bank.name'
-      },
-      {
-        title: '开户支行',
-        dataIndex: 'bankcardAddress',
-        key: 'bankcardAddress'
-      },
-      {
-        title: '银行卡号',
-        dataIndex: 'bankcardNumber',
-        key: 'bankcardNumber'
-      },
-      // {
-      //   title: '提现时间',
-      //   dataIndex: 'createdTime',
-      //   key: 'createdTime',
-      //   render: text => <span>{text ? timestampToTime(text) : ''}</span>
-      // },
-      {
-        title: '状态',
-        render: text => <span>{text.enable ? '可用' : '不可用'}</span>
-      },
-      // {
-      //   title: '备注',
-      //   dataIndex: 'userName',
-      //   key: 'userName'
-      // },
-      {
         title: '操作',
         render: text => (
-          <span>
-            {text.id ? (
-              <Switch
-                checkedChildren="可用"
-                unCheckedChildren="禁用"
-                defaultChecked={!!text.enable}
-                onChange={event => {
-                  this.onChangeOperate(event, text.id);
-                }}
-              />
-            ) : (
-              ''
-            )}
-          </span>
+          <Button
+            onClick={() => {
+              this.toHref(text.id);
+            }}
+          >
+            编辑
+          </Button>
         )
       }
     ];
     const { getFieldDecorator } = this.props.form;
     return (
       <div className={styles.userMsg_list}>
-        <p className="common_title">提现地址</p>
+        <p className="common_title">充币地址</p>
         <Form
           layout="inline"
           onSubmit={this.handleSubmit}
           className="search_form"
         >
-          <Form.Item>
-            {getFieldDecorator('accountID')(
-              <Input placeholder="用户名" className="search_input" />
-            )}
-          </Form.Item>
-          <Form.Item label="状态">
-            {getFieldDecorator('bankID', { initialValue: '' })(
+          <Form.Item label="交易币种">
+            {getFieldDecorator('coinName', { initialValue: '全部' })(
               <Select>
-                {/* <Option value="0">全部</Option>
-                <Option value="1">正常</Option>
-                <Option value="2">冻结</Option> */}
-                {bankType &&
-                  bankType.map(item => (
-                    <Option value={item.id}>{item.name}</Option>
+                {coinType &&
+                  coinType.map(item => (
+                    <Option value={item.code}>{item.code}</Option>
                   ))}
               </Select>
             )}
+          </Form.Item>
+          <Form.Item label="支付币种">
+            {getFieldDecorator('coinName', { initialValue: '全部' })(
+              <Select>
+                {coinType &&
+                  coinType.map(item => (
+                    <Option value={item.code}>{item.code}</Option>
+                  ))}
+              </Select>
+            )}
+          </Form.Item>
+          <Form.Item label="类型">
+            {getFieldDecorator('coinName', { initialValue: '全部' })(
+              <Select>
+                {coinType &&
+                  coinType.map(item => (
+                    <Option value={item.code}>{item.code}</Option>
+                  ))}
+              </Select>
+            )}
+          </Form.Item>
+          <Form.Item label="">
+            {getFieldDecorator('rangePicker')(<RangePicker />)}
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" className="mr20">
               搜索
             </Button>
-            <Button className="mr20">显示全部</Button>
+            <Button
+              onClick={() => {
+                this.toHref(0);
+              }}
+            >
+              添加
+            </Button>
           </Form.Item>
         </Form>
         <Table
@@ -258,11 +258,11 @@ class AuthenList extends Component {
 }
 
 const mapStateToProps = state => ({
-  bankType: state.selectOption.bankType
+  coinType: state.selectOption.coinType
 });
 
 const mapDispatchToProps = dispatch => ({
-  getBankType: dispatch.selectOption.getBankType
+  getCoinType: dispatch.selectOption.getCoinType
 });
 
 export default connect(
