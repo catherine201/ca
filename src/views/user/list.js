@@ -220,11 +220,13 @@ class UserList extends Component {
 }
 
 const mapStateToProps = state => ({
-  test: state.demo.test
+  pagination: state.searchOption.pagination,
+  searchObj: state.searchOption.searchObj
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTest: dispatch.demo.getTest
+  getPagination: dispatch.searchOption.getPagination,
+  getSearchObj: dispatch.searchOption.getSearchObj
 });
 
 export default connect(

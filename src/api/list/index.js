@@ -172,6 +172,23 @@ const config = {
       errorHandler: true,
       showLoading: false
     }
+  },
+  // 获取当前抢拍 抢拍记录
+  queryListAuctionOrders: {
+    url: '/admin/auction/orders',
+    method: 'get',
+    options: {
+      errorHandler: true,
+      showLoading: false
+    }
+  },
+  // 当前抢拍 编辑数量
+  editAuctionOrders: {
+    url: '/admin/allocate/auction/orders',
+    method: 'put',
+    options: {
+      errorHandler: true
+    }
   }
 };
 

@@ -69,3 +69,14 @@ export const auctionCoinType = {
   AuctionCoinTypeBuy: '抢购',
   AuctionCoinTypeSell: '拍卖'
 };
+
+// 抢拍订单状态
+export const auctionOrderStatus = {
+  AuctionOrderStatusUnknown: '状态',
+  AuctionOrderStatusCreated: '已创建',
+  AuctionOrderStatusAllocated: '已分配数量',
+  AuctionOrderStatusPayed: '已付款',
+  AuctionOrderStatusCancelled: '已撤销',
+  AuctionOrderStatusOverdue: '逾期，买家未付款',
+  AuctionOrderStatusDone: '已完成'
+};

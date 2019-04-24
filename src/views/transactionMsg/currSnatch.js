@@ -3,8 +3,17 @@ import { connect } from 'react-redux';
 import { Button, Table, Form, Select, Input } from 'antd';
 import createApi from '../../api/list';
 import styles from './index.less';
+import { auctionCoinType, auctionOrderStatus } from '../../utils/map';
+import { timestampToTime } from '../../utils';
+import EditAmount from './editAmount';
 
 const Option = Select.Option;
+const fliterArr = [
+  'AuctionOrderStatusCreated',
+  'AuctionOrderStatusAllocated',
+  'AuctionOrderStatusPayed',
+  'AuctionOrderStatusOverdue'
+];
 
 class AuthenList extends Component {
   constructor(props) {
@@ -15,29 +24,49 @@ class AuthenList extends Component {
       data: [],
       pagination: {
         defaultCurrent: 1,
-        defaultPageSize: 10
+        defaultPageSize: 10,
+        current: 1
       },
-      limit: 10
+      limit: 10,
+      searchObj: {},
+      showEdit: false,
+      editData: {}
     };
   }
 
   componentDidMount() {
     const obj = {
       'listOptions.limit': 10,
-      'listOptions.offset': 0
+      'listOptions.offset': 0,
+      status: fliterArr
     };
-    this.queryVerification(obj);
+    if (!this.props.coinType) {
+      this.props.getCoinType().then(() => {
+        this.queryListAuctionOrders(obj);
+      });
+    } else {
+      this.queryListAuctionOrders(obj);
+    }
   }
 
-  queryVerification = async obj => {
-    const res = await createApi.queryAuctionCoin(obj);
+  queryListAuctionOrders = async obj => {
+    const res = await createApi.queryListAuctionOrders(obj);
     console.log(res);
-    if (res.paging) {
+    if (res && res.paging) {
       const pagination = { ...this.state.pagination };
       pagination.total = res.paging.total - 0;
       this.setState({
         pagination,
-        data: res.list
+        data: res.datas || []
+      });
+    } else {
+      this.setState({
+        pagination: {
+          defaultCurrent: 1,
+          defaultPageSize: 10,
+          current: 1
+        },
+        data: []
       });
     }
   };
@@ -60,88 +89,140 @@ class AuthenList extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        this.setState({
+          searchObj: values
+        });
+        const obj = {
+          tradeCoin:
+            values.tradeCoin === '0' ? '' : values.tradeCoin.toLowerCase(),
+          payCoin: values.payCoin === '0' ? '' : values.payCoin.toLowerCase(),
+          type: values.type,
+          'listOptions.limit': 10,
+          'listOptions.offset': 0,
+          status: fliterArr
+        };
+        this.queryListAuctionOrders(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
     const pager = { ...this.state.pagination };
+    const { searchObj } = this.state;
     pager.current = pagination.current;
     const obj = {
       'listOptions.limit': 10,
-      'listOptions.offset': (pagination.current - 1) * this.state.limit
+      'listOptions.offset': (pagination.current - 1) * this.state.limit,
+      tradeCoin:
+        searchObj.tradeCoin === '0' ? '' : searchObj.tradeCoin.toLowerCase(),
+      payCoin: searchObj.payCoin === '0' ? '' : searchObj.payCoin.toLowerCase(),
+      type: searchObj.type,
+      status: fliterArr
     };
-    this.queryVerification(obj);
+    this.queryListAuctionOrders(obj);
     this.setState({
       pagination: pager
     });
   };
 
+  handleShowEdit = text => {
+    this.setState({
+      editData: text,
+      showEdit: true
+    });
+  };
+
+  handleClose = obj => {
+    console.log(obj);
+    this.setState({
+      editData: {},
+      showEdit: obj.show
+    });
+    if (obj.queryAgain) {
+      const obj = {
+        'listOptions.limit': 10,
+        'listOptions.offset': 0,
+        status: fliterArr
+      };
+      this.queryListAuctionOrders(obj);
+    }
+  };
+
   render() {
-    // const { test, getTest } = this.props;
-    const { data, pagination } = this.state;
+    const { coinType } = this.props;
+    const { data, pagination, showEdit, editData } = this.state;
     const columns = [
       {
         title: '订单号',
-        dataIndex: 'orderID',
-        key: 'orderID'
+        dataIndex: 'id',
+        key: 'id'
       },
       {
         title: '用户ID',
-        dataIndex: 'ID',
-        key: 'ID'
+        dataIndex: 'accountID',
+        key: 'accountID'
       },
-      {
-        title: '用户名',
-        dataIndex: 'userName',
-        key: 'userName'
-      },
+      // {
+      //   title: '用户名',
+      //   dataIndex: 'userName',
+      //   key: 'userName'
+      // },
       {
         title: '市场',
-        dataIndex: 'userName',
-        key: 'userName'
+        dataIndex: 'symbol',
+        key: 'symbol'
       },
       {
         title: '类型',
-        dataIndex: 'userName',
-        key: 'userName'
+        dataIndex: 'type',
+        key: 'type',
+        render: text => <span>{text ? auctionCoinType[text] : ''}</span>
       },
       {
         title: '单价',
-        dataIndex: 'phone',
-        key: 'phone'
+        dataIndex: 'price',
+        key: 'price'
       },
       {
         title: '数量',
-        dataIndex: 'coinType',
-        key: 'coinType'
+        dataIndex: 'amount',
+        key: 'amount'
       },
       {
         title: '已成交',
-        dataIndex: 'coinType',
-        key: 'coinType'
+        dataIndex: 'matchAmount',
+        key: 'matchAmount'
       },
       {
         title: '总额',
-        dataIndex: 'authen',
-        key: 'authen'
+        dataIndex: 'totalAmount',
+        key: 'totalAmount'
       },
       {
         title: '交易时间',
-        dataIndex: 'authen',
-        key: 'authen'
+        dataIndex: 'payedTime',
+        key: 'payedTime',
+        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
       },
       {
         title: '状态',
-        dataIndex: 'authen',
-        key: 'authen'
+        dataIndex: 'status',
+        key: 'status',
+        render: text => <span>{text ? auctionOrderStatus[text] : ''}</span>
       },
       {
         title: '操作',
         render: text =>
           text ? (
             <React.Fragment>
-              <Button>编辑</Button>
+              <Button
+                onClick={() => {
+                  this.handleShowEdit(text);
+                }}
+                className="mr20"
+              >
+                编辑
+              </Button>
               <Button>撤销</Button>
             </React.Fragment>
           ) : (
@@ -164,28 +245,43 @@ class AuthenList extends Component {
       })
     };
     return (
-      <div className={styles.coinRecord_list}>
+      <div className={styles.snatchConfig_list}>
         <p className="common_title">当前抢拍</p>
         <Form
           layout="inline"
           onSubmit={this.handleSubmit}
           className="search_form"
         >
-          <Form.Item label="币种">
-            {getFieldDecorator('adType', { initialValue: '0' })(
+          <Form.Item label="交易币种">
+            {getFieldDecorator('tradeCoin', { initialValue: '0' })(
               <Select>
                 <Option value="0">全部</Option>
-                <Option value="1">正常</Option>
-                <Option value="2">冻结</Option>
+                {coinType &&
+                  coinType.map(item => (
+                    <Option value={item.code}>{item.code}</Option>
+                  ))}
+              </Select>
+            )}
+          </Form.Item>
+          <Form.Item label="支付币种">
+            {getFieldDecorator('payCoin', { initialValue: '0' })(
+              <Select>
+                <Option value="0">全部</Option>
+                {coinType &&
+                  coinType.map(item => (
+                    <Option value={item.code}>{item.code}</Option>
+                  ))}
               </Select>
             )}
           </Form.Item>
           <Form.Item label="类型">
-            {getFieldDecorator('adType', { initialValue: '0' })(
+            {getFieldDecorator('type', {
+              initialValue: 'AuctionCoinTypeUnknow'
+            })(
               <Select>
-                <Option value="0">全部</Option>
-                <Option value="1">正常</Option>
-                <Option value="2">冻结</Option>
+                <Option value="AuctionCoinTypeUnknow">全部</Option>
+                <Option value="AuctionCoinTypeBuy">抢购</Option>
+                <Option value="AuctionCoinTypeSell">拍卖</Option>
               </Select>
             )}
           </Form.Item>
@@ -194,7 +290,7 @@ class AuthenList extends Component {
               <Input placeholder="用户名" className="search_input" />
             )}
           </Form.Item>
-          <Form.Item>
+          {/* <Form.Item>
             {getFieldDecorator('input')(
               <Input placeholder="开始价" className="search_input" />
             )}
@@ -204,7 +300,7 @@ class AuthenList extends Component {
             {getFieldDecorator('input')(
               <Input placeholder="结束价" className="search_input" />
             )}
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item>
             <Button htmlType="submit" className="mr20">
               搜索
@@ -223,17 +319,20 @@ class AuthenList extends Component {
             return record.id;
           }}
         />
+        {showEdit && (
+          <EditAmount editData={editData} handleClose={this.handleClose} />
+        )}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  test: state.demo.test
+  coinType: state.selectOption.coinType
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTest: dispatch.demo.getTest
+  getCoinType: dispatch.selectOption.getCoinType
 });
 
 export default connect(

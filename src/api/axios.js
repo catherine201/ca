@@ -4,6 +4,8 @@ import { serverIp } from './server_config';
 import loadingImg from '../assets/images/loading.gif';
 import store from '../store/index';
 
+const Qs = require('qs');
+
 axios.defaults.baseURL = serverIp.logic;
 axios.defaults.timeout = 60000;
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
@@ -238,6 +240,9 @@ export function get(url, data, options) {
     method: 'GET',
     url,
     params: data,
+    paramsSerializer(params) {
+      return Qs.stringify(params, { arrayFormat: 'repeat' });
+    },
     baseURL: options.baseUrl || serverIp.logic,
     headers: {
       authorization: getToken()
