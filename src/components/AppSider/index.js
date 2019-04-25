@@ -1,12 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Layout, Menu } from 'antd';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import styles from './index.less';
 
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 
-function generateMenu(props, menus) {
+function generateMenu(props, menus, that) {
   let items = [];
   console.log(props.location);
   const arr = props.location.pathname.split('/');
@@ -27,7 +28,7 @@ function generateMenu(props, menus) {
               : styles['list-item']
           }
         >
-          {generateMenu(props, menu.subMenu)}
+          {generateMenu(props, menu.subMenu, that)}
         </SubMenu>
       );
     }
@@ -38,9 +39,17 @@ function generateMenu(props, menus) {
           arr[2] === menu.key ? styles['list-item-active'] : styles['list-item']
         }
       >
-        <Link to={menu.path}>
+        {/* <Link to={menu.path}>
           <span className="nav-text">{menu.text}</span>
-        </Link>
+        </Link> */}
+        <span
+          className="nav-text"
+          onClick={() => {
+            that.toHref(menu.path);
+          }}
+        >
+          {menu.text}
+        </span>
       </Menu.Item>
     );
   });
@@ -162,10 +171,26 @@ class AppSider extends React.Component {
     ]
   };
 
-  componentDidMount() {}
+  // componentDidMount() {
+  //   // 监听路由变化
+  //   this.props.history.listen(route => {
+  //     console.log(route);
+  //     console.log(this);
+  //     console.log('路由变化了》》》》》》》');
+  //     this.props.dispatch.searchOption.resetPagination();
+  //     this.props.dispatch.searchOption.resetSearchObj();
+  //   });
+  // }
+
+  // componentWillReceiveProps() {
+  //   this.props.dispatch.searchOption.resetPagination();
+  //   this.props.dispatch.searchOption.resetSearchObj();
+  // }
 
   toHref(target) {
-    this.props.history.push(`/admin/console/${target}`);
+    this.props.dispatch.searchOption.resetPagination();
+    this.props.dispatch.searchOption.resetSearchObj();
+    this.props.history.push(target);
   }
 
   render() {
@@ -178,12 +203,16 @@ class AppSider extends React.Component {
             mode="inline"
             defaultOpenKeys={['userMsg', 'financialMsg', 'transactionMsg']}
           >
-            {generateMenu(this.props, this.state.menu)}
+            {generateMenu(this.props, this.state.menu, this)}
           </Menu>
         </div>
       </Sider>
     );
   }
 }
-
-export default AppSider;
+const mapDispatchToProps = dispatch => ({
+  resetPagination: dispatch.searchOption.resetPagination,
+  resetSearchObj: dispatch.searchOption.resetSearchObj
+});
+// export default AppSider;
+export default connect(mapDispatchToProps)(AppSider);

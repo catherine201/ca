@@ -13,119 +13,176 @@ class UserList extends Component {
     this.state = {
       //   time: [],
       // searchName: '',
-      limit: 12,
+      limit: 10,
       data: [],
-      pagination: {
-        defaultCurrent: 1,
-        defaultPageSize: 12
-      }
+      tableHeight: document.body.offsetHeight - 320
+      // pagination: {
+      //   defaultCurrent: 1,
+      //   defaultPageSize: 10
+      // }
     };
   }
 
   componentDidMount() {
+    window.addEventListener('resize', () => {
+      console.log(this);
+      this.setState({
+        tableHeight: document.body.offsetHeight - 320
+      });
+    });
+    const { pagination, searchObj } = this.props;
+    const createdTimeFrom = searchObj.createdTim;
+    // &&
+    // searchObj.createdTime[0] &&
+    // new Date(searchObj.createdTime[0].format('YYYY-MM-DD')).getTime();
+    const createdTimeTo = searchObj.createdTime;
+    // &&
+    // searchObj.createdTime[1] &&
+    // new Date(searchObj.createdTime[1].format('YYYY-MM-DD')).getTime();
+    const uid = searchObj.uid;
+    const phone = searchObj.phone;
+    const name = searchObj.name;
     const obj = {
-      'listOptions.limit': 12,
-      'listOptions.offset': 0
+      'listOptions.limit': this.state.limit,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
+    createdTimeFrom && (obj.createdTimeFrom = createdTimeFrom);
+    createdTimeTo && (obj.createdTimeTo = createdTimeTo);
+    uid && (obj.uid = uid);
+    phone && (obj.phone = phone);
+    name && (obj.name = name);
     this.queryUser(obj);
   }
 
   queryUser = async obj => {
     const res = await createApi.queryUser(obj);
     console.log(res);
-    if (res.paging) {
-      const pagination = { ...this.state.pagination };
+    if (res && res.paging) {
+      const pagination = { ...this.props.pagination };
       pagination.total = res.paging.total - 0;
+      this.props.getPagination(pagination);
       this.setState({
-        pagination,
-        data: res.list
+        // pagination,
+        data: res.list || []
+      });
+    } else {
+      this.setState({
+        data: []
       });
     }
   };
-
-  // onChangeTime = (date, dateString) => {
-  //   console.log(date, dateString);
-  // };
-
-  // changeName = e => {
-  //   this.setState({
-  //     searchName: e.target.value
-  //   });
-  //   console.log(this.state.searchName);
-  // };
-
-  handleSearch = () => {};
 
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        // const { searchObj } = this.props;
         console.log('Received values of form: ', values);
+        const createdTimeFrom =
+          values.createdTim &&
+          values.createdTime[0] &&
+          new Date(values.createdTime[0].format('YYYY-MM-DD')).getTime();
+        const createdTimeTo =
+          values.createdTime &&
+          values.createdTime[1] &&
+          new Date(values.createdTime[1].format('YYYY-MM-DD')).getTime();
+        const uid = values.uid;
+        const phone = values.phone;
+        const name = values.name;
+        this.props.getSearchObj({
+          createdTimeFrom,
+          createdTimeTo,
+          uid,
+          phone,
+          name
+        });
+        const pager = { ...this.props.pagination };
+        pager.current = 1;
+        this.props.getPagination(pager);
         const obj = {
-          createdTimeFrom:
-            values.createdTime[0] &&
-            new Date(values.createdTime[0].format('YYYY-MM-DD')).getTime(),
-          createdTimeTo:
-            values.createdTime[1] &&
-            new Date(values.createdTime[1].format('YYYY-MM-DD')).getTime(),
-          uid: values.uid,
-          phone: values.phone,
-          name: values.name,
-          'listOptions.limit': 12,
+          'listOptions.limit': this.state.limit,
           'listOptions.offset': 0
         };
+        createdTimeFrom && (obj.createdTimeFrom = createdTimeFrom);
+        createdTimeTo && (obj.createdTimeTo = createdTimeTo);
+        uid && (obj.uid = uid);
+        phone && (obj.phone = phone);
+        name && (obj.name = name);
         this.queryUser(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
-    const pager = { ...this.state.pagination };
+    const { searchObj } = this.props;
+    const pager = { ...this.props.pagination };
     pager.current = pagination.current;
+    this.props.getPagination(pager);
+    const createdTimeFrom = searchObj.createdTim;
+    // &&
+    // searchObj.createdTime[0] &&
+    // new Date(searchObj.createdTime[0].format('YYYY-MM-DD')).getTime();
+    const createdTimeTo = searchObj.createdTime;
+    // &&
+    // searchObj.createdTime[1] &&
+    // new Date(searchObj.createdTime[1].format('YYYY-MM-DD')).getTime();
+    const uid = searchObj.uid;
+    const phone = searchObj.phone;
+    const name = searchObj.name;
     const obj = {
-      'listOptions.limit': 12,
+      'listOptions.limit': this.state.limit,
       'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
+    createdTimeFrom && (obj.createdTimeFrom = createdTimeFrom);
+    createdTimeTo && (obj.createdTimeTo = createdTimeTo);
+    uid && (obj.uid = uid);
+    phone && (obj.phone = phone);
+    name && (obj.name = name);
     this.queryUser(obj);
-    this.setState({
-      pagination: pager
-    });
+    // this.setState({
+    //   pagination: pager
+    // });
   };
 
   render() {
-    // const { test, getTest } = this.props;
+    const { pagination, searchObj } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { data, pagination } = this.state;
+    const { data, tableHeight } = this.state;
     const columns = [
       {
         title: 'UDID',
         dataIndex: 'uid',
         key: 'uid',
-        width: '100',
+        width: '22%',
         render: text => <Link to={`/admin/user/1?id=${text}`}>{text}</Link>
       },
       {
         title: '昵称',
         dataIndex: 'nickName',
-        key: 'nickName'
+        key: 'nickName',
+        width: '10%'
       },
       {
         title: '手机号',
         dataIndex: 'phone',
-        key: 'phone'
+        key: 'phone',
+        width: '10%'
       },
       {
         title: '实名认证',
         dataIndex: 'verified',
-        key: 'verified'
+        key: 'verified',
+        width: '5%'
       },
       {
         title: '总成交笔数',
         dataIndex: 'dealTotal',
-        key: 'dealTotal'
+        key: 'dealTotal',
+        width: '7%'
       },
       {
         title: '总成交率',
+        width: '6%',
         render: text => (
           <span>
             {text.txTotal ? (text.dealTotal / text.txTotal).toFixed(2) : ''}
@@ -135,15 +192,18 @@ class UserList extends Component {
       {
         title: '总申诉笔数',
         dataIndex: 'appealTotal',
-        key: 'appealTotal'
+        key: 'appealTotal',
+        width: '7%'
       },
       {
         title: '近30日成交笔数',
         dataIndex: 'dealTotal30',
-        key: 'dealTotal30'
+        key: 'dealTotal30',
+        width: '7%'
       },
       {
         title: '近30日成交率',
+        width: '6%',
         render: text => (
           <span>
             {text.txTotal30
@@ -155,13 +215,24 @@ class UserList extends Component {
       {
         title: '近30日申诉笔数',
         dataIndex: 'appealTotal30',
-        key: 'appealTotal30'
+        key: 'appealTotal30',
+        width: '7%'
       },
       {
         title: '平均放款时间',
         dataIndex: 'avgConfirmTime',
         key: 'avgConfirmTime'
       }
+    ];
+    const initRangePick = [
+      searchObj.createdTime,
+      // &&
+      //   searchObj.createdTime[0] &&
+      //   moment(timestampToTime(searchObj.createdTime[0] / 1000), 'YYYY/MM/DD')
+      searchObj.createdTime
+      // &&
+      //   searchObj.createdTime[1] &&
+      //   moment(timestampToTime(searchObj.createdTime[1] / 1000), 'YYYY/MM/DD')
     ];
     return (
       <div className={styles.user_list}>
@@ -172,20 +243,24 @@ class UserList extends Component {
           className="search_form"
         >
           <Form.Item label="下单日期">
-            {getFieldDecorator('createdTime')(<RangePicker />)}
+            {getFieldDecorator('createdTime', {
+              initialValue: initRangePick || []
+            })(<RangePicker />)}
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('uid')(<Input placeholder="输入UDID进行搜索" />)}
+            {getFieldDecorator('uid', {
+              initialValue: searchObj.uid || ''
+            })(<Input placeholder="输入UDID进行搜索" />)}
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('phone')(
-              <Input placeholder="输入手机号进行搜索" />
-            )}
+            {getFieldDecorator('phone', {
+              initialValue: searchObj.phone || ''
+            })(<Input placeholder="输入手机号进行搜索" />)}
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('name')(
-              <Input placeholder="输入昵称进行搜索" />
-            )}
+            {getFieldDecorator('name', {
+              initialValue: searchObj.name || ''
+            })(<Input placeholder="输入昵称进行搜索" />)}
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit">查询</Button>
@@ -213,6 +288,7 @@ class UserList extends Component {
             console.log(record.id);
             return record.id;
           }}
+          scroll={{ y: tableHeight }}
         />
       </div>
     );

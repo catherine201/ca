@@ -16,21 +16,31 @@ class OrderList extends Component {
     super(props);
     this.state = {
       //   time: [],
-      limit: 12,
+      limit: 10,
       searchName: '',
       data: [],
-      pagination: {
-        defaultCurrent: 1,
-        defaultPageSize: 12
-      }
+      tableHeight: document.body.offsetHeight - 320
+      // pagination: {
+      //   defaultCurrent: 1,
+      //   defaultPageSize: 12
+      // }
     };
   }
 
   componentDidMount() {
+    window.addEventListener('resize', () => {
+      console.log(this);
+      this.setState({
+        tableHeight: document.body.offsetHeight - 320
+      });
+    });
+    const { pagination, searchObj } = this.props;
+    const type = searchObj.type;
     const obj = {
-      'listOptions.limit': 12,
-      'listOptions.offset': 0
+      'listOptions.limit': this.state.limit,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
+    type && (obj.type = type);
     this.queryOrders(obj);
   }
 
@@ -38,23 +48,24 @@ class OrderList extends Component {
     const res = await createApi.queryOrders(obj);
     console.log(res);
     if (res && res.paging) {
-      const pagination = { ...this.state.pagination };
+      const pagination = { ...this.props.pagination };
       pagination.total = res.paging.total - 0;
-      const data = res.datas;
+      this.props.getPagination(pagination);
+      const data = res.datas || [];
       data &&
         data.length &&
         data.map((item, index) => {
           data[index].status = AdsOrderStatus[data[index].status];
         });
       this.setState({
-        pagination,
+        // pagination,
         data
       });
+    } else {
+      this.setState({
+        data: []
+      });
     }
-  };
-
-  onChangeTime = (date, dateString) => {
-    console.log(date, dateString);
   };
 
   changeName = e => {
@@ -64,45 +75,52 @@ class OrderList extends Component {
     console.log(this.state.searchName);
   };
 
-  handleSearch = () => {};
-
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        const type = values.adType;
+        this.props.getSearchObj({
+          type
+        });
+        const pager = { ...this.props.pagination };
+        pager.current = 1;
+        this.props.getPagination(pager);
         const obj = {
-          type: values.adType,
-          'listOptions.limit': 12,
+          // type: values.adType,
+          'listOptions.limit': this.state.limit,
           'listOptions.offset': 0
         };
+        type && (obj.type = type);
         this.queryOrders(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
-    const pager = { ...this.state.pagination };
+    const { searchObj } = this.props;
+    const pager = { ...this.props.pagination };
     pager.current = pagination.current;
-    console.log(pagination.current);
+    this.props.getPagination(pager);
+    const type = searchObj.type;
     const obj = {
-      'listOptions.limit': 12,
+      'listOptions.limit': this.state.limit,
       'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
+    type && (obj.type = type);
     this.queryOrders(obj);
-    this.setState({
-      pagination: pager
-    });
   };
 
   render() {
-    // const { test, getTest } = this.props;
-    const { data, pagination } = this.state;
+    const { pagination, searchObj } = this.props;
+    const { data, tableHeight } = this.state;
     const columns = [
       {
         title: '订单ID',
         dataIndex: 'id',
         key: 'id',
+        width: '17%',
         render: text => <Link to={`/admin/order/1?id=${text}`}>{text}</Link>
         // <Link to={`/admin/order/1?id=${text}`}>{text}</Link>
       },
@@ -110,42 +128,50 @@ class OrderList extends Component {
         title: '下单时间',
         dataIndex: 'createdTime',
         key: 'createdTime',
+        width: '12%',
         render: text => <span>{text ? timestampToTime(text) : ''}</span>
       },
       {
         title: '广告方',
         dataIndex: 'adsOwner.nickname',
-        key: 'adsOwner1'
+        key: 'adsOwner1',
+        width: '9%'
       },
       {
         title: '买方',
         dataIndex: 'owner.nickname',
-        key: 'owner.nickname'
+        key: 'owner.nickname',
+        width: '9%'
       },
       {
         title: '卖方',
         dataIndex: 'adsOwner.nickname',
-        key: 'adsOwner.nickname'
+        key: 'adsOwner.nickname',
+        width: '9%'
       },
       {
         title: '币种',
         dataIndex: 'rate',
-        key: 'rate'
+        key: 'rate',
+        width: '8%'
       },
       {
         title: '单价',
         dataIndex: 'appeal',
-        key: 'appeal'
+        key: 'appeal',
+        width: '9%'
       },
       {
         title: '数量',
         dataIndex: 'amount',
-        key: 'amount'
+        key: 'amount',
+        width: '8%'
       },
       {
         title: '金额',
         dataIndex: 'feeCNY',
-        key: 'feeCNY'
+        key: 'feeCNY',
+        width: '10%'
       },
       {
         title: '状态',
@@ -176,7 +202,9 @@ class OrderList extends Component {
           </Form.Item>
           <br /> */}
           <Form.Item label="订单状态">
-            {getFieldDecorator('adType', { initialValue: '0' })(
+            {getFieldDecorator('adType', {
+              initialValue: searchObj.type || '0'
+            })(
               <Select>
                 <Option value="0">全部</Option>
                 <Option value="1">待付款</Option>
@@ -208,6 +236,7 @@ class OrderList extends Component {
             console.log(record.id);
             return record.id;
           }}
+          scroll={{ y: tableHeight }}
         />
       </div>
     );
@@ -215,11 +244,13 @@ class OrderList extends Component {
 }
 
 const mapStateToProps = state => ({
-  test: state.demo.test
+  pagination: state.searchOption.pagination,
+  searchObj: state.searchOption.searchObj
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTest: dispatch.demo.getTest
+  getPagination: dispatch.searchOption.getPagination,
+  getSearchObj: dispatch.searchOption.getSearchObj
 });
 
 export default connect(

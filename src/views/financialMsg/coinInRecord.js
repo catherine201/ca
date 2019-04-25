@@ -15,20 +15,36 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      pagination: {
-        defaultCurrent: 1,
-        defaultPageSize: 10
-      },
+      tableHeight: document.body.offsetHeight - 320,
+      // pagination: {
+      //   defaultCurrent: 1,
+      //   defaultPageSize: 10
+      // },
       limit: 10
     };
   }
 
   componentDidMount() {
+    window.addEventListener('resize', () => {
+      console.log(this);
+      this.setState({
+        tableHeight: document.body.offsetHeight - 320
+      });
+    });
+    const { pagination, searchObj } = this.props;
+    const coinName = searchObj.coinName;
+    const beginTime = searchObj.beginTime;
+    const endTime = searchObj.endTime;
+    const nickname = searchObj.nickname;
     const obj = {
-      'listOptions.limit': 10,
-      'listOptions.offset': 0,
+      'listOptions.limit': this.state.limit,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit,
       type: 1
     };
+    coinName && (obj.coinName = coinName);
+    beginTime && (obj.beginTime = beginTime);
+    endTime && (obj.endTime = endTime);
+    nickname && (obj.nickname = nickname);
     // this.queryCointxs(obj);
     if (!this.props.coinType) {
       this.props.getCoinType().then(() => {
@@ -43,31 +59,29 @@ class AuthenList extends Component {
     const res = await createApi.queryCointxs(obj);
     console.log(res.list);
     if (res && res.paging) {
-      const pagination = { ...this.state.pagination };
+      const pagination = { ...this.props.pagination };
       pagination.total = res.paging.total - 0;
+      this.props.getPagination(pagination);
       if (res.datas) {
         res.datas.map((item, index) => {
           res.datas[index].index = (res.paging.offset - 0 || 0) + index + 1;
         });
       }
       this.setState({
-        pagination,
+        // pagination,
         data: res.datas || []
       });
     } else {
       this.setState({
-        pagination: {
-          defaultCurrent: 1,
-          defaultPageSize: 10,
-          current: 1
-        },
+        // pagination: {
+        //   defaultCurrent: 1,
+        //   defaultPageSize: 10,
+        //   current: 1
+        // },
         data: []
       });
+      this.props.resetPagination();
     }
-  };
-
-  onChangeTime = (date, dateString) => {
-    console.log(date, dateString);
   };
 
   changeName = e => {
@@ -77,89 +91,125 @@ class AuthenList extends Component {
     console.log(this.state.searchName);
   };
 
-  handleSearch = () => {};
-
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        const coinName =
+          values.coinName === '全部' ? '' : values.coinName.toLowerCase();
+        const beginTime =
+          values.rangePicker &&
+          values.rangePicker[0] &&
+          new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime();
+        const endTime =
+          values.rangePicker &&
+          values.rangePicker[1] &&
+          new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime();
+        const nickname = values.nickname;
+        this.props.getSearchObj({
+          coinName,
+          beginTime,
+          endTime,
+          nickname
+        });
+        const pager = { ...this.props.pagination };
+        pager.current = 1;
+        this.props.getPagination(pager);
         const obj = {
-          coinName:
-            values.coinName === '全部' ? '' : values.coinName.toLowerCase(), // 币种
-          beginTime:
-            values.rangePicker &&
-            values.rangePicker[0] &&
-            new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime(),
-          endTime:
-            values.rangePicker &&
-            values.rangePicker[1] &&
-            new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
-          nickname: values.nickname, // 用户名
-          'listOptions.limit': 10,
+          // coinName:
+          //   values.coinName === '全部' ? '' : values.coinName.toLowerCase(), // 币种
+          // beginTime:
+          //   values.rangePicker &&
+          //   values.rangePicker[0] &&
+          //   new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime(),
+          // endTime:
+          //   values.rangePicker &&
+          //   values.rangePicker[1] &&
+          //   new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
+          // nickname: values.nickname, // 用户名
+          'listOptions.limit': this.state.limit,
           'listOptions.offset': 0,
           type: 1
         };
+        coinName && (obj.coinName = coinName);
+        beginTime && (obj.beginTime = beginTime);
+        endTime && (obj.endTime = endTime);
+        nickname && (obj.nickname = nickname);
         this.queryCointxs(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
-    const pager = { ...this.state.pagination };
+    const { searchObj } = this.props;
+    const pager = { ...this.props.pagination };
     pager.current = pagination.current;
+    this.props.getPagination(pager);
+    const coinName = searchObj.coinName;
+    const beginTime = searchObj.beginTime;
+    const endTime = searchObj.endTime;
+    const nickname = searchObj.nickname;
     const obj = {
-      'listOptions.limit': 10,
+      'listOptions.limit': this.state.limit,
       'listOptions.offset': (pagination.current - 1) * this.state.limit,
       type: 1
     };
+    coinName && (obj.coinName = coinName);
+    beginTime && (obj.beginTime = beginTime);
+    endTime && (obj.endTime = endTime);
+    nickname && (obj.nickname = nickname);
     this.queryCointxs(obj);
-    this.setState({
-      pagination: pager
-    });
+    // this.setState({
+    //   pagination: pager
+    // });
   };
 
   render() {
-    const { coinType } = this.props;
-    const { data, pagination } = this.state;
+    const { coinType, pagination, searchObj } = this.props;
+    const { data, tableHeight } = this.state;
     const columns = [
       {
         title: '序号',
         dataIndex: 'index',
-        key: 'index'
+        key: 'index',
+        width: '5%'
       },
       {
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
-        width: '240px'
+        width: '17%'
       },
       {
         title: '用户名',
         dataIndex: 'nickName',
-        key: 'nickName'
+        key: 'nickName',
+        width: '8%'
       },
       {
         title: '币种',
         dataIndex: 'coinName',
-        key: 'coinName'
+        key: 'coinName',
+        width: '7%'
       },
       {
         title: '充币数量',
         dataIndex: 'amount',
-        key: 'amount'
+        key: 'amount',
+        width: '10%'
       },
       {
         title: '充币地址',
         dataIndex: 'from',
         key: 'from',
-        width: '220px'
+        width: '17%'
       },
       {
         title: 'TXID',
         dataIndex: 'txHash',
         key: 'txHash',
-        width: '320px'
+        width: '22%'
       },
       {
         title: '充币时间',
@@ -169,6 +219,7 @@ class AuthenList extends Component {
       }
     ];
     const { getFieldDecorator } = this.props.form;
+    const initRange = [searchObj.beginTime, searchObj.endTime];
     return (
       <div className={styles.coinRecord_list}>
         <p className="common_title">充币记录</p>
@@ -178,23 +229,29 @@ class AuthenList extends Component {
           className="search_form"
         >
           <Form.Item label="币种">
-            {getFieldDecorator('coinName', { initialValue: '0' })(
+            {getFieldDecorator('coinName', {
+              initialValue: searchObj.coinName || ''
+            })(
               <Select>
-                <Option value="0">全部</Option>
+                <Option value="">全部</Option>
                 {coinType &&
                   coinType.map(item => (
-                    <Option value={item.code}>{item.code}</Option>
+                    <Option value={item.code} key={item.code}>
+                      {item.code}
+                    </Option>
                   ))}
               </Select>
             )}
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('nickname')(
-              <Input placeholder="用户名" className="search_input" />
-            )}
+            {getFieldDecorator('nickname', {
+              initialValue: searchObj.nickname || ''
+            })(<Input placeholder="用户名" className="search_input" />)}
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('rangePicker')(<RangePicker />)}
+            {getFieldDecorator('rangePicker', {
+              initialValue: initRange || []
+            })(<RangePicker />)}
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" className="mr20">
@@ -212,6 +269,7 @@ class AuthenList extends Component {
             console.log(record.id);
             return record.id;
           }}
+          scroll={{ y: tableHeight }}
         />
       </div>
     );
@@ -219,11 +277,16 @@ class AuthenList extends Component {
 }
 
 const mapStateToProps = state => ({
-  coinType: state.selectOption.coinType
+  coinType: state.selectOption.coinType,
+  pagination: state.searchOption.pagination,
+  searchObj: state.searchOption.searchObj
 });
 
 const mapDispatchToProps = dispatch => ({
-  getCoinType: dispatch.selectOption.getCoinType
+  getCoinType: dispatch.selectOption.getCoinType,
+  getPagination: dispatch.searchOption.getPagination,
+  getSearchObj: dispatch.searchOption.getSearchObj,
+  resetPagination: dispatch.searchOption.resetPagination
 });
 
 export default connect(

@@ -41,10 +41,10 @@ const selectOptionState = {
       const res = await createApi.queryBankType();
       if (res.datas) {
         const data = [
-          {
-            name: '全部',
-            id: ''
-          },
+          // {
+          //   name: '全部',
+          //   id: ''
+          // },
           ...res.datas
         ];
         dispatch.selectOption.setBankType(data);

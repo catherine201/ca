@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import { Link } from 'react-router-dom';
-import { DatePicker, Input, Button, Table, Form } from 'antd';
+// Input, Button,DatePicker
+import { Table, Form } from 'antd';
 import styles from './index.less';
 import createApi from '../../api/list';
 import { cardType, verifyStatus, authenStatusType } from '../../utils/map';
 import { timestampToTime } from '../../utils';
 
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 
 class AuthenList extends Component {
   constructor(props) {
@@ -16,17 +17,25 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      pagination: {
-        defaultCurrent: 1,
-        defaultPageSize: 12
-      }
+      tableHeight: document.body.offsetHeight - 320
+      // pagination: {
+      //   defaultCurrent: 1,
+      //   defaultPageSize: 12
+      // }
     };
   }
 
   componentDidMount() {
+    window.addEventListener('resize', () => {
+      console.log(this);
+      this.setState({
+        tableHeight: document.body.offsetHeight - 320
+      });
+    });
+    const { pagination } = this.props;
     const obj = {
-      'listOptions.limit': 12,
-      'listOptions.offset': 0
+      'listOptions.limit': this.state.limit,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
     this.queryVerification(obj);
   }
@@ -35,17 +44,18 @@ class AuthenList extends Component {
     const res = await createApi.queryVerification();
     console.log(res.list);
     if (res && res.paging) {
-      const pagination = { ...this.state.pagination };
+      const pagination = { ...this.props.pagination };
       pagination.total = res.paging.total - 0;
+      this.props.getPagination(pagination);
       this.setState({
-        pagination,
-        data: res.list
+        // pagination,
+        data: res.list || []
+      });
+    } else {
+      this.setState({
+        data: []
       });
     }
-  };
-
-  onChangeTime = (date, dateString) => {
-    console.log(date, dateString);
   };
 
   changeName = e => {
@@ -55,28 +65,24 @@ class AuthenList extends Component {
     console.log(this.state.searchName);
   };
 
-  handleSearch = () => {};
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
-    });
-  };
+  // handleSubmit = e => {
+  //   e.preventDefault();
+  //   this.props.form.validateFields((err, values) => {
+  //     if (!err) {
+  //       console.log('Received values of form: ', values);
+  //     }
+  //   });
+  // };
 
   handleTableChange = pagination => {
-    const pager = { ...this.state.pagination };
+    const pager = { ...this.props.pagination };
     pager.current = pagination.current;
+    this.props.getPagination(pager);
     const obj = {
-      'listOptions.limit': 12,
+      'listOptions.limit': this.state.limit,
       'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
     this.queryVerification(obj);
-    this.setState({
-      pagination: pager
-    });
   };
 
   toHref = text => {
@@ -87,59 +93,68 @@ class AuthenList extends Component {
   };
 
   render() {
-    // const { test, getTest } = this.props;
-    const { data, pagination } = this.state;
+    const { pagination } = this.props;
+    const { data, tableHeight } = this.state;
     const columns = [
       {
         title: 'UDID',
         dataIndex: 'uid',
-        key: 'uid'
+        key: 'uid',
+        width: '22%'
         // render: text => <Link to={text}>{text}</Link>
       },
       {
         title: '昵称',
         dataIndex: 'nickName',
-        key: 'nickName'
+        key: 'nickName',
+        width: '10%'
       },
       {
         title: '手机号',
         dataIndex: 'phone',
-        key: 'phone'
+        key: 'phone',
+        width: '10%'
       },
       {
         title: '实名认证',
         dataIndex: 'verifyStatus',
         key: 'verifyStatus',
-        render: text => <span>{text ? verifyStatus[text] : '未提交'}</span>
+        render: text => <span>{text ? verifyStatus[text] : '未提交'}</span>,
+        width: '7%'
         // render: text => <span>{text.realNameInfoStatus}</span>
       },
       {
         title: '姓名',
         dataIndex: 'name',
-        key: 'name'
+        key: 'name',
+        width: '7%'
       },
       {
         title: '证件类型',
         dataIndex: 'cer.type',
         key: 'cer.type',
+        width: '7%',
         render: text => <span>{cardType[text]}</span>
       },
       {
         title: '证件号',
         dataIndex: 'cer.serialNo',
-        key: 'cer.serialNo'
+        key: 'cer.serialNo',
+        width: '10%'
       },
       {
         title: '认证时间',
         dataIndex: 'createdTime',
         key: 'createdTime',
-        render: text => <span>{text ? timestampToTime(text) : ''}</span>
+        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>,
+        width: '12%'
       },
       {
         title: '状态',
         dataIndex: 'accountStatus',
         key: 'accountStatus',
-        render: text => <span>{authenStatusType[text]}</span>
+        render: text => <span>{authenStatusType[text]}</span>,
+        width: '8%'
       },
       {
         title: '操作',
@@ -158,11 +173,11 @@ class AuthenList extends Component {
           )
       }
     ];
-    const { getFieldDecorator } = this.props.form;
+    // const { getFieldDecorator } = this.props.form;
     return (
       <div className={styles.user_list}>
         <p className="common_title">实名认证列表</p>
-        <Form
+        {/* <Form
           layout="inline"
           onSubmit={this.handleSubmit}
           className="search_form"
@@ -181,7 +196,7 @@ class AuthenList extends Component {
           <Form.Item>
             <Button htmlType="submit">查询</Button>
           </Form.Item>
-        </Form>
+        </Form> */}
         <Table
           columns={columns}
           dataSource={data}
@@ -191,6 +206,7 @@ class AuthenList extends Component {
             console.log(record.id);
             return record.id;
           }}
+          scroll={{ y: tableHeight }}
         />
       </div>
     );
@@ -198,11 +214,13 @@ class AuthenList extends Component {
 }
 
 const mapStateToProps = state => ({
-  test: state.demo.test
+  pagination: state.searchOption.pagination,
+  searchObj: state.searchOption.searchObj
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTest: dispatch.demo.getTest
+  getPagination: dispatch.searchOption.getPagination,
+  getSearchObj: dispatch.searchOption.getSearchObj
 });
 
 export default connect(

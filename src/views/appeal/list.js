@@ -15,22 +15,32 @@ class AppealList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      limit: 12,
+      limit: 10,
       //   time: [],
       searchName: '',
       data: [],
-      pagination: {
-        defaultCurrent: 1,
-        defaultPageSize: 12
-      }
+      tableHeight: document.body.offsetHeight - 320
+      // pagination: {
+      //   defaultCurrent: 1,
+      //   defaultPageSize: 12
+      // }
     };
   }
 
   componentDidMount() {
+    window.addEventListener('resize', () => {
+      console.log(this);
+      this.setState({
+        tableHeight: document.body.offsetHeight - 320
+      });
+    });
+    const { pagination, searchObj } = this.props;
+    const status = searchObj.status;
     const obj = {
-      'listOptions.limit': 12,
-      'listOptions.offset': 0
+      'listOptions.limit': this.state.limit,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
+    status && (obj.status = status);
     this.queryAppeal(obj);
   }
 
@@ -38,23 +48,24 @@ class AppealList extends Component {
     const res = await createApi.queryAppeal(obj);
     console.log(res);
     if (res && res.paging) {
-      const pagination = { ...this.state.pagination };
+      const pagination = { ...this.props.pagination };
       pagination.total = res.paging.total - 0;
-      const data = res.datas;
+      this.props.getPagination(pagination);
+      const data = res.datas || [];
       data &&
         data.length &&
         data.map((item, index) => {
           data[index].status = appealStatus[data[index].status];
         });
       this.setState({
-        pagination,
+        // pagination,
         data
       });
+    } else {
+      this.setState({
+        data: []
+      });
     }
-  };
-
-  onChangeTime = (date, dateString) => {
-    console.log(date, dateString);
   };
 
   changeName = e => {
@@ -64,34 +75,41 @@ class AppealList extends Component {
     console.log(this.state.searchName);
   };
 
-  handleSearch = () => {};
-
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        const status = values.adType;
+        this.props.getSearchObj({
+          status
+        });
+        const pager = { ...this.props.pagination };
+        pager.current = 1;
+        this.props.getPagination(pager);
         const obj = {
           status: values.adType,
-          'listOptions.limit': 12,
+          'listOptions.limit': this.state.limit,
           'listOptions.offset': 0
         };
+        status && (obj.status = status);
         this.queryAppeal(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
-    const pager = { ...this.state.pagination };
+    const { searchObj } = this.props;
+    const pager = { ...this.props.pagination };
     pager.current = pagination.current;
+    this.props.getPagination(pager);
+    const status = searchObj.status;
     const obj = {
-      'listOptions.limit': 12,
+      'listOptions.limit': this.state.limit,
       'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
+    status && (obj.status = status);
     this.queryAppeal(obj);
-    this.setState({
-      pagination: pager
-    });
   };
 
   toDetail = text => {
@@ -106,11 +124,12 @@ class AppealList extends Component {
   };
 
   render() {
-    // const { test, getTest } = this.props;
-    const { data, pagination } = this.state;
+    const { searchObj, pagination } = this.props;
+    const { data, tableHeight } = this.state;
     const columns = [
       {
         title: '申诉ID',
+        width: '17%',
         // dataIndex: 'appellorID',
         // key: 'appellorID',
         render: text => (
@@ -129,50 +148,59 @@ class AppealList extends Component {
       {
         title: '买方',
         dataIndex: 'order.owner',
-        key: 'order.owner'
+        key: 'order.owner',
+        width: '8%'
       },
       {
         title: '卖方',
         dataIndex: 'order.adsOwner',
-        key: 'order.adsOwner'
+        key: 'order.adsOwner',
+        width: '8%'
       },
       {
         title: '订单ID',
         dataIndex: 'orderID',
         key: 'orderID',
+        width: '17%',
         render: text => <Link to={`/admin/order/1?id=${text}`}>{text}</Link>
       },
       {
         title: '币种',
         dataIndex: 'all',
-        key: 'all'
+        key: 'all',
+        width: '6%'
       },
       {
         title: '金额(CNY)',
         dataIndex: 'order.feeCNY',
-        key: 'order.feeCNY'
+        key: 'order.feeCNY',
+        width: '8%'
       },
       {
         title: '数量',
         dataIndex: 'order.amount',
-        key: 'order.amount'
+        key: 'order.amount',
+        width: '6%'
       },
       {
         title: '付款确认时间',
         dataIndex: '30',
         key: '30',
+        width: '8%',
         render: text => <span>{text ? timestampToTime(text) : ''}</span>
       },
       {
         title: '申诉发起时间',
         dataIndex: 'createdTime',
         key: 'createdTime',
+        width: '8%',
         render: text => <span>{text ? timestampToTime(text) : ''}</span>
       },
       {
         title: '申诉处理时间',
         dataIndex: 'updatedTime',
         key: 'updatedTime',
+        width: '8%',
         render: text => <span>{text ? timestampToTime(text) : ''}</span>
       },
       {
@@ -194,7 +222,9 @@ class AppealList extends Component {
             {getFieldDecorator('range-picker')(<RangePicker />)}
           </Form.Item> */}
           <Form.Item label="订单状态">
-            {getFieldDecorator('adType', { initialValue: '0' })(
+            {getFieldDecorator('adType', {
+              initialValue: searchObj.status || '0'
+            })(
               <Select>
                 <Option value="0">全部</Option>
                 <Option value="1">已创建</Option>
@@ -224,6 +254,7 @@ class AppealList extends Component {
             console.log(record.id);
             return record.id;
           }}
+          scroll={{ y: tableHeight }}
         />
       </div>
     );
@@ -231,11 +262,13 @@ class AppealList extends Component {
 }
 
 const mapStateToProps = state => ({
-  test: state.demo.test
+  pagination: state.searchOption.pagination,
+  searchObj: state.searchOption.searchObj
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTest: dispatch.demo.getTest
+  getPagination: dispatch.searchOption.getPagination,
+  getSearchObj: dispatch.searchOption.getSearchObj
 });
 
 export default connect(

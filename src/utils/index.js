@@ -226,7 +226,10 @@ export function getParams(key) {
 
 export function timestampToTime(timestamp) {
   const date = new Date(timestamp * 1000); // 时间戳为10位需*1000，时间戳为13位的话不需乘1000
-  console.log(date);
+  // console.log(Boolean(date));
+  if (date.toString() === 'Invalid Date') {
+    return '';
+  }
   const Y = `${date.getFullYear()}/`;
   const M = `${
     date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1

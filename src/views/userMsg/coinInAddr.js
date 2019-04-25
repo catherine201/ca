@@ -15,20 +15,37 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      pagination: {
-        defaultCurrent: 1,
-        defaultPageSize: 10,
-        current: 1
-      },
+      tableHeight: document.body.offsetHeight - 320,
+      // pagination: {
+      //   defaultCurrent: 1,
+      //   defaultPageSize: 10,
+      //   current: 1
+      // },
       limit: 10
     };
   }
 
   componentDidMount() {
+    console.log(this);
+    window.addEventListener('resize', () => {
+      console.log(this);
+      this.setState({
+        tableHeight: document.body.offsetHeight - 320
+      });
+    });
+    const { pagination, searchObj } = this.props;
+    const beginTime = searchObj.beginTime;
+    const endTime = searchObj.endTime;
+    const coinName = searchObj.coinName;
+    const accountID = searchObj.accountID;
     const obj = {
-      'listOptions.limit': 10,
-      'listOptions.offset': 0
+      'listOptions.limit': this.state.limit,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
+    beginTime && (obj.beginTime = beginTime);
+    endTime && (obj.endTime = endTime);
+    coinName && (obj.coinName = coinName);
+    accountID && (obj.accountID = accountID);
     if (!this.props.coinType) {
       this.props.getCoinType().then(() => {
         this.queryCoinInAddr(obj);
@@ -44,8 +61,9 @@ class AuthenList extends Component {
     const res = await createApi.queryCoinInAddr(obj);
     console.log(res.list);
     if (res && res.paging) {
-      const pagination = { ...this.state.pagination };
+      const pagination = { ...this.props.pagination };
       pagination.total = res.paging.total - 0;
+      this.props.getPagination(pagination);
       //   const data = res.datas || [];
       if (res.datas) {
         res.datas.map((item, index) => {
@@ -55,23 +73,21 @@ class AuthenList extends Component {
       console.log(res.datas);
       console.log(pagination);
       this.setState({
-        pagination,
+        // pagination,
         data: res.datas || []
       });
     } else {
       this.setState({
-        pagination: {
-          defaultCurrent: 1,
-          defaultPageSize: 10,
-          current: 1
-        },
+        // pagination: {
+        //   defaultCurrent: 1,
+        //   defaultPageSize: 10,
+        //   current: 1,
+        //   total: 0
+        // },
         data: []
       });
+      this.props.resetPagination();
     }
-  };
-
-  onChangeTime = (date, dateString) => {
-    console.log(date, dateString);
   };
 
   changeName = e => {
@@ -81,80 +97,118 @@ class AuthenList extends Component {
     console.log(this.state.searchName);
   };
 
-  handleSearch = () => {};
-
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        const coinName =
+          values.coinName === '全部' ? '' : values.coinName.toLowerCase();
+        const beginTime =
+          values.rangePicker &&
+          values.rangePicker[0] &&
+          new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime();
+        const endTime =
+          values.rangePicker &&
+          values.rangePicker[1] &&
+          new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime();
+        const accountID = values.accountID;
+        this.props.getSearchObj({
+          coinName,
+          beginTime,
+          endTime,
+          accountID
+        });
+        const pager = { ...this.props.pagination };
+        pager.current = 1;
+        this.props.getPagination(pager);
         const obj = {
-          coinName:
-            values.coinName === '全部' ? '' : values.coinName.toLowerCase(), // 币种
-          beginTime:
-            values.rangePicker &&
-            values.rangePicker[0] &&
-            new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime(),
-          endTime:
-            values.rangePicker &&
-            values.rangePicker[1] &&
-            new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
-          accountID: values.accountID, // 用户名
-          'listOptions.limit': 10,
+          // coinName:
+          //   values.coinName === '全部' ? '' : values.coinName.toLowerCase(), // 币种
+          // beginTime:
+          //   values.rangePicker &&
+          //   values.rangePicker[0] &&
+          //   new Date(values.rangePicker[0].format('YYYY-MM-DD')).getTime(),
+          // endTime:
+          //   values.rangePicker &&
+          //   values.rangePicker[1] &&
+          //   new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
+          // accountID: values.accountID, // 用户名
+          'listOptions.limit': this.state.limit,
           'listOptions.offset': 0
         };
+        coinName && (obj.coinName = coinName);
+        beginTime && (obj.beginTime = beginTime);
+        endTime && (obj.endTime = endTime);
+        accountID && (obj.accountID = accountID);
         this.queryCoinInAddr(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
-    const pager = { ...this.state.pagination };
+    const { searchObj } = this.props;
+    const pager = { ...this.props.pagination };
     pager.current = pagination.current;
+    this.props.getPagination(pager);
+    const coinName = searchObj.coinName;
+    const beginTime = searchObj.beginTime;
+    const endTime = searchObj.endTime;
+    const accountID = searchObj.accountID;
     const obj = {
-      'listOptions.limit': 10,
+      'listOptions.limit': this.state.limit,
       'listOptions.offset': (pagination.current - 1) * this.state.limit
     };
+    coinName && (obj.coinName = coinName);
+    beginTime && (obj.beginTime = beginTime);
+    endTime && (obj.endTime = endTime);
+    accountID && (obj.accountID = accountID);
     this.queryCoinInAddr(obj);
-    this.setState({
-      pagination: pager
-    });
+    // this.setState({
+    //   pagination: pager
+    // });
   };
 
   render() {
-    const { coinType } = this.props;
-    const { data, pagination } = this.state;
+    const { coinType, pagination, searchObj } = this.props;
+    const { data, tableHeight } = this.state;
     const columns = [
       {
         title: '序号',
         dataIndex: 'index',
-        key: 'index'
+        key: 'index',
+        width: '5%'
         // render: text => <span>{text}</span>
       },
       {
         title: 'ID',
         dataIndex: 'id',
-        key: 'id'
+        key: 'id',
+        width: '17%'
       },
       {
         title: '用户名',
         dataIndex: 'nickName',
-        key: 'nickName'
+        key: 'nickName',
+        width: '10%'
       },
       {
         title: '手机号',
         dataIndex: 'phone',
-        key: 'phone'
+        key: 'phone',
+        width: '10%'
       },
       {
         title: '币种',
         dataIndex: 'coinName',
-        key: 'coinName'
+        key: 'coinName',
+        width: '5%'
       },
       {
         title: '充值地址',
         dataIndex: 'address',
-        key: 'address'
+        key: 'address',
+        width: '30%'
       },
       {
         title: '注册时间',
@@ -164,6 +218,7 @@ class AuthenList extends Component {
       }
     ];
     const { getFieldDecorator } = this.props.form;
+    const initRangePick = [searchObj.beginTime, searchObj.endTime];
     return (
       <div className={styles.userMsg_list}>
         <p className="common_title">充币地址</p>
@@ -173,26 +228,32 @@ class AuthenList extends Component {
           className="search_form"
         >
           <Form.Item>
-            {getFieldDecorator('accountID')(
-              <Input placeholder="用户名" className="search_input" />
-            )}
+            {getFieldDecorator('accountID', {
+              initialValue: searchObj.accountID || ''
+            })(<Input placeholder="用户名" className="search_input" />)}
           </Form.Item>
           <Form.Item label="币种">
-            {getFieldDecorator('coinName', { initialValue: '0' })(
+            {getFieldDecorator('coinName', {
+              initialValue: searchObj.coinName || ''
+            })(
               <Select>
-                <Option value="0">全部</Option>
+                <Option value="">全部</Option>
                 {/* <Option value="0">全部</Option>
                 <Option value="1">正常</Option>
                 <Option value="2">冻结</Option> */}
                 {coinType &&
                   coinType.map(item => (
-                    <Option value={item.code}>{item.code}</Option>
+                    <Option value={item.code} key={item.code}>
+                      {item.code}
+                    </Option>
                   ))}
               </Select>
             )}
           </Form.Item>
           <Form.Item label="">
-            {getFieldDecorator('rangePicker')(<RangePicker />)}
+            {getFieldDecorator('rangePicker', {
+              initialValue: initRangePick || []
+            })(<RangePicker />)}
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" className="mr20">
@@ -218,6 +279,7 @@ class AuthenList extends Component {
             console.log(record.id);
             return record.id;
           }}
+          scroll={{ y: tableHeight }}
         />
       </div>
     );
@@ -225,10 +287,15 @@ class AuthenList extends Component {
 }
 
 const mapStateToProps = state => ({
+  pagination: state.searchOption.pagination,
+  searchObj: state.searchOption.searchObj,
   coinType: state.selectOption.coinType
 });
 
 const mapDispatchToProps = dispatch => ({
+  getPagination: dispatch.searchOption.getPagination,
+  getSearchObj: dispatch.searchOption.getSearchObj,
+  resetPagination: dispatch.searchOption.resetPagination,
   getCoinType: dispatch.selectOption.getCoinType
 });
 

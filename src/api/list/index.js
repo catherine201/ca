@@ -189,6 +189,30 @@ const config = {
     options: {
       errorHandler: true
     }
+  },
+  // 撤销当前抢拍
+  cancelAuctionOrder: {
+    url: '/admin/cancel/auction/orders',
+    method: 'put',
+    options: {
+      errorHandler: true
+    }
+  },
+  // 提币记录 拒绝转出
+  rejectCoinTxWithdrawRequest: {
+    url: '/admin/reject/cointx/withdraw',
+    method: 'put',
+    options: {
+      errorHandler: true
+    }
+  },
+  // 提币记录 确认转出
+  acceptCoinTxWithdraw: {
+    url: '/admin/accept/cointx/withdraw',
+    method: 'put',
+    options: {
+      errorHandler: true
+    }
   }
 };
 

@@ -1,7 +1,8 @@
 const defaultPagination = {
   defaultCurrent: 1,
   defaultPageSize: 10,
-  current: 1
+  current: 1,
+  total: 0
 };
 
 const searchOptionState = {

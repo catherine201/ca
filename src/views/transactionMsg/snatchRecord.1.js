@@ -16,38 +16,22 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 320,
-      // pagination: {
-      //   defaultCurrent: 1,
-      //   defaultPageSize: 10,
-      //   current: 1
-      // },
-      limit: 10
-      // searchObj: {}
+      pagination: {
+        defaultCurrent: 1,
+        defaultPageSize: 10,
+        current: 1
+      },
+      limit: 10,
+      searchObj: {}
     };
   }
 
   componentDidMount() {
-    window.addEventListener('resize', () => {
-      console.log(this);
-      this.setState({
-        tableHeight: document.body.offsetHeight - 320
-      });
-    });
-    const { pagination, searchObj } = this.props;
-    const tradeCoin = searchObj.tradeCoin;
-    const payCoin = searchObj.payCoin;
-    const type = searchObj.type;
-    const nickName = searchObj.nickName;
     const obj = {
-      'listOptions.limit': this.state.limit,
-      'listOptions.offset': (pagination.current - 1) * this.state.limit,
-      status: searchObj.status || defaultStatus
+      'listOptions.limit': 10,
+      'listOptions.offset': 0,
+      status: defaultStatus
     };
-    tradeCoin && (obj.tradeCoin = tradeCoin);
-    payCoin && (obj.payCoin = payCoin);
-    type && (obj.type = type);
-    nickName && (obj.nickName = nickName);
     if (!this.props.coinType) {
       this.props.getCoinType().then(() => {
         this.queryListAuctionOrders(obj);
@@ -61,24 +45,26 @@ class AuthenList extends Component {
     const res = await createApi.queryListAuctionOrders(obj);
     console.log(res);
     if (res && res.paging) {
-      const pagination = { ...this.props.pagination };
+      const pagination = { ...this.state.pagination };
       pagination.total = res.paging.total - 0;
-      this.props.getPagination(pagination);
-      if (res.datas) {
-        res.datas.map((item, index) => {
-          res.datas[index].index = (res.paging.offset - 0 || 0) + index + 1;
-        });
-      }
       this.setState({
-        // pagination,
+        pagination,
         data: res.datas || []
       });
     } else {
       this.setState({
+        pagination: {
+          defaultCurrent: 1,
+          defaultPageSize: 10,
+          current: 1
+        },
         data: []
       });
-      this.props.resetPagination();
     }
+  };
+
+  onChangeTime = (date, dateString) => {
+    console.log(date, dateString);
   };
 
   changeName = e => {
@@ -88,92 +74,64 @@ class AuthenList extends Component {
     console.log(this.state.searchName);
   };
 
+  handleSearch = () => {};
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        const tradeCoin =
-          values.tradeCoin === '0' ? '' : values.tradeCoin.toLowerCase();
-        const payCoin =
-          values.payCoin === '0' ? '' : values.payCoin.toLowerCase();
-        const type = values.type;
-        const nickName = values.nickName;
-        const status =
-          values.status === 'AuctionOrderStatusUnknown'
-            ? defaultStatus
-            : values.status;
-        this.props.getSearchObj({
-          tradeCoin,
-          payCoin,
-          type,
-          nickName,
-          status
+        this.setState({
+          searchObj: values
         });
-        const pager = { ...this.props.pagination };
-        pager.current = 1;
-        this.props.getPagination(pager);
         const obj = {
-          // tradeCoin:
-          //   values.tradeCoin === '0' ? '' : values.tradeCoin.toLowerCase(),
-          // payCoin: values.payCoin === '0' ? '' : values.payCoin.toLowerCase(),
-          // type: values.type,
+          tradeCoin:
+            values.tradeCoin === '0' ? '' : values.tradeCoin.toLowerCase(),
+          payCoin: values.payCoin === '0' ? '' : values.payCoin.toLowerCase(),
+          type: values.type,
           status:
             values.status === 'AuctionOrderStatusUnknown'
               ? defaultStatus
               : values.status,
-          'listOptions.limit': this.state.limit,
+          'listOptions.limit': 10,
           'listOptions.offset': 0
         };
-        tradeCoin && (obj.tradeCoin = tradeCoin);
-        payCoin && (obj.payCoin = payCoin);
-        type && (obj.type = type);
-        nickName && (obj.nickName = nickName);
         this.queryListAuctionOrders(obj);
       }
     });
   };
 
   handleTableChange = pagination => {
-    const pager = { ...this.props.pagination };
-    const { searchObj } = this.props;
+    const pager = { ...this.state.pagination };
+    const { searchObj } = this.state;
     pager.current = pagination.current;
-    this.props.getPagination(pager);
-    const tradeCoin = searchObj.tradeCoin;
-    const payCoin = searchObj.payCoin;
-    const type = searchObj.type;
-    const nickName = searchObj.nickName;
-    const status = searchObj.status;
     const obj = {
-      'listOptions.limit': this.state.limit,
-      'listOptions.offset': (pagination.current - 1) * this.state.limit
-      // tradeCoin:
-      //   searchObj.tradeCoin === '0' ? '' : searchObj.tradeCoin.toLowerCase(),
-      // payCoin: searchObj.payCoin === '0' ? '' : searchObj.payCoin.toLowerCase(),
-      // type: searchObj.type,
-      // status:
-      //   searchObj.status === 'AuctionOrderStatusUnknown'
-      //     ? defaultStatus
-      // : searchObj.status
+      'listOptions.limit': 10,
+      'listOptions.offset': (pagination.current - 1) * this.state.limit,
+      tradeCoin:
+        searchObj.tradeCoin === '0' ? '' : searchObj.tradeCoin.toLowerCase(),
+      payCoin: searchObj.payCoin === '0' ? '' : searchObj.payCoin.toLowerCase(),
+      type: searchObj.type,
+      status:
+        searchObj.status === 'AuctionOrderStatusUnknown'
+          ? defaultStatus
+          : searchObj.status
     };
-    tradeCoin && (obj.tradeCoin = tradeCoin);
-    payCoin && (obj.payCoin = payCoin);
-    type && (obj.type = type);
-    nickName && (obj.nickName = nickName);
-    status && (obj.status = status);
     this.queryListAuctionOrders(obj);
+    this.setState({
+      pagination: pager
+    });
   };
 
   render() {
-    const { coinType, pagination, searchObj } = this.props;
-    const { data, tableHeight } = this.state;
+    const { coinType } = this.props;
+    const { data, pagination } = this.state;
     const columns = [
       {
         title: '序号',
-        dataIndex: 'index',
+        // dataIndex: 'UDID',
         key: 'index',
-        width: '5%'
-        // render: text => <span>{text.id}</span>
+        render: text => <span>{text.id}</span>
       },
       // {
       //   title: '订单号',
@@ -183,8 +141,7 @@ class AuthenList extends Component {
       {
         title: '用户ID',
         dataIndex: 'accountID',
-        key: 'accountID',
-        width: '17%'
+        key: 'accountID'
       },
       // {
       //   title: '用户名',
@@ -194,45 +151,38 @@ class AuthenList extends Component {
       {
         title: '市场',
         dataIndex: 'symbol',
-        key: 'symbol',
-        width: '8%'
+        key: 'symbol'
       },
       {
         title: '类型',
         dataIndex: 'type',
         key: 'type',
-        width: '6%',
         render: text => <span>{text ? auctionCoinType[text] : ''}</span>
       },
       {
         title: '单价',
         dataIndex: 'price',
-        key: 'price',
-        width: '10%'
+        key: 'price'
       },
       {
         title: '数量',
         dataIndex: 'amount',
-        key: 'amount',
-        width: '10%'
+        key: 'amount'
       },
       {
         title: '手续费',
         dataIndex: 'fee',
-        key: 'fee',
-        width: '10%'
+        key: 'fee'
       },
       {
         title: '总额',
         dataIndex: 'totalAmount',
-        key: 'totalAmount',
-        width: '10%'
+        key: 'totalAmount'
       },
       {
         title: '交易时间',
         dataIndex: 'payedTime',
         key: 'payedTime',
-        width: '14%',
         render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
       },
       {
@@ -256,49 +206,41 @@ class AuthenList extends Component {
           className="search_form"
         >
           <Form.Item label="交易币种">
-            {getFieldDecorator('tradeCoin', {
-              initialValue: searchObj.tradeCoin || '0'
-            })(
+            {getFieldDecorator('tradeCoin', { initialValue: '0' })(
               <Select>
                 <Option value="0">全部</Option>
                 {coinType &&
                   coinType.map(item => (
-                    <Option value={item.code} key={item.code}>
-                      {item.code}
-                    </Option>
+                    <Option value={item.code}>{item.code}</Option>
                   ))}
               </Select>
             )}
           </Form.Item>
           <Form.Item label="支付币种">
-            {getFieldDecorator('payCoin', {
-              initialValue: searchObj.payCoin || '0'
-            })(
+            {getFieldDecorator('payCoin', { initialValue: '0' })(
               <Select>
                 <Option value="0">全部</Option>
                 {coinType &&
                   coinType.map(item => (
-                    <Option value={item.code} key={item.code}>
-                      {item.code}
-                    </Option>
+                    <Option value={item.code}>{item.code}</Option>
                   ))}
               </Select>
             )}
           </Form.Item>
           <Form.Item label="类型">
             {getFieldDecorator('type', {
-              initialValue: searchObj.type || 'AuctionCoinTypeUnknow'
+              initialValue: 'AuctionCoinTypeUnknow'
             })(
               <Select>
                 <Option value="AuctionCoinTypeUnknow">全部</Option>
-                <Option value="AuctionCoinTypeSell">拍卖</Option>
-                <Option value="AuctionCoinTypeBuy">抢购</Option>
+                <Option value="AuctionCoinTypeSell">抢购</Option>
+                <Option value="AuctionCoinTypeBuy">拍卖</Option>
               </Select>
             )}
           </Form.Item>
           <Form.Item label="状态">
             {getFieldDecorator('status', {
-              initialValue: searchObj.status || 'AuctionOrderStatusUnknown'
+              initialValue: 'AuctionOrderStatusUnknown'
             })(
               <Select>
                 {/* {auctionOrderStatus &&
@@ -312,9 +254,9 @@ class AuthenList extends Component {
             )}
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('nickName', {
-              initialValue: searchObj.nickName || ''
-            })(<Input placeholder="用户名" className="search_input" />)}
+            {getFieldDecorator('input')(
+              <Input placeholder="用户名" className="search_input" />
+            )}
           </Form.Item>
           {/* <Form.Item>
             {getFieldDecorator('input')(
@@ -342,7 +284,6 @@ class AuthenList extends Component {
             console.log(record.id);
             return record.id;
           }}
-          scroll={{ y: tableHeight }}
         />
       </div>
     );
@@ -350,16 +291,11 @@ class AuthenList extends Component {
 }
 
 const mapStateToProps = state => ({
-  coinType: state.selectOption.coinType,
-  pagination: state.searchOption.pagination,
-  searchObj: state.searchOption.searchObj
+  coinType: state.selectOption.coinType
 });
 
 const mapDispatchToProps = dispatch => ({
-  getCoinType: dispatch.selectOption.getCoinType,
-  getPagination: dispatch.searchOption.getPagination,
-  getSearchObj: dispatch.searchOption.getSearchObj,
-  resetPagination: dispatch.searchOption.resetPagination
+  getCoinType: dispatch.selectOption.getCoinType
 });
 
 export default connect(
