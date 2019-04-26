@@ -28,6 +28,7 @@ class AuthenList extends Component {
       //   defaultPageSize: 10,
       //   current: 1
       // },
+      batchArr: [],
       limit: 10,
       // searchObj: {},
       showEdit: false,
@@ -216,6 +217,18 @@ class AuthenList extends Component {
     }
   };
 
+  handleBatchCancled = () => {
+    const arr = [];
+    const obj = {};
+    this.state.batchArr.forEach(item => {
+      obj.url = item.id;
+      arr.push(createApi.cancelAuctionOrder(obj));
+    });
+    Promise.all(arr).then(value => {
+      console.log(value);
+    });
+  };
+
   cancel = e => {
     console.log(e);
   };
@@ -332,6 +345,10 @@ class AuthenList extends Component {
           'selectedRows: ',
           selectedRows
         );
+        console.log(selectedRows);
+        this.setState({
+          batchArr: selectedRows
+        });
       },
       getCheckboxProps: record => ({
         disabled: record.name === 'Disabled User', // Column configuration not to be checked
@@ -407,7 +424,13 @@ class AuthenList extends Component {
             <Button htmlType="submit" className="mr20">
               搜索
             </Button>
-            <Button>批量撤单</Button>
+            <Button
+              onClick={() => {
+                this.handleBatchCancled();
+              }}
+            >
+              批量撤单
+            </Button>
           </Form.Item>
         </Form>
         <Table
