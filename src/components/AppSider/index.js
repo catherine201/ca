@@ -38,18 +38,14 @@ function generateMenu(props, menus, that) {
         className={
           arr[2] === menu.key ? styles['list-item-active'] : styles['list-item']
         }
+        onClick={() => {
+          that.toHref(menu.path);
+        }}
       >
         {/* <Link to={menu.path}>
           <span className="nav-text">{menu.text}</span>
         </Link> */}
-        <span
-          className="nav-text"
-          onClick={() => {
-            that.toHref(menu.path);
-          }}
-        >
-          {menu.text}
-        </span>
+        <span className="nav-text">{menu.text}</span>
       </Menu.Item>
     );
   });

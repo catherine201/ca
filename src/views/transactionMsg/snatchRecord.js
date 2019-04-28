@@ -181,10 +181,10 @@ class AuthenList extends Component {
       //   key: 'orderID'
       // },
       {
-        title: '用户ID',
-        dataIndex: 'accountID',
-        key: 'accountID',
-        width: '17%'
+        title: '用户名',
+        dataIndex: 'nickName',
+        key: 'nickName',
+        width: '12%'
       },
       // {
       //   title: '用户名',
@@ -195,13 +195,13 @@ class AuthenList extends Component {
         title: '市场',
         dataIndex: 'symbol',
         key: 'symbol',
-        width: '8%'
+        width: '9%'
       },
       {
         title: '类型',
         dataIndex: 'type',
         key: 'type',
-        width: '6%',
+        width: '9%',
         render: text => <span>{text ? auctionCoinType[text] : ''}</span>
       },
       {

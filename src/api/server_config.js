@@ -1,5 +1,6 @@
 function resolveIp() {
   const mode = process.env.NODE_ENV.trim();
+  console.log(process.env.ENV_RGV);
   if (mode === 'development') {
     return {
       login: '/log',

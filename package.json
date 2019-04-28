@@ -88,6 +88,7 @@
   },
   "scripts": {
     "new:comp": "node ./scripts/generateComponent",
+    "start:new": "NEW=1 node scripts/start.js",
     "start": "node scripts/start.js",
     "server": "nodemon server.js",
     "build": "node scripts/build.js",

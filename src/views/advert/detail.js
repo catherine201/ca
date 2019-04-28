@@ -28,8 +28,8 @@ class AdvertDetail extends Component {
     const res = await createApi.queryAds(obj);
     if (res.ads) {
       const data = res.ads;
-      data.createPerson = res.ads.owner.nickname;
-      data.createPersonId = res.ads.owner.id;
+      data.createPerson = res.ads.owner && res.ads.owner.nickname;
+      data.createPersonId = res.ads.owner && res.ads.owner.id;
       data.createdTime = res.ads.createdTime
         ? timestampToTime(res.ads.createdTime)
         : '';

@@ -45,7 +45,7 @@ class AuthenList extends Component {
     const coinName = searchObj.coinName;
     const beginTime = searchObj.beginTime;
     const endTime = searchObj.endTime;
-    const nickname = searchObj.nickname;
+    const nickName = searchObj.nickName;
     const status = searchObj.status;
     const obj = {
       'listOptions.limit': this.state.limit,
@@ -55,7 +55,7 @@ class AuthenList extends Component {
     coinName && (obj.coinName = coinName);
     beginTime && (obj.beginTime = beginTime);
     endTime && (obj.endTime = endTime);
-    nickname && (obj.nickname = nickname);
+    nickName && (obj.nickName = nickName);
     status && (obj.status = status);
     // this.queryCointxs(obj);
     if (!this.props.coinType) {
@@ -72,7 +72,7 @@ class AuthenList extends Component {
     const coinName = searchObj.coinName;
     const beginTime = searchObj.beginTime;
     const endTime = searchObj.endTime;
-    const nickname = searchObj.nickname;
+    const nickName = searchObj.nickName;
     const status = searchObj.status;
     const obj = {
       'listOptions.limit': this.state.limit,
@@ -82,7 +82,7 @@ class AuthenList extends Component {
     coinName && (obj.coinName = coinName);
     beginTime && (obj.beginTime = beginTime);
     endTime && (obj.endTime = endTime);
-    nickname && (obj.nickname = nickname);
+    nickName && (obj.nickName = nickName);
     status && (obj.status = status);
     this.queryCointxs(obj);
   };
@@ -133,13 +133,13 @@ class AuthenList extends Component {
           values.rangePicker &&
           values.rangePicker[1] &&
           new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime();
-        const nickname = values.nickname;
+        const nickName = values.nickName;
         const status = values.status;
         this.props.getSearchObj({
           coinName,
           beginTime,
           endTime,
-          nickname,
+          nickName,
           status
         });
         const pager = { ...this.props.pagination };
@@ -156,7 +156,7 @@ class AuthenList extends Component {
           //   values.rangePicker &&
           //   values.rangePicker[1] &&
           //   new Date(values.rangePicker[1].format('YYYY-MM-DD')).getTime(),
-          // nickname: values.nickname, // 用户名
+          // nickName: values.nickName, // 用户名
           'listOptions.limit': this.state.limit,
           'listOptions.offset': 0,
           type: 2
@@ -165,7 +165,7 @@ class AuthenList extends Component {
         coinName && (obj.coinName = coinName);
         beginTime && (obj.beginTime = beginTime);
         endTime && (obj.endTime = endTime);
-        nickname && (obj.nickname = nickname);
+        nickName && (obj.nickName = nickName);
         status && (obj.status = status);
         this.queryCointxs(obj);
       }
@@ -180,7 +180,7 @@ class AuthenList extends Component {
     const coinName = searchObj.coinName;
     const beginTime = searchObj.beginTime;
     const endTime = searchObj.endTime;
-    const nickname = searchObj.nickname;
+    const nickName = searchObj.nickName;
     const status = searchObj.status;
     const obj = {
       'listOptions.limit': this.state.limit,
@@ -190,7 +190,7 @@ class AuthenList extends Component {
     coinName && (obj.coinName = coinName);
     beginTime && (obj.beginTime = beginTime);
     endTime && (obj.endTime = endTime);
-    nickname && (obj.nickname = nickname);
+    nickName && (obj.nickName = nickName);
     status && (obj.status = status);
     this.queryCointxs(obj);
     // this.setState({
@@ -396,8 +396,8 @@ class AuthenList extends Component {
             )}
           </Form.Item>
           <Form.Item>
-            {getFieldDecorator('nickname', {
-              initialValue: searchObj.nickname || ''
+            {getFieldDecorator('nickName', {
+              initialValue: searchObj.nickName || ''
             })(<Input placeholder="用户名" className="search_input" />)}
           </Form.Item>
           <Form.Item>

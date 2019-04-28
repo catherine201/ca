@@ -244,10 +244,10 @@ class AuthenList extends Component {
         width: '17%'
       },
       {
-        title: '用户ID',
-        dataIndex: 'accountID',
-        key: 'accountID',
-        width: '17%'
+        title: '用户名',
+        dataIndex: 'nickName',
+        key: 'nickName',
+        width: '10%'
       },
       // {
       //   title: '用户名',
@@ -264,7 +264,7 @@ class AuthenList extends Component {
         title: '类型',
         dataIndex: 'type',
         key: 'type',
-        width: '5%',
+        width: '6%',
         render: text => <span>{text ? auctionCoinType[text] : ''}</span>
       },
       {
@@ -277,25 +277,25 @@ class AuthenList extends Component {
         title: '数量',
         dataIndex: 'amount',
         key: 'amount',
-        width: '6%'
+        width: '7%'
       },
       {
         title: '已成交',
         dataIndex: 'matchAmount',
         key: 'matchAmount',
-        width: '6%'
+        width: '7%'
       },
       {
         title: '总额',
         dataIndex: 'totalAmount',
         key: 'totalAmount',
-        width: '6%'
+        width: '7%'
       },
       {
         title: '交易时间',
         dataIndex: 'payedTime',
         key: 'payedTime',
-        width: '8%',
+        width: '12%',
         render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
       },
       {

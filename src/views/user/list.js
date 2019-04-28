@@ -69,6 +69,7 @@ class UserList extends Component {
       this.setState({
         data: []
       });
+      this.props.resetPagination();
     }
   };
 
@@ -302,7 +303,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getPagination: dispatch.searchOption.getPagination,
-  getSearchObj: dispatch.searchOption.getSearchObj
+  getSearchObj: dispatch.searchOption.getSearchObj,
+  resetPagination: dispatch.searchOption.resetPagination
 });
 
 export default connect(
