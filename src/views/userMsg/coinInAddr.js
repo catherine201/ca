@@ -15,7 +15,7 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 320,
+      tableHeight: document.body.offsetHeight - 420,
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 10,
@@ -30,7 +30,7 @@ class AuthenList extends Component {
     window.addEventListener('resize', () => {
       console.log(this);
       this.setState({
-        tableHeight: document.body.offsetHeight - 320
+        tableHeight: document.body.offsetHeight - 420
       });
     });
     const { pagination, searchObj } = this.props;
