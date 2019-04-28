@@ -208,7 +208,7 @@ export function fetchApi(param, options) {
             // loadingNum--;
             if (!store.getState().demo.countLoadingArr.length) {
               console.log(errorMsg);
-              // message.error(errorMsg);
+              message.error(errorMsg);
               loading.end();
               return;
             }

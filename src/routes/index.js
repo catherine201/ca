@@ -11,6 +11,8 @@ const page = name =>
   Loadable({
     loader: () => import(`../views/${name}`),
     loading: Loading
+    // delay: 200,
+    // timeout: 10000
   });
 
 console.dir(page('personalCenter/userMsg'));
