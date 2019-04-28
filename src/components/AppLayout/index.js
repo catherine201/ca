@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Layout, BackTop } from 'antd';
 import { Redirect } from 'react-router-dom';
 import router from '../../routes';
-import AppHeader from '../AppHeader';
+// import AppHeader from '../AppHeader';
 import AppSider from '../AppSider';
 // import AppFooter from '../AppFooter';
 import './app_lay_out.less';
@@ -23,7 +23,7 @@ class App extends Component {
     return (
       <Layout className="app-layout">
         <BackTop />
-        <AppHeader />
+        {/* <AppHeader /> */}
         <Layout>
           <AppSider {...this.props} />
           <Content>
