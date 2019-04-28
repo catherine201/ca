@@ -315,6 +315,7 @@ class AuthenList extends Component {
                   this.handleShowEdit(text);
                 }}
                 className="mr10"
+                disabled={text.status === 'AuctionOrderStatusAllocated'}
               >
                 编辑
               </Button>
