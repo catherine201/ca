@@ -98,33 +98,33 @@ axios.interceptors.response.use(
         window.sessionStorage.clear();
         window.location.href = '/#/login';
       }
-      // switch (error.response.status) {
-      //   case 400:
-      //     errorMsg = '400请求错误';
-      //     break;
-      //   case 401:
-      //     errorMsg = 'token已过期';
-      //     window.sessionStorage.clear();
-      //     window.location.href = '/#/login';
-      //     break;
-      //   case 404:
-      //     errorMsg = '404请求地址出错';
-      //     break;
-      //   case 408:
-      //     errorMsg = '408请求超时';
-      //     break;
-      //   case 500:
-      //     errorMsg = '500服务器内部错误';
-      //     break;
-      //   case 502:
-      //     errorMsg = '502网关错误';
-      //     break;
-      //   case 504:
-      //     errorMsg = '504网关超时';
-      //     break;
-      //   default:
-      //     errorMsg = '请求失败';
-      // }
+      switch (error.response.status) {
+        case 400:
+          errorMsg = '400请求错误';
+          break;
+        // case 401:
+        //   errorMsg = 'token已过期';
+        //   window.sessionStorage.clear();
+        //   window.location.href = '/#/login';
+        //   break;
+        case 404:
+          errorMsg = '404请求地址出错';
+          break;
+        case 408:
+          errorMsg = '408请求超时';
+          break;
+        case 500:
+          errorMsg = '500服务器内部错误';
+          break;
+        case 502:
+          errorMsg = '502网关错误';
+          break;
+        case 504:
+          errorMsg = '504网关超时';
+          break;
+        default:
+          errorMsg = '请求失败';
+      }
     }
     errorMsg && message.error(errorMsg);
     const num = JSON.parse(JSON.stringify(error)).config.headers.num;
@@ -208,11 +208,11 @@ export function fetchApi(param, options) {
             // loadingNum--;
             if (!store.getState().demo.countLoadingArr.length) {
               console.log(errorMsg);
+              // message.error(errorMsg);
               loading.end();
               return;
             }
           }
-          message.error(errorMsg);
         }
         reject(error);
       })
