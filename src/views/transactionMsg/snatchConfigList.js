@@ -288,8 +288,8 @@ class AuthenList extends Component {
             })(
               <Select>
                 <Option value="AuctionCoinTypeUnknow">请选择类型</Option>
-                <Option value="AuctionCoinTypeSell">抢购</Option>
-                <Option value="AuctionCoinTypeBuy">拍卖</Option>
+                <Option value="AuctionCoinTypeBuy">抢购</Option>
+                <Option value="AuctionCoinTypeSell">拍卖</Option>
               </Select>
             )}
           </Form.Item>
