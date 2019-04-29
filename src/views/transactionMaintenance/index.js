@@ -2,18 +2,19 @@ import React, { Component } from 'react';
 import { Input, Button, Table, LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import styles from './transactionMaintenance.less';
+import coinMaintenance from '../../api/coinMaintenance';
 
 // 交易币介绍维护
 export default class TransactionMaintenance extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // tableHeight: document.body.offsetHeight - 300,
       searchword: '',
-      tableLoading: true,
       tableData: [],
       page: {
-        current: 0,
-        pageSize: 0,
+        current: 1,
+        pageSize: 10,
         total: 0
       }
     };
@@ -21,65 +22,27 @@ export default class TransactionMaintenance extends Component {
 
   componentDidMount = () => {
     this.getTableData();
-    this.getCoinOptions();
   };
 
   // 修改
   edit = row => {
-    console.log('edit -- row: ', row);
-    row.id = 1;
     this.props.history.push({
       pathname: `/admin/transactionMaintenance/transactionCoinEdit/${row.id}`,
       state: {
         data: row
       }
     });
-    // this.setState({
-    //   coinEditPanelVisible: true,
-    //   actionRow: row
-    // });
-  };
-
-  // 删除
-  // delete = row => {
-  //   console.log('delete -- row: ', row);
-  //   this.setState({
-  //     withdrawalActionVisible: true,
-  //     actionRow: row,
-  //     actionType: 'delete'
-  //   });
-  // };
-
-  // 获取币种选项
-  getCoinOptions = () => {
-    // this.setState({
-    //   coinOptions: [
-    //     {
-    //       value: '',
-    //       label: '请选择币种'
-    //     },
-    //     {
-    //       value: 'BTC',
-    //       label: 'BTC'
-    //     },
-    //     {
-    //       value: 'ETH',
-    //       label: 'ETH'
-    //     }
-    //   ]
-    // });
   };
 
   // 获取表格数据（查询和分页
-  getTableData = isSearch => {
+  getTableData = async isSearch => {
     const { current, pageSize } = this.state.page;
     const param = {
-      current,
-      pageSize
+      // 每次查询的起始位置，相当于页码
+      'listOptions.offset': (current - 1) * pageSize,
+      // 每次查询的数量
+      'listOptions.limit': pageSize
     };
-    this.setState({
-      tableLoading: true
-    });
     // 查询
     if (isSearch) {
       param.searchword = this.state.searchword;
@@ -88,41 +51,17 @@ export default class TransactionMaintenance extends Component {
     /*
       api.getData(param)
     */
-    console.log('param: ', param);
-
-    this.setState({
-      tableData: [
-        {
-          key: '1',
-          coin: 'BTC',
-          nameZh: '比特币', // 中文名
-          nameFull: 'BItcoin',
-          website: 'https://bitcoin.org/en',
-          issueDate: '2019-01-01', // 发行时间
-          issueQuantity: '100000', // 发行总量
-          raisePrice: '255660', // 众筹价格
-          whitePaperAddr: 'sdfdsf11215', // 白皮书地址
-          blockQueryAddr: 'sdfsdfs4564646', // 区块链查询地址
-          info: 'bitcoinbitcoinbitcoinbitcoinbitcoin' // 简介
-        },
-        {
-          key: '2',
-          coin: 'ETH',
-          nameZh: '以太坊',
-          nameFull: 'Ethereum',
-          website: 'https://bitcoin.org/en',
-          issueDate: '2019-01-01', // 发行时间
-          issueQuantity: '100000', // 发行总量
-          raisePrice: '255660', // 众筹价格
-          whitePaperAddr: 'sdfdsf11215', // 白皮书地址
-          blockQueryAddr: 'sdfsdfs4564646', // 区块链查询地址
-          info: 'bitcoinbitcoinbitcoinbitcoinbitcoin' // 简介
-        }
-      ]
-    });
-    this.setState({
-      tableLoading: false
-    });
+    const tableData = await coinMaintenance.getTableData(param);
+    const page = Object.assign({}, this.state.page);
+    try {
+      page.total = +tableData.paging.total || 0;
+      this.setState({
+        page,
+        tableData: tableData.datas
+      });
+    } catch (err) {
+      console.error('coinMaintenance.getTableData -- err: ', err);
+    }
   };
 
   // 获取分页参数
@@ -138,11 +77,14 @@ export default class TransactionMaintenance extends Component {
       total,
       onShowSizeChange: (current, pageSize) => {
         const obj = this.state.page;
-        obj.current = current;
+        obj.current = 1;
         obj.pageSize = pageSize;
-        this.setState({
-          page: obj
-        });
+        this.setState(
+          {
+            page: obj
+          },
+          () => this.getTableData()
+        );
       },
       onChange: current => this.changePage(current)
     };
@@ -161,10 +103,10 @@ export default class TransactionMaintenance extends Component {
     const { Column } = Table;
     // 表格列 对应的 key和名称
     const columnText = {
-      coin: '币种',
-      nameZh: '简称',
-      nameFull: '币全名',
-      website: '官网',
+      code: '币种',
+      chineseName: '简称',
+      name: '币全名',
+      officialWebsite: '官网',
       operation: '操作'
     };
 
@@ -182,7 +124,6 @@ export default class TransactionMaintenance extends Component {
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
-            loading={this.state.tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
           >

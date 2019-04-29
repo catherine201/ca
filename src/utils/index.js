@@ -248,3 +248,12 @@ export function getPayMethod(arr) {
   }
   return arr.map(item => item.bank.name).join(',');
 }
+
+// 获取一天的起始，结束时间戳
+export function getTimestampFormate(time, type) {
+  // time: 2019-04-29
+  if (type === 'start')
+    return (new Date(`${time} 00:00:00`).getTime() / 1000).toFixed(0);
+  if (type === 'end')
+    return (new Date(`${time} 23:59:59`).getTime() / 1000).toFixed(0);
+}
