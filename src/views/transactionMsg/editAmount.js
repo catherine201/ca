@@ -7,8 +7,10 @@ class EditAmount extends Component {
 
   componentDidMount() {
     const { form, editData } = this.props;
+    console.log(editData);
     form.setFieldsValue({
-      amount: editData.amount
+      amount: editData.amount,
+      price: editData.price
     });
   }
 
@@ -25,6 +27,7 @@ class EditAmount extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    const { editData } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
@@ -34,6 +37,9 @@ class EditAmount extends Component {
             amount: values.amount
           }
         };
+        console.log(editData.type === 'AuctionCoinTypeSell');
+        editData.type === 'AuctionCoinTypeSell' &&
+          (obj.query.price = values.price);
         this.editAuctionOrders(obj);
       }
     });
@@ -63,6 +69,7 @@ class EditAmount extends Component {
       }
     };
     const { getFieldDecorator } = this.props.form;
+    const { editData } = this.props;
     return (
       <div>
         <Modal
@@ -76,6 +83,16 @@ class EditAmount extends Component {
             onSubmit={this.handleSubmit}
             className="search_form"
           >
+            {editData.type === 'AuctionCoinTypeSell' && (
+              <Form.Item label="单价" {...formItemLayout}>
+                {getFieldDecorator('price')(
+                  <InputNumber
+                    placeholder="请输入单价"
+                    className="search_input"
+                  />
+                )}
+              </Form.Item>
+            )}
             <Form.Item label="数量" {...formItemLayout}>
               {getFieldDecorator('amount')(
                 <InputNumber

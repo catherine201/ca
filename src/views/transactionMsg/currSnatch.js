@@ -12,7 +12,8 @@ const fliterArr = [
   'AuctionOrderStatusCreated',
   'AuctionOrderStatusAllocated',
   'AuctionOrderStatusPayed',
-  'AuctionOrderStatusOverdue'
+  'AuctionOrderStatusOverdue',
+  'AuctionOrderStatusAgreed'
 ];
 
 class AuthenList extends Component {
