@@ -31,7 +31,7 @@ class AuthenDetail extends Component {
     data.serialNo = data.cer.serialNo;
     data.idcard_url = data.idcard_front_url;
     data.createdTime = data.createdTime
-      ? timestampToTime(data.createdTime)
+      ? timestampToTime(data.createdTime / 1000)
       : '';
     data.accountStatus = authenStatusType[data.accountStatus];
     this.setState({
