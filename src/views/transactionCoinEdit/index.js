@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Input, Button } from 'antd';
+import { Input, Button, message } from 'antd';
 // 引入编辑器组件
 import BraftEditor from 'braft-editor';
 // 引入编辑器样式
 import 'braft-editor/dist/index.css';
 import styles from './transactionCoinEdit.less';
+import coinMaintenance from '../../api/coinMaintenance';
 
 // 币种编辑
 export default class TransactionCoinEdit extends Component {
@@ -12,30 +13,19 @@ export default class TransactionCoinEdit extends Component {
     super(props);
     // 编辑行的原始数据
     this.rawData = {
-      coin: null,
-      nameZh: null, // 中文名
-      nameFull: null, // 全称
-      issueDate: null, // 发行时间
-      issueQuantity: null, // 发行总量
-      raisePrice: null, // 众筹价格
-      whitePaperAddr: null, // 白皮书地址
-      website: null, // 网站
-      blockQueryAddr: null, // 区块链查询地址
-      editorState: BraftEditor.createEditorState(null) // 简介
+      code: null,
+      chineseName: null, // 中文名
+      name: null, // 全称
+      issueTime: null, // 发行时间
+      issueAmount: null, // 发行总量
+      crowdFundingPrice: null, // 众筹价格
+      whitePaper: null, // 白皮书地址
+      officialWebsite: null, // 网站
+      blockQueryWebsite: null, // 区块链查询地址
+      description: null // 简介
     };
     this.state = {
-      editData: {
-        coin: null,
-        nameZh: null, // 中文名
-        nameFull: null, // 全称
-        issueDate: null, // 发行时间
-        issueQuantity: null, // 发行总量
-        raisePrice: null, // 众筹价格
-        whitePaperAddr: null, // 白皮书地址
-        website: null, // 网站
-        blockQueryAddr: null, // 区块链查询地址
-        editorState: BraftEditor.createEditorState(null) // 简介
-      }, // 正在编辑的数据
+      editData: this.rawData, // 正在编辑的数据
       isRequest: false
     };
   }
@@ -45,35 +35,25 @@ export default class TransactionCoinEdit extends Component {
   };
 
   // 根据Id获取待编辑的数据
-  getEditData = () => {
-    this.rawData = {
-      id: '1',
-      coin: 'BTC',
-      nameZh: '比特币', // 中文名
-      nameFull: 'BItcoin', // 全名
-      website: 'https://bitcoin.org/en', // 网址
-      issueDate: '2019-01-01', // 发行时间
-      issueQuantity: '100000', // 发行总量
-      raisePrice: '255660', // 众筹价格
-      whitePaperAddr: 'sdfdsf11215', // 白皮书地址
-      blockQueryAddr: 'sdfsdfs4564646', // 区块链查询地址
-      editorState: BraftEditor.createEditorState(null) // 简介
+  getEditData = async () => {
+    const param = {
+      // url将 拼到请求地址后面 (请求地址/url的值)
+      url: this.props.match.params.transactionCoinEditId
     };
-    this.setState({
-      editData: {
-        id: '1',
-        coin: 'BTC',
-        nameZh: '比特币', // 中文名
-        nameFull: 'BItcoin', // 全名
-        website: 'https://bitcoin.org/en', // 网址
-        issueDate: '2019-01-01', // 发行时间
-        issueQuantity: '100000', // 发行总量
-        raisePrice: '255660', // 众筹价格
-        whitePaperAddr: 'sdfdsf11215', // 白皮书地址
-        blockQueryAddr: 'sdfsdfs4564646', // 区块链查询地址
-        editorState: BraftEditor.createEditorState(null) // 简介
-      }
-    });
+    coinMaintenance
+      .getCoinInfoById(param)
+      .then(res => {
+        this.rawData = res;
+        this.rawData.description = BraftEditor.createEditorState(
+          this.rawData.description
+        );
+        this.setState({
+          editData: this.rawData.detailInfo
+        });
+      })
+      .catch(err => {
+        console.error('getCoinInfoById -- err: ', err);
+      });
   };
 
   // change事件
@@ -85,13 +65,18 @@ export default class TransactionCoinEdit extends Component {
     });
   };
 
-  handleEditorChange = editorState => {
-    const editData = Object.assign({}, this.state.editData, { editorState });
+  handleEditorChange = description => {
+    const editData = Object.assign({}, this.state.editData, {
+      description: BraftEditor.createEditorState(description)
+    });
     this.setState({ editData });
   };
 
   confirm = () => {
-    const param = {};
+    const param = {
+      // url将 拼到请求地址后面 (请求地址/url的值)
+      url: this.props.match.params.transactionCoinEditId
+    };
     // 只收集修改项
     Object.keys(this.rawData).forEach(editKey => {
       if (
@@ -99,7 +84,7 @@ export default class TransactionCoinEdit extends Component {
         JSON.stringify(this.rawData[editKey])
       ) {
         // 有修改
-        if (editKey === 'editorState') {
+        if (editKey === 'description') {
           param[editKey] = this.state.editData[editKey].toHTML();
         } else {
           param[editKey] = this.state.editData[editKey];
@@ -108,20 +93,33 @@ export default class TransactionCoinEdit extends Component {
     });
     console.log('param: ', param);
     // this.props.history.goBack();
+
+    coinMaintenance
+      .updateCoinInfo(param)
+      .then(res => {
+        if (res.resultCode === 1) {
+          message.success('修改成功！');
+        } else {
+          message.warn(res.msg);
+        }
+      })
+      .catch(err => {
+        console.error('updateCoinInfo -- err: ', err);
+      });
   };
 
   render() {
     const {
-      coin,
-      nameZh,
-      nameFull,
-      issueDate,
-      issueQuantity,
-      raisePrice,
-      whitePaperAddr,
-      website,
-      blockQueryAddr,
-      editorState
+      code,
+      chineseName,
+      name,
+      issueTime,
+      issueAmount,
+      crowdFundingPrice,
+      whitePaper,
+      officialWebsite,
+      blockQueryWebsite,
+      description
     } = this.state.editData;
 
     return (
@@ -132,67 +130,67 @@ export default class TransactionCoinEdit extends Component {
         >
           <div className={styles['content-item']}>
             <span>币种</span>
-            <b>{coin}</b>
+            <b>{code}</b>
           </div>
           <div className={styles['content-item']}>
             <span>中文名</span>
             <Input
-              defaultValue={nameZh}
-              onChange={e => this.handlerChange('nameZh', e.target.value)}
+              defaultValue={chineseName}
+              onChange={e => this.handlerChange('chineseName', e.target.value)}
             />
           </div>
           <div className={styles['content-item']}>
             <span>币全写</span>
             <Input
-              defaultValue={nameFull}
-              onChange={e => this.handlerChange('nameFull', e.target.value)}
+              defaultValue={name}
+              onChange={e => this.handlerChange('name', e.target.value)}
             />
           </div>
           <div className={styles['content-item']}>
             <span>发行时间</span>
             <Input
-              defaultValue={issueDate}
-              onChange={e => this.handlerChange('issueDate', e.target.value)}
+              defaultValue={issueTime}
+              onChange={e => this.handlerChange('issueTime', e.target.value)}
             />
           </div>
           <div className={styles['content-item']}>
             <span>发行总量(万)</span>
             <Input
-              defaultValue={issueQuantity}
-              onChange={e =>
-                this.handlerChange('issueQuantity', e.target.value)
-              }
+              defaultValue={issueAmount}
+              onChange={e => this.handlerChange('issueAmount', e.target.value)}
             />
           </div>
           <div className={styles['content-item']}>
             <span>众筹价格</span>
             <Input
-              defaultValue={raisePrice}
-              onChange={e => this.handlerChange('raisePrice', e.target.value)}
+              defaultValue={crowdFundingPrice}
+              onChange={e =>
+                this.handlerChange('crowdFundingPrice', e.target.value)
+              }
             />
           </div>
           <div className={styles['content-item']}>
             <span>白皮书地址</span>
             <Input
-              defaultValue={whitePaperAddr}
-              onChange={e =>
-                this.handlerChange('whitePaperAddr', e.target.value)
-              }
+              defaultValue={whitePaper}
+              onChange={e => this.handlerChange('whitePaper', e.target.value)}
             />
           </div>
           <div className={styles['content-item']}>
             <span>官网地址</span>
             <Input
-              defaultValue={website}
-              onChange={e => this.handlerChange('website', e.target.value)}
+              defaultValue={officialWebsite}
+              onChange={e =>
+                this.handlerChange('officialWebsite', e.target.value)
+              }
             />
           </div>
           <div className={styles['content-item']}>
             <span>区块查询地址</span>
             <Input
-              defaultValue={blockQueryAddr}
+              defaultValue={blockQueryWebsite}
               onChange={e =>
-                this.handlerChange('blockQueryAddr', e.target.value)
+                this.handlerChange('blockQueryWebsite', e.target.value)
               }
             />
           </div>
@@ -200,7 +198,7 @@ export default class TransactionCoinEdit extends Component {
             <span>简介</span>
             <BraftEditor
               className={styles.editor}
-              value={editorState}
+              value={BraftEditor.createEditorState(description)}
               onChange={this.handleEditorChange}
               onSave={this.submitContent}
             />

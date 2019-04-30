@@ -1,0 +1,23 @@
+import createApi from '../createApi';
+
+// 交易币介绍维护
+const config = {
+  // 表格
+  getTableData: {
+    url: '/coin/baseinfos/list',
+    method: 'get',
+    options: {}
+  },
+  getCoinInfoById: {
+    url: '/coin',
+    method: 'get',
+    options: {}
+  },
+  updateCoinInfo: {
+    url: '/coin',
+    method: 'put',
+    options: {}
+  }
+};
+
+export default createApi(config);
