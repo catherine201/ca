@@ -11,7 +11,7 @@ export default class BitcoinTransaction extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // tableHeight: document.body.offsetHeight - 300,
+      tableHeight: document.body.offsetHeight - 300,
       searchData: {
         coin: null, // 币种
         priceUnit: null, // 计价单位
@@ -104,27 +104,23 @@ export default class BitcoinTransaction extends Component {
     /*
       api.getData(param)
     */
-    try {
-      const tableData = await coinTransaction.getTableData(param);
-      const page = Object.assign({}, this.state.page);
-      page.total = +tableData.paging.total;
+    const tableData = await coinTransaction.getTableData(param);
+    const page = Object.assign({}, this.state.page);
+    page.total = +tableData.paging.total;
 
-      tableData.datas &&
-        tableData.datas.length &&
-        tableData.datas.forEach(item => {
-          item.key = item.id;
-          item.createdTime = timestampToTime(item.createdTime);
-          item.tradingOn = `${item.tradeMarket}/${item.payMarket}`;
-          item.bidServiceCharge = item.bidServiceCharge || 0; // 买方手续费'
-          item.askServiceCharge = item.askServiceCharge || 0; // 卖方手续费'
-        });
-      this.setState({
-        page,
-        tableData: tableData.datas || []
+    tableData.datas &&
+      tableData.datas.length &&
+      tableData.datas.forEach(item => {
+        item.key = item.id;
+        item.createdTime = timestampToTime(item.createdTime);
+        item.tradingOn = `${item.tradeMarket}/${item.payMarket}`;
+        item.bidServiceCharge = item.bidServiceCharge || 0; // 买方手续费'
+        item.askServiceCharge = item.askServiceCharge || 0; // 卖方手续费'
       });
-    } catch (err) {
-      console.error('coinTransaction.getTableData -- err: ', err);
-    }
+    this.setState({
+      page,
+      tableData: tableData.datas || []
+    });
   };
 
   // 获取分页参数
@@ -176,9 +172,9 @@ export default class BitcoinTransaction extends Component {
       price: '成交价',
       count: '成交量',
       bidId: '买方委托编号',
-      bidServiceCharge: '买方手续费', // 未返回
+      bidServiceCharge: '买方手续费',
       askId: '卖方委托编号',
-      askServiceCharge: '卖方手续费' // 未返回
+      askServiceCharge: '卖方手续费'
     };
 
     // 禁用今天之后的日期选择
@@ -243,6 +239,7 @@ export default class BitcoinTransaction extends Component {
             bordered
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
+            scroll={{ y: this.state.tableHeight }}
           >
             {Object.keys(columnText).map(key => (
               <Column
@@ -250,6 +247,7 @@ export default class BitcoinTransaction extends Component {
                 align="center"
                 dataIndex={key}
                 key={key}
+                width="6%"
               />
             ))}
           </Table>

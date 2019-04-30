@@ -249,11 +249,26 @@ export function getPayMethod(arr) {
   return arr.map(item => item.bank.name).join(',');
 }
 
-// 获取一天的起始，结束时间戳
+// 获取某一天的起始，结束时间戳
 export function getTimestampFormate(time, type) {
   // time: 2019-04-29
   if (type === 'start')
     return (new Date(`${time} 00:00:00`).getTime() / 1000).toFixed(0);
   if (type === 'end')
     return (new Date(`${time} 23:59:59`).getTime() / 1000).toFixed(0);
+}
+
+/**
+ * 获取时间戳年月日 或 当前年月日
+ * @param {时间戳} timestamp
+ * @param {分隔符} separator
+ * @return '2019-04-30'
+ */
+export function getTimeYMD(timestamp, separator = '-') {
+  const time = timestamp ? new Date(timestamp * 1000) : new Date();
+  const y = time.getFullYear();
+  const m =
+    time.getMonth() < 10 ? `0${time.getMonth() + 1}` : time.getMonth() + 1;
+  const d = time.getDate() < 10 ? `0${time.getDate()}` : time.getDate();
+  return `${y}${separator}${m}${separator}${d}`;
 }

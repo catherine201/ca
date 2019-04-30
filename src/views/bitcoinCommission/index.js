@@ -11,7 +11,7 @@ export default class BitcoinCommission extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // tableHeight: document.body.offsetHeight - 300,
+      tableHeight: document.body.offsetHeight - 320,
       searchData: {
         // tradeType: null, // 交易方式
         type: null, // 交易方向
@@ -36,7 +36,6 @@ export default class BitcoinCommission extends Component {
   }
 
   componentDidMount = () => {
-    console.log('coinCommission: ', coinCommission);
     this.getTableData();
     this.getSelectOptions();
 
@@ -183,30 +182,27 @@ export default class BitcoinCommission extends Component {
       Sell: '卖出',
       Buy: '买入'
     };
-    try {
-      const tableData = await coinCommission.getTableData(param);
-      const page = Object.assign({}, this.state.page);
-      page.total = +tableData.paging.total || 0;
 
-      tableData.datas &&
-        tableData.datas.length &&
-        tableData.datas.forEach(item => {
-          item.key = item.id;
-          item.type = typeText[item.type]; // 交易方向：买入、卖出
-          item.createdTime = timestampToTime(item.createdTime);
-          item.tradeType = '限价'; // 暂无其他类型，字段未返回
-          item.tradingOn = `${item.tradeMarket}/${item.payMarket}`; // 交易对
-          item.alreadyCount = item.count - (item.leftCount || 0); // 已成交量
-          item.leftCount = item.leftCount || 0; // 未成交量
-          item.tradeRatio = `${(item.alreadyCount / item.count) * 100}%`; // 成交率
-        });
-      this.setState({
-        page,
-        tableData: tableData.datas || []
+    const tableData = await coinCommission.getTableData(param);
+    const page = Object.assign({}, this.state.page);
+    page.total = +tableData.paging.total || 0;
+
+    tableData.datas &&
+      tableData.datas.length &&
+      tableData.datas.forEach(item => {
+        item.key = item.id;
+        item.type = typeText[item.type]; // 交易方向：买入、卖出
+        item.createdTime = timestampToTime(item.createdTime);
+        item.tradeType = '限价'; // 暂无其他类型，字段未返回
+        item.tradingOn = `${item.tradeMarket}/${item.payMarket}`; // 交易对
+        item.alreadyCount = item.count - (item.leftCount || 0); // 已成交量
+        item.leftCount = item.leftCount || 0; // 未成交量
+        item.tradeRatio = `${(item.alreadyCount / item.count) * 100}%`; // 成交率
       });
-    } catch (err) {
-      console.error('coinCommission.getTableData -- err: ', err);
-    }
+    this.setState({
+      page,
+      tableData: tableData.datas || []
+    });
   };
 
   // 获取分页参数
@@ -371,6 +367,7 @@ export default class BitcoinCommission extends Component {
             bordered
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
+            scroll={{ y: this.state.tableHeight }}
           >
             {Object.keys(columnText).map(key =>
               key === 'status' ? ( // 状态列
@@ -379,6 +376,7 @@ export default class BitcoinCommission extends Component {
                   align="center"
                   dataIndex={key}
                   key={key}
+                  width="6%"
                   render={(text, row) => <span>{statusText[row.status]}</span>}
                 />
               ) : (
@@ -386,6 +384,7 @@ export default class BitcoinCommission extends Component {
                 <Column
                   title={columnText[key]}
                   align="center"
+                  width="5%"
                   dataIndex={key}
                   key={key}
                 />

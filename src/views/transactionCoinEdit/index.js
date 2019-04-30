@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Input, Button, message } from 'antd';
+import { Input, InputNumber, Button, message, DatePicker } from 'antd';
+import moment from 'moment';
 // 引入编辑器组件
 import BraftEditor from 'braft-editor';
 // 引入编辑器样式
+import { getTimeYMD } from '../../utils';
 import 'braft-editor/dist/index.css';
 import styles from './transactionCoinEdit.less';
 import coinMaintenance from '../../api/coinMaintenance';
@@ -17,7 +19,7 @@ export default class TransactionCoinEdit extends Component {
       chineseName: null, // 中文名
       name: null, // 全称
       issueTime: null, // 发行时间
-      issueAmount: null, // 发行总量
+      circulationAmount: null, // 发行总量
       crowdFundingPrice: null, // 众筹价格
       whitePaper: null, // 白皮书地址
       officialWebsite: null, // 网站
@@ -26,12 +28,16 @@ export default class TransactionCoinEdit extends Component {
     };
     this.state = {
       editData: this.rawData, // 正在编辑的数据
+      isAdd: this.props.match.params.transactionCoinEditId === 'add',
       isRequest: false
     };
   }
 
   componentDidMount = () => {
-    this.getEditData();
+    // 新增：transactionCoinEditId === 'add'
+    if (!this.state.isAdd) {
+      this.getEditData();
+    }
   };
 
   // 根据Id获取待编辑的数据
@@ -40,15 +46,21 @@ export default class TransactionCoinEdit extends Component {
       // url将 拼到请求地址后面 (请求地址/url的值)
       url: this.props.match.params.transactionCoinEditId
     };
+    const { editData } = this.state;
     coinMaintenance
       .getCoinInfoById(param)
       .then(res => {
-        this.rawData = res;
+        this.rawData = res.detailInfo;
+        this.rawData.issueTime = getTimeYMD(this.rawData.issueTime);
         this.rawData.description = BraftEditor.createEditorState(
           this.rawData.description
         );
+        Object.keys(editData).forEach(key => {
+          if (!this.rawData[key]) editData[key] = '';
+          else if (this.rawData[key]) editData[key] = this.rawData[key];
+        });
         this.setState({
-          editData: this.rawData.detailInfo
+          editData
         });
       })
       .catch(err => {
@@ -59,7 +71,11 @@ export default class TransactionCoinEdit extends Component {
   // change事件
   handlerChange = (editKey, value) => {
     const editData = Object.assign({}, this.state.editData);
-    editData[editKey] = value;
+    if (editKey === 'issueTime') {
+      editData[editKey] = moment(value).format('YYYY-MM-DD');
+    } else {
+      editData[editKey] = value;
+    }
     this.setState({
       editData
     });
@@ -72,35 +88,79 @@ export default class TransactionCoinEdit extends Component {
     this.setState({ editData });
   };
 
+  // 确定
   confirm = () => {
-    const param = {
-      // url将 拼到请求地址后面 (请求地址/url的值)
-      url: this.props.match.params.transactionCoinEditId
-    };
-    // 只收集修改项
-    Object.keys(this.rawData).forEach(editKey => {
-      if (
-        JSON.stringify(this.state.editData[editKey]) !==
-        JSON.stringify(this.rawData[editKey])
-      ) {
+    const { editData, isAdd } = this.state;
+    const param = {};
+    // 新增
+    if (isAdd) {
+      if (!editData.code) {
+        editData.code = '';
+        this.setState({ editData });
+        message.warning('币种名称必填！');
+        return;
+      }
+      param.detailInfo = {};
+      Object.keys(editData).forEach(editKey => {
         // 有修改
         if (editKey === 'description') {
-          param[editKey] = this.state.editData[editKey].toHTML();
+          param.detailInfo[editKey] = editData[editKey].toHTML();
+        } else if (editKey === 'issueTime') {
+          param.detailInfo[editKey] = (
+            new Date(editData[editKey] || getTimeYMD()).getTime() / 1000
+          ).toFixed(0);
         } else {
-          param[editKey] = this.state.editData[editKey];
+          param.detailInfo[editKey] = editData[editKey];
         }
-      }
-    });
-    console.log('param: ', param);
-    // this.props.history.goBack();
+      });
+      this.coinAdd(param);
+    } else {
+      // 编辑
+      param.query = {};
+      // url将 拼到请求地址后面 (请求地址/url的值)
+      param.url = this.props.match.params.transactionCoinEditId;
+      Object.keys(editData).forEach(editKey => {
+        if (editKey === 'description') {
+          param.query[editKey] = editData[editKey].toHTML();
+        } else if (editKey === 'issueTime') {
+          param.query[editKey] = (
+            new Date(editData[editKey] || getTimeYMD()).getTime() / 1000
+          ).toFixed(0);
+        } else {
+          param.query[editKey] = editData[editKey];
+        }
+      });
+      this.coinUpdate(param);
+    }
+  };
 
+  // 新增
+  coinAdd = param => {
+    coinMaintenance
+      .addCoinInfo(param)
+      .then(res => {
+        if (res.resultCode === 1) {
+          message.success('新增成功！');
+          this.props.history.goBack();
+        } else {
+          message.warn('新增失败！');
+        }
+      })
+      .catch(err => {
+        console.error('addCoinInfo -- err: ', err);
+      });
+  };
+
+  // 编辑更新
+  coinUpdate = param => {
     coinMaintenance
       .updateCoinInfo(param)
       .then(res => {
         if (res.resultCode === 1) {
           message.success('修改成功！');
+          this.props.history.goBack();
         } else {
-          message.warn(res.msg);
+          message.warn('修改失败！');
         }
       })
       .catch(err => {
@@ -114,23 +174,36 @@ export default class TransactionCoinEdit extends Component {
       chineseName,
       name,
       issueTime,
-      issueAmount,
+      circulationAmount,
       crowdFundingPrice,
       whitePaper,
       officialWebsite,
       blockQueryWebsite,
       description
     } = this.state.editData;
+    const { isAdd } = this.state;
 
     return (
       <div className={styles.transactionCoinEdit}>
-        <section className="common_title">币种编辑</section>
+        <section className="common_title">
+          {isAdd ? '新增币种' : '币种编辑'}
+        </section>
         <section
           className={`${styles['edit-content']} ${styles.transactionCoinEdit}`}
         >
           <div className={styles['content-item']}>
             <span>币种</span>
-            <b>{code}</b>
+            {isAdd ? (
+              <Input
+                defaultValue={code}
+                onChange={e => this.handlerChange('code', e.target.value)}
+              />
+            ) : (
+              <b>{code}</b>
+            )}
+            {code === '' && (
+              <b className={styles['warn-text']}>币种名称必填！</b>
+            )}
           </div>
           <div className={styles['content-item']}>
             <span>中文名</span>
@@ -148,26 +221,64 @@ export default class TransactionCoinEdit extends Component {
           </div>
           <div className={styles['content-item']}>
             <span>发行时间</span>
-            <Input
-              defaultValue={issueTime}
-              onChange={e => this.handlerChange('issueTime', e.target.value)}
-            />
+            {isAdd ? ( // 新增
+              <DatePicker
+                defaultValue={moment(getTimeYMD(), 'YYYY-MM-DD')}
+                onChange={time => this.handlerChange('issueTime', time)}
+              />
+            ) : (
+              // 编辑
+              issueTime !== null && (
+                <DatePicker
+                  defaultValue={moment(issueTime, 'YYYY-MM-DD')}
+                  onChange={time => this.handlerChange('issueTime', time)}
+                />
+              )
+            )}
           </div>
           <div className={styles['content-item']}>
             <span>发行总量(万)</span>
-            <Input
-              defaultValue={issueAmount}
-              onChange={e => this.handlerChange('issueAmount', e.target.value)}
-            />
+            {isAdd ? (
+              <InputNumber
+                min={0}
+                defaultValue={circulationAmount}
+                onChange={value =>
+                  this.handlerChange('circulationAmount', `${value}`)
+                }
+              />
+            ) : (
+              circulationAmount !== null && (
+                <InputNumber
+                  min={0}
+                  defaultValue={circulationAmount}
+                  onChange={value =>
+                    this.handlerChange('circulationAmount', `${value}`)
+                  }
+                />
+              )
+            )}
           </div>
           <div className={styles['content-item']}>
             <span>众筹价格</span>
-            <Input
-              defaultValue={crowdFundingPrice}
-              onChange={e =>
-                this.handlerChange('crowdFundingPrice', e.target.value)
-              }
-            />
+            {isAdd ? (
+              <InputNumber
+                min={0}
+                defaultValue={crowdFundingPrice}
+                onChange={value =>
+                  this.handlerChange('crowdFundingPrice', `${value}`)
+                }
+              />
+            ) : (
+              crowdFundingPrice !== null && (
+                <InputNumber
+                  min={0}
+                  defaultValue={crowdFundingPrice}
+                  onChange={value =>
+                    this.handlerChange('crowdFundingPrice', `${value}`)
+                  }
+                />
+              )
+            )}
           </div>
           <div className={styles['content-item']}>
             <span>白皮书地址</span>
@@ -203,7 +314,7 @@ export default class TransactionCoinEdit extends Component {
               onSave={this.submitContent}
             />
           </div>
-          <section className={styles.actionBtn}>
+          <section className={`${styles['content-item']} ${styles.actionBtn}`}>
             <Button
               type="primary"
               onClick={this.confirm}
