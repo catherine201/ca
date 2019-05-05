@@ -6,10 +6,7 @@ const config = {
   getTableData: {
     url: '/coin/trades/list',
     method: 'get',
-    options: {
-      errorHandler: true,
-      showLoading: false
-    }
+    options: {}
   }
 };
 

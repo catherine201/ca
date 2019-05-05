@@ -13,6 +13,11 @@ const config = {
     method: 'get',
     options: {}
   },
+  addCoinInfo: {
+    url: '/coin/baseinfos', // /coin/baseinfos
+    method: 'post',
+    options: {}
+  },
   updateCoinInfo: {
     url: '/coin',
     method: 'put',

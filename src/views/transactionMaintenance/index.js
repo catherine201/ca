@@ -9,7 +9,7 @@ export default class TransactionMaintenance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // tableHeight: document.body.offsetHeight - 300,
+      tableHeight: document.body.offsetHeight - 300,
       searchword: '',
       tableData: [],
       page: {
@@ -24,8 +24,15 @@ export default class TransactionMaintenance extends Component {
     this.getTableData();
   };
 
+  // 新增
+  coinAdd = () => {
+    this.props.history.push({
+      pathname: `/admin/transactionMaintenance/transactionCoinEdit/add`
+    });
+  };
+
   // 修改
-  edit = row => {
+  coinEdit = row => {
     this.props.history.push({
       pathname: `/admin/transactionMaintenance/transactionCoinEdit/${row.id}`,
       state: {
@@ -43,25 +50,22 @@ export default class TransactionMaintenance extends Component {
       // 每次查询的数量
       'listOptions.limit': pageSize
     };
-    // 查询
+    // 查询，搜索接口暂不支持 2019-04-30
     if (isSearch) {
-      param.searchword = this.state.searchword;
+      param['listOptions.keyword'] = this.state.searchword;
     }
-
     /*
       api.getData(param)
     */
     const tableData = await coinMaintenance.getTableData(param);
     const page = Object.assign({}, this.state.page);
-    try {
-      page.total = +tableData.paging.total || 0;
-      this.setState({
-        page,
-        tableData: tableData.datas
-      });
-    } catch (err) {
-      console.error('coinMaintenance.getTableData -- err: ', err);
-    }
+
+    page.total = +tableData.paging.total || 0;
+    tableData.datas.forEach(item => (item.key = item.id));
+    this.setState({
+      page,
+      tableData: tableData.datas
+    });
   };
 
   // 获取分页参数
@@ -120,12 +124,17 @@ export default class TransactionMaintenance extends Component {
             onBlur={e => this.setState({ searchword: e.target.value })}
           />
           <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
+          &nbsp;&nbsp;
+          <Button type="primary" onClick={this.coinAdd}>
+            新增
+          </Button>
         </section>
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
+            scroll={{ y: this.state.tableHeight }}
           >
             {Object.keys(columnText).map(key =>
               key === 'operation' ? (
@@ -133,9 +142,13 @@ export default class TransactionMaintenance extends Component {
                   title={columnText[key]}
                   align="center"
                   key={key}
+                  width="6%"
                   render={(text, row) => (
                     <div>
-                      <span className={styles.a} onClick={() => this.edit(row)}>
+                      <span
+                        className={styles.a}
+                        onClick={() => this.coinEdit(row)}
+                      >
                         修改
                       </span>
                     </div>
@@ -147,6 +160,7 @@ export default class TransactionMaintenance extends Component {
                   align="center"
                   dataIndex={key}
                   key={key}
+                  width="6%"
                 />
               )
             )}
