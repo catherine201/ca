@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { Input, Button, Select, DatePicker, Table, LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
 import { timestampToTime, getTimestampFormate } from '../../utils';
 import coinCommission from '../../api/coinCommission';
 import styles from './bitcoinCommission.less';
+
+moment.locale('zh-cn');
 
 // 币币委托查询
 export default class BitcoinCommission extends Component {

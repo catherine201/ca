@@ -265,7 +265,8 @@ export function getTimestampFormate(time, type) {
  * @return '2019-04-30'
  */
 export function getTimeYMD(timestamp, separator = '-') {
-  const time = timestamp ? new Date(timestamp * 1000) : new Date();
+  let time = timestamp ? new Date(timestamp * 1000) : new Date();
+  if (`${new Date(time)}` === 'Invalid Date') time = new Date(); // 防止传的不是时间戳
   const y = time.getFullYear();
   const m =
     time.getMonth() < 10 ? `0${time.getMonth() + 1}` : time.getMonth() + 1;
