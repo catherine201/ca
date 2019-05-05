@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
-import { Input, InputNumber, Button, message, DatePicker } from 'antd';
+import {
+  Input,
+  InputNumber,
+  Button,
+  message,
+  DatePicker,
+  LocaleProvider
+} from 'antd';
+import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
 // 引入编辑器组件
 import BraftEditor from 'braft-editor';
 // 引入编辑器样式
-import { getTimeYMD } from '../../utils';
 import 'braft-editor/dist/index.css';
-import styles from './transactionCoinEdit.less';
+import { getTimeYMD } from '../../utils';
 import coinMaintenance from '../../api/coinMaintenance';
+import styles from './transactionCoinEdit.less';
+
+moment.locale('zh-cn');
 
 // 币种编辑
 export default class TransactionCoinEdit extends Component {
@@ -90,8 +101,9 @@ export default class TransactionCoinEdit extends Component {
 
   // 确定
   confirm = () => {
-    const { editData, isAdd } = this.state;
+    const { editData, isAdd, isRequest } = this.state;
     const param = {};
+    if (isRequest) return;
     // 新增
     if (isAdd) {
       if (!editData.code) {
@@ -132,6 +144,9 @@ export default class TransactionCoinEdit extends Component {
       });
       this.coinUpdate(param);
     }
+    this.setState({
+      isRequest: true
+    });
   };
 
   // 新增
@@ -192,11 +207,16 @@ export default class TransactionCoinEdit extends Component {
           className={`${styles['edit-content']} ${styles.transactionCoinEdit}`}
         >
           <div className={styles['content-item']}>
-            <span>币种</span>
+            <span>
+              币种
+              {isAdd && <b style={{ color: 'red' }}>*</b>}
+            </span>
             {isAdd ? (
               <Input
                 defaultValue={code}
+                style={{ borderColor: code === '' ? 'red' : '' }}
                 onChange={e => this.handlerChange('code', e.target.value)}
+                onBlur={e => this.handlerChange('code', e.target.value)}
               />
             ) : (
               <b>{code}</b>
@@ -222,10 +242,12 @@ export default class TransactionCoinEdit extends Component {
           <div className={styles['content-item']}>
             <span>发行时间</span>
             {isAdd ? ( // 新增
-              <DatePicker
-                defaultValue={moment(getTimeYMD(), 'YYYY-MM-DD')}
-                onChange={time => this.handlerChange('issueTime', time)}
-              />
+              <LocaleProvider locale={zh_CN}>
+                <DatePicker
+                  defaultValue={moment(getTimeYMD(), 'YYYY-MM-DD')}
+                  onChange={time => this.handlerChange('issueTime', time)}
+                />
+              </LocaleProvider>
             ) : (
               // 编辑
               issueTime !== null && (

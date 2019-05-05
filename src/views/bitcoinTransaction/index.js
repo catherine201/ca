@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { Input, Button, Select, DatePicker, Table, LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
 import { timestampToTime, getTimestampFormate } from '../../utils';
 import coinTransaction from '../../api/coinTransaction';
 import styles from './bitcoinTransaction.less';
+
+moment.locale('zh-cn');
 
 // 币币成交查询
 export default class BitcoinTransaction extends Component {
@@ -22,6 +25,7 @@ export default class BitcoinTransaction extends Component {
       },
       priceUnitOptions: [], // 计价单位选项
       tableData: [],
+      tableLoading: false,
       page: {
         current: 1,
         pageSize: 10,
@@ -104,6 +108,9 @@ export default class BitcoinTransaction extends Component {
     /*
       api.getData(param)
     */
+    this.setState({
+      tableLoading: true
+    });
     const tableData = await coinTransaction.getTableData(param);
     const page = Object.assign({}, this.state.page);
     page.total = +tableData.paging.total;
@@ -118,6 +125,7 @@ export default class BitcoinTransaction extends Component {
         item.askServiceCharge = item.askServiceCharge || 0; // 卖方手续费'
       });
     this.setState({
+      tableLoading: false,
       page,
       tableData: tableData.datas || []
     });
@@ -161,6 +169,7 @@ export default class BitcoinTransaction extends Component {
   };
 
   render() {
+    const { tableLoading } = this.state;
     const { Column } = Table;
     // 表格列 对应的 key和名称
     const columnText = {
@@ -237,6 +246,7 @@ export default class BitcoinTransaction extends Component {
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
+            loading={tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
             scroll={{ y: this.state.tableHeight }}

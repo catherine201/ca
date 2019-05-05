@@ -12,6 +12,7 @@ export default class TransactionMaintenance extends Component {
       tableHeight: document.body.offsetHeight - 300,
       searchword: '',
       tableData: [],
+      tableLoading: false,
       page: {
         current: 1,
         pageSize: 10,
@@ -57,12 +58,18 @@ export default class TransactionMaintenance extends Component {
     /*
       api.getData(param)
     */
+    this.setState({
+      tableLoading: true
+    });
     const tableData = await coinMaintenance.getTableData(param);
     const page = Object.assign({}, this.state.page);
 
     page.total = +tableData.paging.total || 0;
-    tableData.datas.forEach(item => (item.key = item.id));
+    tableData.datas &&
+      tableData.datas.length &&
+      tableData.datas.forEach(item => (item.key = item.id));
     this.setState({
+      tableLoading: false,
       page,
       tableData: tableData.datas
     });
@@ -97,13 +104,18 @@ export default class TransactionMaintenance extends Component {
   // 换页
   changePage = current => {
     const pageData = Object.assign({}, this.state.page, { current });
-    this.setState({
-      page: pageData
-    });
-    this.getTableData();
+    this.setState(
+      {
+        page: pageData
+      },
+      () => {
+        this.getTableData();
+      }
+    );
   };
 
   render() {
+    const { tableLoading } = this.state;
     const { Column } = Table;
     // 表格列 对应的 key和名称
     const columnText = {
@@ -132,6 +144,7 @@ export default class TransactionMaintenance extends Component {
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
+            loading={tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
             scroll={{ y: this.state.tableHeight }}

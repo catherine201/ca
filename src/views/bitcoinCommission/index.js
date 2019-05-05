@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { Input, Button, Select, DatePicker, Table, LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
 import { timestampToTime, getTimestampFormate } from '../../utils';
 import coinCommission from '../../api/coinCommission';
 import styles from './bitcoinCommission.less';
+
+moment.locale('zh-cn');
 
 // 币币委托查询
 export default class BitcoinCommission extends Component {
@@ -27,6 +30,7 @@ export default class BitcoinCommission extends Component {
       statusOptions: [], // 状态选项
       priceUnitOptions: [], // 计价单位选项
       tableData: [],
+      tableLoading: false,
       page: {
         current: 1,
         pageSize: 10,
@@ -178,6 +182,9 @@ export default class BitcoinCommission extends Component {
     /*
       api.getData(param)
     */
+    this.setState({
+      tableLoading: true
+    });
     const typeText = {
       Sell: '卖出',
       Buy: '买入'
@@ -200,6 +207,7 @@ export default class BitcoinCommission extends Component {
         item.tradeRatio = `${(item.alreadyCount / item.count) * 100}%`; // 成交率
       });
     this.setState({
+      tableLoading: false,
       page,
       tableData: tableData.datas || []
     });
@@ -243,6 +251,7 @@ export default class BitcoinCommission extends Component {
   };
 
   render() {
+    const { tableLoading } = this.state;
     const { Column } = Table;
     const statusText = {
       UnknownStatus: '未知状态',
@@ -365,6 +374,7 @@ export default class BitcoinCommission extends Component {
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
+            loading={tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
             scroll={{ y: this.state.tableHeight }}

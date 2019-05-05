@@ -6,7 +6,9 @@ const config = {
   getTableData: {
     url: '/coin/orders/list',
     method: 'get',
-    options: {}
+    options: {
+      showLoading: false
+    }
   }
 };
 
