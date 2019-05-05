@@ -101,8 +101,9 @@ export default class TransactionCoinEdit extends Component {
 
   // 确定
   confirm = () => {
-    const { editData, isAdd } = this.state;
+    const { editData, isAdd, isRequest } = this.state;
     const param = {};
+    if (isRequest) return;
     // 新增
     if (isAdd) {
       if (!editData.code) {
@@ -143,6 +144,9 @@ export default class TransactionCoinEdit extends Component {
       });
       this.coinUpdate(param);
     }
+    this.setState({
+      isRequest: true
+    });
   };
 
   // 新增

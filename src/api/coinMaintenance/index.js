@@ -6,7 +6,9 @@ const config = {
   getTableData: {
     url: '/coin/baseinfos/list',
     method: 'get',
-    options: {}
+    options: {
+      showLoading: false
+    }
   },
   getCoinInfoById: {
     url: '/coin',
