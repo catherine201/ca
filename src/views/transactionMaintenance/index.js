@@ -65,7 +65,9 @@ export default class TransactionMaintenance extends Component {
     const page = Object.assign({}, this.state.page);
 
     page.total = +tableData.paging.total || 0;
-    tableData.datas.forEach(item => (item.key = item.id));
+    tableData.datas &&
+      tableData.datas.length &&
+      tableData.datas.forEach(item => (item.key = item.id));
     this.setState({
       tableLoading: false,
       page,

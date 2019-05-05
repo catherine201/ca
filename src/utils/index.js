@@ -269,7 +269,7 @@ export function getTimeYMD(timestamp, separator = '-') {
   if (`${new Date(time)}` === 'Invalid Date') time = new Date(); // 防止传的不是时间戳
   const y = time.getFullYear();
   const m =
-    time.getMonth() < 10 ? `0${time.getMonth() + 1}` : time.getMonth() + 1;
+    time.getMonth() + 1 < 10 ? `0${time.getMonth() + 1}` : time.getMonth() + 1;
   const d = time.getDate() < 10 ? `0${time.getDate()}` : time.getDate();
   return `${y}${separator}${m}${separator}${d}`;
 }
