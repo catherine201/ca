@@ -23,7 +23,7 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 300,
+      tableHeight: document.body.offsetHeight - 250,
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 10,
@@ -41,7 +41,7 @@ class AuthenList extends Component {
     window.addEventListener('resize', () => {
       console.log(this);
       this.setState({
-        tableHeight: document.body.offsetHeight - 300
+        tableHeight: document.body.offsetHeight - 250
       });
     });
     const { pagination, searchObj } = this.props;
@@ -242,7 +242,7 @@ class AuthenList extends Component {
         title: '订单号',
         dataIndex: 'id',
         key: 'id',
-        width: '17%'
+        width: '18%'
       },
       {
         title: '用户名',
@@ -259,14 +259,14 @@ class AuthenList extends Component {
         title: '市场',
         dataIndex: 'symbol',
         key: 'symbol',
-        width: '6%',
+        width: '5%',
         render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '类型',
         dataIndex: 'type',
         key: 'type',
-        width: '6%',
+        width: '4%',
         render: text => <span>{text ? auctionCoinType[text] : ''}</span>
       },
       {

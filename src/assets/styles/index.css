@@ -188,3 +188,10 @@ html body .christmas.ant-btn-primary:before{
 .mr10{
   margin-right: 10px;
 }
+#root .ant-table{
+margin-bottom: 8px;
+/* border-bottom: 1px solid #e8e8e8; */
+}
+#root .ant-table-thead > tr > th, #root .ant-table-tbody > tr > td {
+  padding: 14px 8px;
+}

@@ -19,7 +19,7 @@ class AppealList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 300
+      tableHeight: document.body.offsetHeight - 250
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 12
@@ -31,7 +31,7 @@ class AppealList extends Component {
     window.addEventListener('resize', () => {
       console.log(this);
       this.setState({
-        tableHeight: document.body.offsetHeight - 300
+        tableHeight: document.body.offsetHeight - 250
       });
     });
     const { pagination, searchObj } = this.props;
@@ -164,12 +164,12 @@ class AppealList extends Component {
         width: '17%',
         render: text => <Link to={`/admin/order/1?id=${text}`}>{text}</Link>
       },
-      // {
-      //   title: '币种',
-      //   dataIndex: 'all',
-      //   key: 'all',
-      //   width: '6%'
-      // },
+      {
+        title: '币种',
+        dataIndex: 'order.coin',
+        key: 'order.coin',
+        width: '6%'
+      },
       {
         title: '金额(CNY)',
         dataIndex: 'order.feeCNY',

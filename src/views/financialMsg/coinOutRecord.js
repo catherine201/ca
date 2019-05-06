@@ -24,7 +24,7 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 300,
+      tableHeight: document.body.offsetHeight - 250,
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 10,
@@ -38,7 +38,7 @@ class AuthenList extends Component {
     window.addEventListener('resize', () => {
       console.log(this);
       this.setState({
-        tableHeight: document.body.offsetHeight - 300
+        tableHeight: document.body.offsetHeight - 250
       });
     });
     const { pagination, searchObj } = this.props;
@@ -307,7 +307,7 @@ class AuthenList extends Component {
         title: '币种',
         dataIndex: 'coinName',
         key: 'coinName',
-        width: '5%',
+        width: '4%',
         render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
@@ -326,7 +326,7 @@ class AuthenList extends Component {
         title: '提现手续',
         dataIndex: 'fee',
         key: 'fee',
-        width: '6%'
+        width: '5%'
       },
       {
         title: 'TXID',
