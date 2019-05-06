@@ -112,7 +112,9 @@ export default class TransactionCoinEdit extends Component {
         message.warning('币种名称必填！');
         return;
       }
-      param.detailInfo = {};
+      param.detailInfo = {
+        type: 2 // 币币，不需要改变，暂时写死
+      };
       Object.keys(editData).forEach(editKey => {
         // 有修改
         if (editKey === 'description') {
