@@ -30,7 +30,6 @@ export default class BitcoinCommission extends Component {
       statusOptions: [], // 状态选项
       priceUnitOptions: [], // 计价单位选项
       tableData: [],
-      tableLoading: false,
       page: {
         current: 1,
         pageSize: 10,
@@ -182,9 +181,6 @@ export default class BitcoinCommission extends Component {
     /*
       api.getData(param)
     */
-    this.setState({
-      tableLoading: true
-    });
     const typeText = {
       Sell: '卖出',
       Buy: '买入'
@@ -201,13 +197,12 @@ export default class BitcoinCommission extends Component {
         item.type = typeText[item.type]; // 交易方向：买入、卖出
         item.createdTime = timestampToTime(item.createdTime);
         item.tradeType = '限价'; // 暂无其他类型，字段未返回
-        item.tradingOn = `${item.tradeMarket}/${item.payMarket}`; // 交易对
+        item.tradingOn = `${item.tradeMarket.toUpperCase()}/${item.payMarket.toUpperCase()}`; // 交易对
         item.alreadyCount = item.count - (item.leftCount || 0); // 已成交量
         item.leftCount = item.leftCount || 0; // 未成交量
         item.tradeRatio = `${(item.alreadyCount / item.count) * 100}%`; // 成交率
       });
     this.setState({
-      tableLoading: false,
       page,
       tableData: tableData.datas || []
     });
@@ -251,7 +246,6 @@ export default class BitcoinCommission extends Component {
   };
 
   render() {
-    const { tableLoading } = this.state;
     const { Column } = Table;
     const statusText = {
       UnknownStatus: '未知状态',
@@ -374,7 +368,6 @@ export default class BitcoinCommission extends Component {
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
-            loading={tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
             scroll={{ y: this.state.tableHeight }}

@@ -12,7 +12,6 @@ export default class TransactionMaintenance extends Component {
       tableHeight: document.body.offsetHeight - 300,
       searchword: '',
       tableData: [],
-      tableLoading: false,
       page: {
         current: 1,
         pageSize: 10,
@@ -49,7 +48,8 @@ export default class TransactionMaintenance extends Component {
       // 每次查询的起始位置，相当于页码
       'listOptions.offset': (current - 1) * pageSize,
       // 每次查询的数量
-      'listOptions.limit': pageSize
+      'listOptions.limit': pageSize,
+      type: 2 // 币币，不需要改变，暂时写死
     };
     // 查询，搜索接口暂不支持 2019-04-30
     if (isSearch) {
@@ -58,9 +58,6 @@ export default class TransactionMaintenance extends Component {
     /*
       api.getData(param)
     */
-    this.setState({
-      tableLoading: true
-    });
     const tableData = await coinMaintenance.getTableData(param);
     const page = Object.assign({}, this.state.page);
 
@@ -69,7 +66,6 @@ export default class TransactionMaintenance extends Component {
       tableData.datas.length &&
       tableData.datas.forEach(item => (item.key = item.id));
     this.setState({
-      tableLoading: false,
       page,
       tableData: tableData.datas
     });
@@ -115,7 +111,6 @@ export default class TransactionMaintenance extends Component {
   };
 
   render() {
-    const { tableLoading } = this.state;
     const { Column } = Table;
     // 表格列 对应的 key和名称
     const columnText = {
@@ -144,7 +139,6 @@ export default class TransactionMaintenance extends Component {
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
-            loading={tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
             scroll={{ y: this.state.tableHeight }}
