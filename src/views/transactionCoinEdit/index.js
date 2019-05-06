@@ -263,20 +263,20 @@ export default class TransactionCoinEdit extends Component {
           <div className={styles['content-item']}>
             <span>发行总量(万)</span>
             {isAdd ? (
-              <InputNumber
+              <Input
                 min={0}
                 defaultValue={circulationAmount}
-                onChange={value =>
-                  this.handlerChange('circulationAmount', `${value}`)
+                onChange={e =>
+                  this.handlerChange('circulationAmount', e.target.value)
                 }
               />
             ) : (
               circulationAmount !== null && (
-                <InputNumber
+                <Input
                   min={0}
                   defaultValue={circulationAmount}
-                  onChange={value =>
-                    this.handlerChange('circulationAmount', `${value}`)
+                  onChange={e =>
+                    this.handlerChange('circulationAmount', e.target.value)
                   }
                 />
               )
@@ -285,20 +285,20 @@ export default class TransactionCoinEdit extends Component {
           <div className={styles['content-item']}>
             <span>众筹价格</span>
             {isAdd ? (
-              <InputNumber
+              <Input
                 min={0}
                 defaultValue={crowdFundingPrice}
-                onChange={value =>
-                  this.handlerChange('crowdFundingPrice', `${value}`)
+                onChange={e =>
+                  this.handlerChange('crowdFundingPrice', e.target.value)
                 }
               />
             ) : (
               crowdFundingPrice !== null && (
-                <InputNumber
+                <Input
                   min={0}
                   defaultValue={crowdFundingPrice}
-                  onChange={value =>
-                    this.handlerChange('crowdFundingPrice', `${value}`)
+                  onChange={e =>
+                    this.handlerChange('crowdFundingPrice', e.target.value)
                   }
                 />
               )
