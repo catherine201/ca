@@ -86,19 +86,13 @@ class EditAmount extends Component {
             {editData.type === 'AuctionCoinTypeSell' && (
               <Form.Item label="单价" {...formItemLayout}>
                 {getFieldDecorator('price')(
-                  <InputNumber
-                    placeholder="请输入单价"
-                    className="search_input"
-                  />
+                  <InputNumber placeholder="单价" className="search_input" />
                 )}
               </Form.Item>
             )}
             <Form.Item label="数量" {...formItemLayout}>
               {getFieldDecorator('amount')(
-                <InputNumber
-                  placeholder="请输入成交数量"
-                  className="search_input"
-                />
+                <InputNumber placeholder="数量" className="search_input" />
               )}
             </Form.Item>
             {/* <Form.Item {...subItemLayout}>

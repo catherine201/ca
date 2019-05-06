@@ -301,19 +301,20 @@ class AuthenList extends Component {
         title: '用户名',
         dataIndex: 'nickName',
         key: 'nickName',
-        width: '10%'
+        width: '6%'
       },
       {
         title: '币种',
         dataIndex: 'coinName',
         key: 'coinName',
-        width: '5%'
+        width: '5%',
+        render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '提币数量',
         dataIndex: 'amount',
         key: 'amount',
-        width: '7%'
+        width: '5%'
       },
       {
         title: '提币地址',
@@ -325,7 +326,7 @@ class AuthenList extends Component {
         title: '提现手续',
         dataIndex: 'fee',
         key: 'fee',
-        width: '5%'
+        width: '6%'
       },
       {
         title: 'TXID',
@@ -414,6 +415,7 @@ class AuthenList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

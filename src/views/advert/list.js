@@ -148,9 +148,10 @@ class AdvertList extends Component {
       },
       {
         title: '币种',
-        dataIndex: 'coin.name',
-        key: 'coin.name',
-        width: '9%'
+        dataIndex: 'coin.code',
+        key: 'coin.code',
+        width: '9%',
+        render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '单价',
@@ -264,6 +265,7 @@ class AdvertList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

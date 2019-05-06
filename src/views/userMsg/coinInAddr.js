@@ -202,7 +202,8 @@ class AuthenList extends Component {
         title: '币种',
         dataIndex: 'coinName',
         key: 'coinName',
-        width: '5%'
+        width: '5%',
+        render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '充值地址',
@@ -272,6 +273,7 @@ class AuthenList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

@@ -164,12 +164,12 @@ class AppealList extends Component {
         width: '17%',
         render: text => <Link to={`/admin/order/1?id=${text}`}>{text}</Link>
       },
-      {
-        title: '币种',
-        dataIndex: 'all',
-        key: 'all',
-        width: '6%'
-      },
+      // {
+      //   title: '币种',
+      //   dataIndex: 'all',
+      //   key: 'all',
+      //   width: '6%'
+      // },
       {
         title: '金额(CNY)',
         dataIndex: 'order.feeCNY',
@@ -247,6 +247,7 @@ class AppealList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

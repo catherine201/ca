@@ -259,7 +259,8 @@ class AuthenList extends Component {
         title: '市场',
         dataIndex: 'symbol',
         key: 'symbol',
-        width: '6%'
+        width: '6%',
+        render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '类型',
@@ -438,6 +439,7 @@ class AuthenList extends Component {
         <Table
           rowSelection={rowSelection}
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

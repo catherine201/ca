@@ -151,14 +151,15 @@ class OrderList extends Component {
       },
       {
         title: '币种',
-        dataIndex: 'rate',
-        key: 'rate',
-        width: '8%'
+        dataIndex: 'currency.coinCode',
+        key: 'currency.coinCode',
+        width: '8%',
+        render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '单价',
-        dataIndex: 'appeal',
-        key: 'appeal',
+        dataIndex: 'price',
+        key: 'price',
         width: '9%'
       },
       {
@@ -229,6 +230,7 @@ class OrderList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

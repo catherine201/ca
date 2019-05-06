@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Table, Form } from 'antd';
 import styles from './index.less';
 import createApi from '../../api/list';
-import { cardType, verifyStatus, authenStatusType } from '../../utils/map';
+import { cardType, verifyStatus } from '../../utils/map';
 import { timestampToTime } from '../../utils';
 
 // const { RangePicker } = DatePicker;
@@ -115,19 +115,18 @@ class AuthenList extends Component {
         key: 'phone',
         width: '10%'
       },
-      {
-        title: '实名认证',
-        dataIndex: 'verifyStatus',
-        key: 'verifyStatus',
-        render: text => <span>{text ? verifyStatus[text] : '未提交'}</span>,
-        width: '7%'
-        // render: text => <span>{text.realNameInfoStatus}</span>
-      },
+      // {
+      //   title: '实名认证',
+      //   dataIndex: 'verifyStatus',
+      //   key: 'verifyStatus',
+      //   render: text => <span>{text ? verifyStatus[text] : '未提交'}</span>,
+      //   width: '7%'
+      // },
       {
         title: '姓名',
         dataIndex: 'name',
         key: 'name',
-        width: '7%'
+        width: '10%'
       },
       {
         title: '证件类型',
@@ -149,19 +148,27 @@ class AuthenList extends Component {
         render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>,
         width: '12%'
       },
+      // {
+      //   title: '状态',
+      //   dataIndex: 'accountStatus',
+      //   key: 'accountStatus',
+      //   render: text => <span>{authenStatusType[text]}</span>,
+      //   width: '8%'
+      // },
       {
         title: '状态',
-        dataIndex: 'accountStatus',
-        key: 'accountStatus',
-        render: text => <span>{authenStatusType[text]}</span>,
+        dataIndex: 'verifyStatus',
+        key: 'verifyStatus',
+        render: text => <span>{text ? verifyStatus[text] : '未提交'}</span>,
         width: '8%'
       },
       {
         title: '操作',
+        align: 'center',
         render: text =>
           text.verifyStatus === 2 ? (
             <span
-              className="mouse_hover"
+              className={`mouse_hover' ${styles.colorBlue}`}
               onClick={() => {
                 this.toHref(text);
               }}
@@ -199,6 +206,7 @@ class AuthenList extends Component {
         </Form> */}
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

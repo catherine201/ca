@@ -282,6 +282,7 @@ class UserList extends Component {
           </Button> */}
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}
