@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Radio, Select, Button } from 'antd';
+import { Radio, Select, Button, message } from 'antd';
 import styles from './index.less';
 import { authenDetailData } from '../../utils/data';
 import { cardType, verifyStatus, authenStatusType } from '../../utils/map';
@@ -56,13 +56,17 @@ class AuthenDetail extends Component {
   }
 
   submit = () => {
-    const obj = {
-      url: this.state.data.uid,
-      query: {
-        status: this.state.chooseValue
-      }
-    };
-    this.verificationSubmit(obj);
+    if (this.state.chooseValue !== 0) {
+      const obj = {
+        url: this.state.data.uid,
+        query: {
+          status: this.state.chooseValue
+        }
+      };
+      this.verificationSubmit(obj);
+    } else {
+      message.warning('请先选择认证结果');
+    }
   };
 
   verificationSubmit = async obj => {

@@ -287,7 +287,9 @@ class AuthenList extends Component {
             })(
               <Select className={styles.selectOption}>
                 <Option value="0">请选择类型</Option>
-                <Option value="AuctionCoinTypeSell">抢购</Option>
+                <Option value="AuctionCoinTypeSell" disabled>
+                  抢购
+                </Option>
                 <Option value="AuctionCoinTypeBuy">拍卖</Option>
               </Select>
             )}

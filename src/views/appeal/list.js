@@ -19,7 +19,7 @@ class AppealList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 300
+      tableHeight: document.body.offsetHeight - 250
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 12
@@ -31,7 +31,7 @@ class AppealList extends Component {
     window.addEventListener('resize', () => {
       console.log(this);
       this.setState({
-        tableHeight: document.body.offsetHeight - 300
+        tableHeight: document.body.offsetHeight - 250
       });
     });
     const { pagination, searchObj } = this.props;
@@ -166,8 +166,8 @@ class AppealList extends Component {
       },
       {
         title: '币种',
-        dataIndex: 'all',
-        key: 'all',
+        dataIndex: 'order.coin',
+        key: 'order.coin',
         width: '6%'
       },
       {
@@ -247,6 +247,7 @@ class AppealList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

@@ -16,7 +16,7 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 300,
+      tableHeight: document.body.offsetHeight - 250,
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 10,
@@ -31,7 +31,7 @@ class AuthenList extends Component {
     window.addEventListener('resize', () => {
       console.log(this);
       this.setState({
-        tableHeight: document.body.offsetHeight - 300
+        tableHeight: document.body.offsetHeight - 250
       });
     });
     const { pagination, searchObj } = this.props;
@@ -184,13 +184,15 @@ class AuthenList extends Component {
         title: '交易币种',
         dataIndex: 'tradeCoin',
         key: 'tradeCoin',
-        width: '10%'
+        width: '10%',
+        render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '支付币种',
         dataIndex: 'payCoin',
         key: 'payCoin',
-        width: '10%'
+        width: '10%',
+        render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '类型',
@@ -313,6 +315,7 @@ class AuthenList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

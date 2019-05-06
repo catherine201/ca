@@ -3,6 +3,8 @@ const defaultPagination = {
   defaultPageSize: 10,
   current: 1,
   total: 0
+  // showSizeChanger: true,
+  // showQuickJumper: true
 };
 
 const searchOptionState = {

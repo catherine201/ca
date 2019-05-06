@@ -16,7 +16,7 @@ class AuthenList extends Component {
       // bankID: '',
       // accountID: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 300,
+      tableHeight: document.body.offsetHeight - 250,
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 10,
@@ -30,7 +30,7 @@ class AuthenList extends Component {
     window.addEventListener('resize', () => {
       console.log(this);
       this.setState({
-        tableHeight: document.body.offsetHeight - 300
+        tableHeight: document.body.offsetHeight - 250
       });
     });
     const { pagination, searchObj } = this.props;
@@ -192,7 +192,7 @@ class AuthenList extends Component {
         width: '12%'
       },
       {
-        title: '开户银行',
+        title: '开户类型',
         dataIndex: 'bank.name',
         key: 'bank.name',
         width: '12%'
@@ -204,7 +204,7 @@ class AuthenList extends Component {
         width: '12%'
       },
       {
-        title: '银行卡号',
+        title: '开户账号',
         dataIndex: 'bankcardNumber',
         key: 'bankcardNumber',
         width: '25%'
@@ -286,6 +286,7 @@ class AuthenList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

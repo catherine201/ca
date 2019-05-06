@@ -213,6 +213,14 @@ const config = {
     options: {
       errorHandler: true
     }
+  },
+  // 统计
+  listDepositStatus: {
+    url: '/admin/system/deposit/stat',
+    method: 'get',
+    options: {
+      showLoading: false
+    }
   }
 };
 

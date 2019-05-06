@@ -19,7 +19,7 @@ class OrderList extends Component {
       limit: 10,
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 300
+      tableHeight: document.body.offsetHeight - 250
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 12
@@ -31,7 +31,7 @@ class OrderList extends Component {
     window.addEventListener('resize', () => {
       console.log(this);
       this.setState({
-        tableHeight: document.body.offsetHeight - 300
+        tableHeight: document.body.offsetHeight - 250
       });
     });
     const { pagination, searchObj } = this.props;
@@ -151,14 +151,15 @@ class OrderList extends Component {
       },
       {
         title: '币种',
-        dataIndex: 'rate',
-        key: 'rate',
-        width: '8%'
+        dataIndex: 'currency.coinCode',
+        key: 'currency.coinCode',
+        width: '8%',
+        render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '单价',
-        dataIndex: 'appeal',
-        key: 'appeal',
+        dataIndex: 'price',
+        key: 'price',
         width: '9%'
       },
       {
@@ -229,6 +230,7 @@ class OrderList extends Component {
         </Form>
         <Table
           columns={columns}
+          bordered
           dataSource={data}
           pagination={pagination}
           onChange={this.handleTableChange}

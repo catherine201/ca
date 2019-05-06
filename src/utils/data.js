@@ -474,7 +474,7 @@ export const authenDetailData = [
   },
   {
     key: 'cerAuthen',
-    title: '实名认证'
+    title: '状态'
   },
   {
     key: 'name',
@@ -491,15 +491,15 @@ export const authenDetailData = [
   {
     key: 'createdTime',
     title: '认证时间'
-  },
-  {
-    key: 'accountStatus',
-    title: '状态'
-  },
-  {
-    key: '',
-    title: ''
   }
+  // {
+  //   key: 'accountStatus',
+  //   title: '状态'
+  // },
+  // {
+  //   key: '',
+  //   title: ''
+  // }
 ];
 
 export const platCoinType = [
