@@ -136,8 +136,8 @@ class AdvertList extends Component {
       },
       {
         title: '创建人',
-        dataIndex: 'owner',
-        key: 'owner',
+        dataIndex: 'owner.nickname',
+        key: 'owner.nickname',
         width: '6%'
       },
       {
@@ -161,8 +161,8 @@ class AdvertList extends Component {
       },
       {
         title: '初始数量',
-        dataIndex: 'rate',
-        key: 'rate',
+        dataIndex: 'amountTotal',
+        key: 'amountTotal',
         width: '6%'
       },
       {
