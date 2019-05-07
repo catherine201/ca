@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Input,
-  InputNumber,
-  Button,
-  message,
-  DatePicker,
-  LocaleProvider
-} from 'antd';
+import { Input, Button, message, DatePicker, LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -263,20 +256,20 @@ export default class TransactionCoinEdit extends Component {
           <div className={styles['content-item']}>
             <span>发行总量(万)</span>
             {isAdd ? (
-              <InputNumber
+              <Input
                 min={0}
                 defaultValue={circulationAmount}
-                onChange={value =>
-                  this.handlerChange('circulationAmount', `${value}`)
+                onChange={e =>
+                  this.handlerChange('circulationAmount', e.target.value)
                 }
               />
             ) : (
               circulationAmount !== null && (
-                <InputNumber
+                <Input
                   min={0}
                   defaultValue={circulationAmount}
-                  onChange={value =>
-                    this.handlerChange('circulationAmount', `${value}`)
+                  onChange={e =>
+                    this.handlerChange('circulationAmount', e.target.value)
                   }
                 />
               )
@@ -285,20 +278,20 @@ export default class TransactionCoinEdit extends Component {
           <div className={styles['content-item']}>
             <span>众筹价格</span>
             {isAdd ? (
-              <InputNumber
+              <Input
                 min={0}
                 defaultValue={crowdFundingPrice}
-                onChange={value =>
-                  this.handlerChange('crowdFundingPrice', `${value}`)
+                onChange={e =>
+                  this.handlerChange('crowdFundingPrice', e.target.value)
                 }
               />
             ) : (
               crowdFundingPrice !== null && (
-                <InputNumber
+                <Input
                   min={0}
                   defaultValue={crowdFundingPrice}
-                  onChange={value =>
-                    this.handlerChange('crowdFundingPrice', `${value}`)
+                  onChange={e =>
+                    this.handlerChange('crowdFundingPrice', e.target.value)
                   }
                 />
               )
