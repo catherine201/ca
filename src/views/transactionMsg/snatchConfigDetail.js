@@ -25,15 +25,23 @@ class AuthenList extends Component {
     const obj = {
       url: this.props.match.params.snatchId
     };
-    if (!this.props.coinType) {
-      this.props.getCoinType().then(() => {
-        if (this.props.match.params.snatchId !== '0') {
-          this.queryAuctionCoin(obj);
-        }
-      });
-    } else if (this.props.match.params.snatchId !== '0') {
-      this.queryAuctionCoin(obj);
-    }
+    // if (!this.props.coinType) {
+    //   this.props.getCoinType().then(() => {
+    //     if (this.props.match.params.snatchId !== '0') {
+    //       this.queryAuctionCoin(obj);
+    //     }
+    //   });
+    // } else if (this.props.match.params.snatchId !== '0') {
+    //   this.queryAuctionCoin(obj);
+    // }
+    const coinObj = {
+      type: 'CoinTypeAuction'
+    };
+    this.props.getCoinType(coinObj).then(() => {
+      if (this.props.match.params.snatchId !== '0') {
+        this.queryAuctionCoin(obj);
+      }
+    });
   }
 
   queryAuctionCoin = async obj => {
@@ -248,7 +256,7 @@ class AuthenList extends Component {
                 <Option value="0">请选择交易币种</Option>
                 {coinType &&
                   coinType.map(item => (
-                    <Option value={item.code}>{item.code}</Option>
+                    <Option value={item.code}>{item.code.toUpperCase()}</Option>
                   ))}
               </Select>
             )}
@@ -270,7 +278,7 @@ class AuthenList extends Component {
                 <Option value="0">请选择支付币种</Option>
                 {coinType &&
                   coinType.map(item => (
-                    <Option value={item.code}>{item.code}</Option>
+                    <Option value={item.code}>{item.code.toUpperCase()}</Option>
                   ))}
               </Select>
             )}

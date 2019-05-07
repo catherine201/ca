@@ -24,8 +24,8 @@ const selectOptionState = {
     }
   },
   effects: dispatch => ({
-    async getCoinType() {
-      const res = await createApi.queryListCoins();
+    async getCoinType(obj = { type: 'CoinTypeCurrency' }) {
+      const res = await createApi.queryListCoins(obj);
       if (res.datas) {
         const data = [
           // {

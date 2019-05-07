@@ -58,13 +58,16 @@ class AuthenList extends Component {
     nickName && (obj.nickName = nickName);
     status && (obj.status = status);
     // this.queryCointxs(obj);
-    if (!this.props.coinType) {
-      this.props.getCoinType().then(() => {
-        this.queryCointxs(obj);
-      });
-    } else {
+    // if (!this.props.coinType) {
+    //   this.props.getCoinType().then(() => {
+    //     this.queryCointxs(obj);
+    //   });
+    // } else {
+    //   this.queryCointxs(obj);
+    // }
+    this.props.getCoinType().then(() => {
       this.queryCointxs(obj);
-    }
+    });
   }
 
   queryAgain = () => {
@@ -377,7 +380,7 @@ class AuthenList extends Component {
                 {coinType &&
                   coinType.map(item => (
                     <Option value={item.code} key={item.code}>
-                      {item.code}
+                      {item.code.toUpperCase()}
                     </Option>
                   ))}
               </Select>

@@ -47,13 +47,19 @@ class AuthenList extends Component {
     payCoin && (obj.payCoin = payCoin);
     type && (obj.type = type);
     saleTime && (obj.saleTime = saleTime);
-    if (!this.props.coinType) {
-      this.props.getCoinType().then(() => {
-        this.queryAuctionCoin(obj);
-      });
-    } else {
+    // if (!this.props.coinType) {
+    //   this.props.getCoinType().then(() => {
+    //     this.queryAuctionCoin(obj);
+    //   });
+    // } else {
+    //   this.queryAuctionCoin(obj);
+    // }
+    const coinObj = {
+      type: 'CoinTypeAuction'
+    };
+    this.props.getCoinType(coinObj).then(() => {
       this.queryAuctionCoin(obj);
-    }
+    });
     //  this.queryCoinInAddr(obj);
   }
 
@@ -184,14 +190,14 @@ class AuthenList extends Component {
         title: '交易币种',
         dataIndex: 'tradeCoin',
         key: 'tradeCoin',
-        width: '10%',
+        width: '6%',
         render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
         title: '支付币种',
         dataIndex: 'payCoin',
         key: 'payCoin',
-        width: '10%',
+        width: '6%',
         render: text => <span>{text ? text.toUpperCase() : ''}</span>
       },
       {
@@ -205,13 +211,19 @@ class AuthenList extends Component {
         title: '单价',
         dataIndex: 'price',
         key: 'price',
-        width: '10%'
+        width: '8%'
       },
       {
-        title: '数量',
-        dataIndex: 'amount',
-        key: 'amount',
-        width: '10%'
+        title: '冻结数量',
+        dataIndex: 'freezeAmount',
+        key: 'freezeAmount',
+        width: '8%'
+      },
+      {
+        title: '剩余数量',
+        dataIndex: 'remainAmount',
+        key: 'remainAmount',
+        width: '8%'
       },
       {
         title: '最小限额',
@@ -233,6 +245,7 @@ class AuthenList extends Component {
       },
       {
         title: '操作',
+        align: 'center',
         render: text => (
           <Button
             onClick={() => {
@@ -263,7 +276,7 @@ class AuthenList extends Component {
                 {coinType &&
                   coinType.map(item => (
                     <Option value={item.code} key={item.code}>
-                      {item.code}
+                      {item.code.toUpperCase()}
                     </Option>
                   ))}
               </Select>
@@ -278,7 +291,7 @@ class AuthenList extends Component {
                 {coinType &&
                   coinType.map(item => (
                     <Option value={item.code} key={item.code}>
-                      {item.code}
+                      {item.code.toUpperCase()}
                     </Option>
                   ))}
               </Select>
