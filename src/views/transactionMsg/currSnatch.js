@@ -49,6 +49,7 @@ class AuthenList extends Component {
     const payCoin = searchObj.payCoin;
     const type = searchObj.type;
     const nickName = searchObj.nickName;
+    console.log(pagination);
     const obj = {
       'listOptions.limit': this.state.limit,
       'listOptions.offset': (pagination.current - 1) * this.state.limit,
@@ -248,7 +249,7 @@ class AuthenList extends Component {
         title: '订单号',
         dataIndex: 'id',
         key: 'id',
-        width: '18%'
+        width: '15%'
       },
       {
         title: '用户名',
@@ -285,25 +286,32 @@ class AuthenList extends Component {
         title: '数量',
         dataIndex: 'amount',
         key: 'amount',
-        width: '7%'
+        width: '6%'
       },
       {
         title: '已成交',
         dataIndex: 'matchAmount',
         key: 'matchAmount',
-        width: '7%'
+        width: '6%'
       },
       {
         title: '总额',
         dataIndex: 'totalAmount',
         key: 'totalAmount',
-        width: '7%'
+        width: '6%'
       },
       {
         title: '交易时间',
         dataIndex: 'payedTime',
         key: 'payedTime',
-        width: '12%',
+        width: '9%',
+        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updatedTime',
+        key: 'updatedTime',
+        width: '9%',
         render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
       },
       {
@@ -315,6 +323,7 @@ class AuthenList extends Component {
       },
       {
         title: '操作',
+        align: 'center',
         render: text =>
           text ? (
             <React.Fragment>

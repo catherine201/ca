@@ -23,6 +23,7 @@ class AuthenList extends Component {
       //   current: 1
       // },
       limit: 10
+      // loading: false
       // searchObj: {}
     };
   }
@@ -39,6 +40,7 @@ class AuthenList extends Component {
     const payCoin = searchObj.payCoin;
     const type = searchObj.type;
     const nickName = searchObj.nickName;
+    console.log(pagination);
     const obj = {
       'listOptions.limit': this.state.limit,
       'listOptions.offset': (pagination.current - 1) * this.state.limit,
@@ -64,7 +66,13 @@ class AuthenList extends Component {
   }
 
   queryListAuctionOrders = async obj => {
+    // this.setState({
+    //   loading: true
+    // });
     const res = await createApi.queryListAuctionOrders(obj);
+    // this.setState({
+    //   loading: false
+    // });
     console.log(res);
     if (res && res.paging) {
       const pagination = { ...this.props.pagination };
@@ -152,7 +160,8 @@ class AuthenList extends Component {
     const status = searchObj.status;
     const obj = {
       'listOptions.limit': this.state.limit,
-      'listOptions.offset': (pagination.current - 1) * this.state.limit
+      'listOptions.offset': (pagination.current - 1) * this.state.limit,
+      status: searchObj.status || defaultStatus
       // tradeCoin:
       //   searchObj.tradeCoin === '0' ? '' : searchObj.tradeCoin.toLowerCase(),
       // payCoin: searchObj.payCoin === '0' ? '' : searchObj.payCoin.toLowerCase(),
@@ -184,7 +193,8 @@ class AuthenList extends Component {
       // {
       //   title: '订单号',
       //   dataIndex: 'orderID',
-      //   key: 'orderID'
+      //   key: 'orderID',
+      //   width: '18%'
       // },
       {
         title: '用户名',
@@ -239,7 +249,14 @@ class AuthenList extends Component {
         title: '交易时间',
         dataIndex: 'payedTime',
         key: 'payedTime',
-        width: '14%',
+        width: '9%',
+        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updatedTime',
+        key: 'updatedTime',
+        width: '9%',
         render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
       },
       {
@@ -350,6 +367,7 @@ class AuthenList extends Component {
             console.log(record.id);
             return record.id;
           }}
+          // loading={this.state.loading}
           scroll={{ y: tableHeight }}
         />
       </div>

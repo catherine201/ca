@@ -285,10 +285,13 @@ const mapStateToProps = state => ({
   searchObj: state.searchOption.searchObj
 });
 
-const mapDispatchToProps = dispatch => ({
-  getPagination: dispatch.searchOption.getPagination,
-  getSearchObj: dispatch.searchOption.getSearchObj
-});
+const mapDispatchToProps = dispatch => {
+  console.dir(dispatch);
+  return {
+    getPagination: dispatch.searchOption.getPagination,
+    getSearchObj: dispatch.searchOption.getSearchObj
+  };
+};
 
 export default connect(
   mapStateToProps,

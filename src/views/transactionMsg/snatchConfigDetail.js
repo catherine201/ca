@@ -321,7 +321,7 @@ class AuthenList extends Component {
                 placeholder="请输入数量"
                 className="number_search_input"
                 min={0}
-                disabled={this.props.match.params.snatchId !== '0'}
+                // disabled={this.props.match.params.snatchId !== '0'}
               />
             )}
           </Form.Item>

@@ -20,6 +20,8 @@ const searchOptionState = {
   },
   reducers: {
     setPagination(state, data) {
+      console.log('reserdata---------');
+      console.log(data);
       return {
         ...state,
         pagination: data
@@ -37,6 +39,8 @@ const searchOptionState = {
       dispatch.searchOption.setPagination(obj);
     },
     resetPagination() {
+      console.log('reset__________________');
+      console.log(defaultPagination);
       dispatch.searchOption.setPagination(defaultPagination);
     },
     getSearchObj(obj) {

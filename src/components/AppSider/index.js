@@ -184,9 +184,13 @@ class AppSider extends React.Component {
   // }
 
   toHref(target) {
-    this.props.dispatch.searchOption.resetPagination();
-    this.props.dispatch.searchOption.resetSearchObj();
-    this.props.history.push(target);
+    console.log(this);
+    this.props.resetPagination();
+    this.props.resetSearchObj();
+    console.log(this.props.pagination);
+    setTimeout(() => {
+      this.props.history.push(target);
+    }, 5);
   }
 
   render() {
@@ -206,9 +210,27 @@ class AppSider extends React.Component {
     );
   }
 }
-const mapDispatchToProps = dispatch => ({
-  resetPagination: dispatch.searchOption.resetPagination,
-  resetSearchObj: dispatch.searchOption.resetSearchObj
+// const mapDispatchToProps = dispatch => {
+//   console.log(dispatch);
+//   return {
+//     resetPagination: dispatch.searchOption.resetPagination,
+//     resetSearchObj: dispatch.searchOption.resetSearchObj
+//   };
+// };
+const mapStateToProps = state => ({
+  pagination: state.searchOption.pagination,
+  searchObj: state.searchOption.searchObj
 });
+const mapDispatchToProps = dispatch => {
+  console.dir(dispatch);
+  return {
+    resetPagination: dispatch.searchOption.resetPagination,
+    resetSearchObj: dispatch.searchOption.resetSearchObj
+  };
+};
 // export default AppSider;
-export default connect(mapDispatchToProps)(AppSider);
+// export default connect(mapDispatchToProps)(AppSider);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppSider);

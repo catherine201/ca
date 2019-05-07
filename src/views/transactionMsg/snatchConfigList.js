@@ -217,25 +217,34 @@ class AuthenList extends Component {
         title: '冻结数量',
         dataIndex: 'freezeAmount',
         key: 'freezeAmount',
-        width: '8%'
+        width: '8%',
+        render: text => <span>{text || 0}</span>
       },
       {
         title: '剩余数量',
         dataIndex: 'remainAmount',
         key: 'remainAmount',
-        width: '8%'
+        width: '8%',
+        render: text => <span>{text || 0}</span>
+      },
+      {
+        title: '总数量',
+        dataIndex: 'amount',
+        key: 'amount',
+        width: '8%',
+        render: text => <span>{text || 0}</span>
       },
       {
         title: '最小限额',
         dataIndex: 'limitMin',
         key: 'limitMin',
-        width: '10%'
+        width: '8%'
       },
       {
         title: '最大限额',
         dataIndex: 'limitMax',
         key: 'limitMax',
-        width: '10%'
+        width: '8%'
       },
       {
         title: '手续费',
