@@ -52,7 +52,9 @@ class AdvertDetail extends Component {
                 <th>可用</th>
                 <th>冻结</th>
               </tr>
-              {coinType.length &&
+              {coinType &&
+                data &&
+                coinType.length &&
                 data.length &&
                 coinType.map(item => {
                   console.log(item);

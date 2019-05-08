@@ -29,7 +29,7 @@ class AuthenDetail extends Component {
       : '未提交';
     data.cerType = cardType[data.cer.type];
     data.serialNo = data.cer.serialNo;
-    data.idcard_url = data.idcard_front_url;
+    data.idcard_url = data.cer.fontImageUrl;
     data.createdTime = data.createdTime
       ? timestampToTime(data.createdTime / 1000)
       : '';
@@ -82,14 +82,18 @@ class AuthenDetail extends Component {
     const data = this.state.data;
     switch (value) {
       case 'positive':
-        data.idcard_url = data.idcard_front_url;
+        data.idcard_url = data.cer.fontImageUrl;
         break;
       case 'negative':
-        data.idcard_url = data.idcard_back_url;
+        data.idcard_url = data.cer.backImageUrl;
+        break;
+      case 'hand':
+        data.idcard_url = data.cer.handImageUrl;
         break;
       default:
         break;
     }
+    console.log(data);
     this.setState({
       IDIndex: value,
       data
@@ -107,6 +111,7 @@ class AuthenDetail extends Component {
     // const { test, getTest } = this.props;
     // console.log(this.props.detailData);
     const { data } = this.state;
+    console.log(data.idcard_url);
     return (
       <div className={`authen_detail ${styles.authen_detail}`}>
         <p className="common_title">
@@ -131,6 +136,7 @@ class AuthenDetail extends Component {
             >
               <Option value="positive">证件正面</Option>
               <Option value="negative">证件反面</Option>
+              <Option value="hand">手持证件照</Option>
             </Select>
           </div>
           <div className={styles.content_right}>

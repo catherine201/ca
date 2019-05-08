@@ -6,7 +6,7 @@ module.exports = function(app) {
       // target: 'http://dashboard.api.leekerlabs.com/',
       target: 'http://192.168.10.137:8000/',
       // target: 'http://192.168.10.66:8000/',
-      // target: 'http://192.168.10.111:8000/',
+      // target: 'http://192.168.10.121:8000/',
       changeOrigin: true,
       pathRewrite: {
         '^/fangman': ''

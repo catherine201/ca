@@ -151,12 +151,12 @@ class UserList extends Component {
     const { data, tableHeight } = this.state;
     const columns = [
       {
-        title: 'UDID',
+        title: 'UID',
         // dataIndex: 'uid',
         // key: 'uid',
-        width: '22%',
+        width: '8%',
         render: text => (
-          <Link to={`/admin/user/1?id=${text.id}`}>{text.uid}</Link>
+          <Link to={`/admin/user/1?id=${text.id}`}>{text.promoCode}</Link>
         )
       },
       {
@@ -175,17 +175,17 @@ class UserList extends Component {
         title: '实名认证',
         dataIndex: 'verified',
         key: 'verified',
-        width: '5%'
+        width: '7%'
       },
       {
         title: '总成交笔数',
         dataIndex: 'dealTotal',
         key: 'dealTotal',
-        width: '7%'
+        width: '8%'
       },
       {
         title: '总成交率',
-        width: '6%',
+        width: '8%',
         render: text => (
           <span>
             {text.txTotal ? (text.dealTotal / text.txTotal).toFixed(2) : ''}
@@ -196,17 +196,17 @@ class UserList extends Component {
         title: '总申诉笔数',
         dataIndex: 'appealTotal',
         key: 'appealTotal',
-        width: '7%'
+        width: '8%'
       },
       {
         title: '近30日成交笔数',
         dataIndex: 'dealTotal30',
         key: 'dealTotal30',
-        width: '7%'
+        width: '9%'
       },
       {
         title: '近30日成交率',
-        width: '6%',
+        width: '9%',
         render: text => (
           <span>
             {text.txTotal30
@@ -219,7 +219,7 @@ class UserList extends Component {
         title: '近30日申诉笔数',
         dataIndex: 'appealTotal30',
         key: 'appealTotal30',
-        width: '7%'
+        width: '9%'
       },
       {
         title: '平均放款时间',
