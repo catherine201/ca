@@ -183,7 +183,7 @@ class AuthenList extends Component {
         title: '抢拍时间',
         dataIndex: 'saleTime',
         key: 'saleTime',
-        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>,
+        render: text => <span>{text ? timestampToTime(text) : ''}</span>,
         width: '12%'
       },
       {

@@ -152,10 +152,12 @@ class UserList extends Component {
     const columns = [
       {
         title: 'UDID',
-        dataIndex: 'uid',
-        key: 'uid',
+        // dataIndex: 'uid',
+        // key: 'uid',
         width: '22%',
-        render: text => <Link to={`/admin/user/1?id=${text}`}>{text}</Link>
+        render: text => (
+          <Link to={`/admin/user/1?id=${text.id}`}>{text.uid}</Link>
+        )
       },
       {
         title: '昵称',

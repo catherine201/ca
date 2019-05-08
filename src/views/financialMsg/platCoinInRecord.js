@@ -15,8 +15,10 @@ class AdvertDetail extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
-    this.querylistDepositStatus();
+    this.props.getCoinType().then(() => {
+      console.log(this.props.coinType);
+      this.querylistDepositStatus();
+    });
   }
 
   querylistDepositStatus = async () => {
@@ -30,8 +32,10 @@ class AdvertDetail extends Component {
   };
 
   render() {
-    // const { test, getTest } = this.props;
+    const { coinType } = this.props;
+    console.log(coinType);
     const { data } = this.state;
+    console.log(data);
     return (
       <div
         className={`advert_detail ${styles.coinRecord_list} ${
@@ -48,14 +52,29 @@ class AdvertDetail extends Component {
                 <th>可用</th>
                 <th>冻结</th>
               </tr>
-              {data.map(item => (
-                <tr align="center" key={item.coinCode}>
-                  <td>{item.coinCode ? item.coinCode.toUpperCase() : ''}</td>
-                  <td>{item.total.toString()}</td>
-                  <td>{item.avaliable}</td>
-                  <td>{item.freeze}</td>
-                </tr>
-              ))}
+              {coinType.length &&
+                data.length &&
+                coinType.map(item => {
+                  console.log(item);
+                  console.log(data);
+                  const it = data.filter(value => {
+                    console.log(value);
+                    return (
+                      value.coinCode.toLowerCase() === item.code.toLowerCase()
+                    );
+                  })[0];
+                  console.log(it);
+                  return it ? (
+                    <tr align="center" key={it.coinCode}>
+                      <td>{it.coinCode ? it.coinCode.toUpperCase() : ''}</td>
+                      <td>{it.total.toString()}</td>
+                      <td>{it.avaliable}</td>
+                      <td>{it.freeze}</td>
+                    </tr>
+                  ) : (
+                    ''
+                  );
+                })}
             </tbody>
           </table>
         </div>
@@ -65,11 +84,11 @@ class AdvertDetail extends Component {
 }
 
 const mapStateToProps = state => ({
-  test: state.demo.test
+  coinType: state.selectOption.coinType
 });
 
 const mapDispatchToProps = dispatch => ({
-  getTest: dispatch.demo.getTest
+  getCoinType: dispatch.selectOption.getCoinType
 });
 
 export default connect(

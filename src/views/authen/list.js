@@ -145,7 +145,7 @@ class AuthenList extends Component {
         title: '认证时间',
         dataIndex: 'createdTime',
         key: 'createdTime',
-        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>,
+        render: text => <span>{text ? timestampToTime(text) : ''}</span>,
         width: '12%'
       },
       // {

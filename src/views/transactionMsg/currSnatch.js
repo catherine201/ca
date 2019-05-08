@@ -305,14 +305,14 @@ class AuthenList extends Component {
         dataIndex: 'payedTime',
         key: 'payedTime',
         width: '9%',
-        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
+        render: text => <span>{text ? timestampToTime(text) : ''}</span>
       },
       {
         title: '更新时间',
         dataIndex: 'updatedTime',
         key: 'updatedTime',
         width: '9%',
-        render: text => <span>{text ? timestampToTime(text / 1000) : ''}</span>
+        render: text => <span>{text ? timestampToTime(text) : ''}</span>
       },
       {
         title: '状态',

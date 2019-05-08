@@ -49,6 +49,7 @@ function generateMenu(props, menus, that) {
       </Menu.Item>
     );
   });
+  console.dir(items);
   return items;
 }
 

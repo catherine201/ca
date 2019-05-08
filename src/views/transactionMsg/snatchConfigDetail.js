@@ -54,8 +54,7 @@ class AuthenList extends Component {
         tradeCoin: coin.tradeCoin === '0' ? '' : coin.tradeCoin.toUpperCase(), // 币种
         payCoin: coin.payCoin === '0' ? '' : coin.payCoin.toUpperCase(), // 币种
         rangePicker: [
-          coin.saleTime &&
-            moment(timestampToTime(coin.saleTime / 1000), 'YYYY/MM/DD')
+          coin.saleTime && moment(timestampToTime(coin.saleTime), 'YYYY/MM/DD')
         ],
         amount: coin.amount,
         type: coin.type,
@@ -296,9 +295,9 @@ class AuthenList extends Component {
               <Select className={styles.selectOption}>
                 <Option value="0">请选择类型</Option>
                 <Option value="AuctionCoinTypeSell" disabled>
-                  抢购
+                  拍卖
                 </Option>
-                <Option value="AuctionCoinTypeBuy">拍卖</Option>
+                <Option value="AuctionCoinTypeBuy">抢购</Option>
               </Select>
             )}
           </Form.Item>
@@ -321,7 +320,7 @@ class AuthenList extends Component {
                 placeholder="请输入数量"
                 className="number_search_input"
                 min={0}
-                // disabled={this.props.match.params.snatchId !== '0'}
+                disabled={this.props.match.params.snatchId !== '0'}
               />
             )}
           </Form.Item>
