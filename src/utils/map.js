@@ -27,7 +27,7 @@ export const AdsOrderStatus = {
   Appealed: '已申述',
   Canceled: '已取消',
   Appealed_Done: '申诉完成',
-  Done: '已完成'
+  Finished: '已完成'
 };
 
 export const appealStatus = {
