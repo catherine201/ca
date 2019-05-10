@@ -381,7 +381,7 @@ export default class BitcoinCommission extends Component {
               onBlur={e => this.handlerChange('ownerId', e.target.value)}
             />
           </div>
-          <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
+          <Button onClick={this.queryClick}>查询</Button>
         </section>
         <LocaleProvider locale={zh_CN}>
           <Table

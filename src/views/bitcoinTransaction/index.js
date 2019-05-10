@@ -246,7 +246,7 @@ export default class BitcoinTransaction extends Component {
               onBlur={e => this.handlerChange('orderId', e.target.value)}
             />
           </div>
-          <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
+          <Button onClick={this.queryClick}>查询</Button>
         </section>
         <LocaleProvider locale={zh_CN}>
           <Table
