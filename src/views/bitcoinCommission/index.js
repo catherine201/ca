@@ -16,7 +16,7 @@ export default class BitcoinCommission extends Component {
     this.state = {
       tableHeight: document.body.offsetHeight - 320,
       searchData: {
-        // tradeType: null, // 交易方式
+        priceType: null, // 交易方式
         type: null, // 交易方向
         coin: null, // 币种
         priceUnit: null, // 计价单位
@@ -152,7 +152,7 @@ export default class BitcoinCommission extends Component {
   getTableData = async () => {
     const { current, pageSize } = this.state.page;
     const {
-      // tradeType, // 交易方式
+      priceType, // 交易方式
       type, // 交易方向
       coin, // 币种
       priceUnit, // 计价单位
@@ -168,7 +168,7 @@ export default class BitcoinCommission extends Component {
       'listOptions.limit': pageSize
     };
 
-    // if (tradeType) param.tradeType = tradeType; // 交易方式不传，接口暂不支持
+    if (priceType) param.priceType = priceType;
     if (type) param.type = type;
     if (coin && priceUnit) {
       param.tradeMarket = coin; // 币种
@@ -181,9 +181,16 @@ export default class BitcoinCommission extends Component {
     /*
       api.getData(param)
     */
+    //  交易方向
     const typeText = {
       Sell: '卖出',
       Buy: '买入'
+    };
+    // 交易方式
+    const tradeTypeText = {
+      LimitPrice: '限价',
+      MarketPrice: '市价',
+      StopProfitLoss: '止盈止损'
     };
 
     const tableData = await coinCommission.getTableData(param);
@@ -196,7 +203,7 @@ export default class BitcoinCommission extends Component {
         item.key = item.id;
         item.type = typeText[item.type]; // 交易方向：买入、卖出
         item.createdTime = timestampToTime(item.createdTime);
-        item.tradeType = '限价'; // 暂无其他类型，字段未返回
+        item.priceType = tradeTypeText[item.priceType]; // 交易方式
         item.tradingOn = `${item.tradeMarket.toUpperCase()}/${item.payMarket.toUpperCase()}`; // 交易对
         item.alreadyCount = item.count - (item.leftCount || 0); // 已成交量
         item.leftCount = item.leftCount || 0; // 未成交量
@@ -260,7 +267,7 @@ export default class BitcoinCommission extends Component {
       createdTime: '委托时间',
       tradingOn: '交易对',
       type: '交易方向',
-      tradeType: '交易方式',
+      priceType: '交易方式',
       triggerPrice: '触发价',
       price: '委托价',
       count: '委托数量',
@@ -288,7 +295,7 @@ export default class BitcoinCommission extends Component {
             <Select
               defaultValue="0"
               style={{ width: 120 }}
-              onChange={value => this.handlerChange('tradeType', value)}
+              onChange={value => this.handlerChange('priceType', value)}
             >
               {this.state.tradeTypeOptions.map(coin => (
                 <Select.Option key={coin} value={coin.value}>
