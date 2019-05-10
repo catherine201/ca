@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { DatePicker, Input, Button, Table, Form } from 'antd';
 import styles from './index.less';
 import createApi from '../../api/list';
+import { userVerifyStatus } from '../../utils/map';
 
 const { RangePicker } = DatePicker;
 
@@ -173,22 +174,28 @@ class UserList extends Component {
       },
       {
         title: '实名认证',
-        dataIndex: 'verified',
-        key: 'verified',
-        width: '7%'
+        dataIndex: 'verifyStatus',
+        key: 'verifyStatus',
+        width: '7%',
+        render: text => (
+          <span>{text ? userVerifyStatus[text] : '状态错误'}</span>
+        )
       },
       {
         title: '总成交笔数',
         dataIndex: 'dealTotal',
         key: 'dealTotal',
-        width: '8%'
+        width: '8%',
+        render: text => <span>{text || 0}</span>
       },
       {
         title: '总成交率',
         width: '8%',
         render: text => (
           <span>
-            {text.txTotal ? (text.dealTotal / text.txTotal).toFixed(2) : ''}
+            {text.txTotal
+              ? ((text.dealTotal || 0) / text.txTotal).toFixed(2)
+              : 0}
           </span>
         )
       },
@@ -196,13 +203,15 @@ class UserList extends Component {
         title: '总申诉笔数',
         dataIndex: 'appealTotal',
         key: 'appealTotal',
-        width: '8%'
+        width: '8%',
+        render: text => <span>{text || 0}</span>
       },
       {
         title: '近30日成交笔数',
         dataIndex: 'dealTotal30',
         key: 'dealTotal30',
-        width: '9%'
+        width: '9%',
+        render: text => <span>{text || 0}</span>
       },
       {
         title: '近30日成交率',
@@ -210,8 +219,8 @@ class UserList extends Component {
         render: text => (
           <span>
             {text.txTotal30
-              ? (text.dealTotal30 / text.txTotal30).toFixed(2)
-              : ''}
+              ? ((text.dealTotal30 || 0) / text.txTotal30).toFixed(2)
+              : 0}
           </span>
         )
       },
@@ -219,7 +228,8 @@ class UserList extends Component {
         title: '近30日申诉笔数',
         dataIndex: 'appealTotal30',
         key: 'appealTotal30',
-        width: '9%'
+        width: '9%',
+        render: text => <span>{text || 0}</span>
       },
       {
         title: '平均放款时间',

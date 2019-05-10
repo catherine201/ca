@@ -17,7 +17,8 @@ class AuthenList extends Component {
       //   time: [],
       searchName: '',
       data: [],
-      tableHeight: document.body.offsetHeight - 250
+      tableHeight: document.body.offsetHeight - 250,
+      limit: 10
       // pagination: {
       //   defaultCurrent: 1,
       //   defaultPageSize: 12
@@ -40,8 +41,8 @@ class AuthenList extends Component {
     this.queryVerification(obj);
   }
 
-  queryVerification = async () => {
-    const res = await createApi.queryVerification();
+  queryVerification = async obj => {
+    const res = await createApi.queryVerification(obj);
     console.log(res.list);
     if (res && res.paging) {
       const pagination = { ...this.props.pagination };

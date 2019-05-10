@@ -37,6 +37,13 @@ export const appealStatus = {
   Closed: '已处理'
 };
 
+export const userVerifyStatus = {
+  unknownRealNameInfoStatus: 'unknownRealNameInfoStatus',
+  realNameInfoNotCommited: '未审核',
+  realNameInfoCommited: '已提交待审核',
+  realNameInfoVerified: '已审核'
+};
+
 export const cardType = {
   '1': '身份证',
   '2': '港澳通行证',

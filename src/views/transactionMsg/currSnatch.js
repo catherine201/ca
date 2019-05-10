@@ -12,7 +12,6 @@ const fliterArr = [
   'AuctionOrderStatusCreated',
   'AuctionOrderStatusAllocated',
   'AuctionOrderStatusPayed',
-  'AuctionOrderStatusOverdue',
   'AuctionOrderStatusAgreed'
 ];
 

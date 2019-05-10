@@ -7,7 +7,11 @@ import { auctionCoinType, auctionOrderStatus } from '../../utils/map';
 import { timestampToTime } from '../../utils';
 
 const Option = Select.Option;
-const defaultStatus = ['AuctionOrderStatusDone', 'AuctionOrderStatusCancelled'];
+const defaultStatus = [
+  'AuctionOrderStatusDone',
+  'AuctionOrderStatusOverdue',
+  'AuctionOrderStatusCancelled'
+];
 
 class AuthenList extends Component {
   constructor(props) {
