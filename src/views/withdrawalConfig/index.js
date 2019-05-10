@@ -10,7 +10,6 @@ export default class WithdrawalConfig extends Component {
     super(props);
     this.state = {
       searchword: '',
-      tableLoading: true,
       tableData: [],
       page: {
         current: 0,
@@ -25,7 +24,7 @@ export default class WithdrawalConfig extends Component {
   }
 
   componentDidMount = () => {
-    this.getTableData();
+    this.queryClick();
     this.getCoinOptions();
   };
 
@@ -77,20 +76,28 @@ export default class WithdrawalConfig extends Component {
     });
   };
 
-  // 获取表格数据（查询和分页
-  getTableData = isSearch => {
+  // 点击查询
+  queryClick = () => {
+    const page = Object.assign({}, this.state.page, { current: 1 });
+    this.setState(
+      {
+        page
+      },
+      () => this.getTableData()
+    );
+  };
+
+  // 获取表格数据
+  getTableData = () => {
     const { current, pageSize } = this.state.page;
+    const { searchword } = this.state;
     const param = {
-      current,
-      pageSize
+      // 每次查询的起始位置，相当于页码
+      'listOptions.offset': (current - 1) * pageSize,
+      // 每次查询的数量
+      'listOptions.limit': pageSize
     };
-    this.setState({
-      tableLoading: true
-    });
-    // 查询
-    if (isSearch) {
-      param.searchword = this.state.searchword;
-    }
+    if (searchword) param.searchword = searchword;
 
     /*
       api.getData(param)
@@ -121,9 +128,6 @@ export default class WithdrawalConfig extends Component {
         }
       ]
     });
-    this.setState({
-      tableLoading: false
-    });
   };
 
   // 获取分页参数
@@ -139,7 +143,7 @@ export default class WithdrawalConfig extends Component {
       total,
       onShowSizeChange: (current, pageSize) => {
         const obj = this.state.page;
-        obj.current = current;
+        obj.current = 1;
         obj.pageSize = pageSize;
         this.setState({
           page: obj
@@ -152,10 +156,12 @@ export default class WithdrawalConfig extends Component {
   // 换页
   changePage = current => {
     const pageData = Object.assign({}, this.state.page, { current });
-    this.setState({
-      page: pageData
-    });
-    this.getTableData();
+    this.setState(
+      {
+        page: pageData
+      },
+      () => this.getTableData()
+    );
   };
 
   // 弹窗取消
@@ -187,14 +193,14 @@ export default class WithdrawalConfig extends Component {
 
     return (
       <div className={styles.withdrawalConfig}>
-        <section className={styles.title}>提币审核配置</section>
+        <section className="common_title">提币审核配置</section>
         <section className="search_form">
           <Input
             placeholder="输入币种"
             className={styles.search}
             onBlur={e => this.setState({ searchword: e.target.value })}
           />
-          <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
+          <Button onClick={this.queryClick}>查询</Button>
           <Button className={styles.addcoin} onClick={this.addCoin}>
             新增审核币种
           </Button>
@@ -214,7 +220,6 @@ export default class WithdrawalConfig extends Component {
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
-            loading={this.state.tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
           >

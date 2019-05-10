@@ -39,7 +39,7 @@ export default class BitcoinCommission extends Component {
   }
 
   componentDidMount = () => {
-    this.getTableData();
+    this.queryClick();
     this.getSelectOptions();
 
     window.addEventListener('resize', this.onresize);
@@ -148,7 +148,18 @@ export default class BitcoinCommission extends Component {
     });
   };
 
-  // 获取表格数据（查询和分页
+  // 点击查询
+  queryClick = () => {
+    const page = Object.assign({}, this.state.page, { current: 1 });
+    this.setState(
+      {
+        page
+      },
+      () => this.getTableData()
+    );
+  };
+
+  // 获取表格数据
   getTableData = async () => {
     const { current, pageSize } = this.state.page;
     const {

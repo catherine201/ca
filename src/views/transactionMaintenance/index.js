@@ -21,7 +21,7 @@ export default class TransactionMaintenance extends Component {
   }
 
   componentDidMount = () => {
-    this.getTableData();
+    this.queryClick();
   };
 
   // 新增
@@ -41,9 +41,21 @@ export default class TransactionMaintenance extends Component {
     });
   };
 
-  // 获取表格数据（查询和分页
-  getTableData = async isSearch => {
+  // 点击查询
+  queryClick = () => {
+    const page = Object.assign({}, this.state.page, { current: 1 });
+    this.setState(
+      {
+        page
+      },
+      () => this.getTableData()
+    );
+  };
+
+  // 获取表格数据
+  getTableData = async () => {
     const { current, pageSize } = this.state.page;
+    const { searchword } = this.state;
     const param = {
       // 每次查询的起始位置，相当于页码
       'listOptions.offset': (current - 1) * pageSize,
@@ -51,10 +63,8 @@ export default class TransactionMaintenance extends Component {
       'listOptions.limit': pageSize,
       type: 2 // 币币，不需要改变，暂时写死
     };
-    // 查询，搜索接口暂不支持 2019-04-30
-    if (isSearch) {
-      param['listOptions.keyword'] = this.state.searchword;
-    }
+    if (searchword) param['listOptions.keyword'] = searchword;
+
     /*
       api.getData(param)
     */
@@ -130,7 +140,7 @@ export default class TransactionMaintenance extends Component {
             className={styles.search}
             onBlur={e => this.setState({ searchword: e.target.value })}
           />
-          <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
+          <Button onClick={this.queryClick}>查询</Button>
           &nbsp;&nbsp;
           <Button type="primary" onClick={this.coinAdd}>
             新增

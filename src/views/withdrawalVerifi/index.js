@@ -10,8 +10,11 @@ import {
 } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
 import CustomModal from './CustomModal';
 import styles from './withdrawalVerifi.less';
+
+moment.locale('zh-cn');
 
 // 提币审核
 export default class WithdrawalVerifi extends Component {
@@ -34,7 +37,6 @@ export default class WithdrawalVerifi extends Component {
       coinOptions: [], // 币种选项
       auditStatusOptions: [], // 审核状态选项
       tableCheck: null, // 表格选择项 []
-      tableLoading: true,
       tableData: [],
       page: {
         current: 1,
@@ -45,7 +47,7 @@ export default class WithdrawalVerifi extends Component {
   }
 
   componentDidMount = () => {
-    this.getTableData();
+    this.queryClick();
     this.getCoinOptions();
     this.setState({
       auditStatusOptions: [
@@ -127,7 +129,18 @@ export default class WithdrawalVerifi extends Component {
     });
   };
 
-  // 获取表格数据（查询和分页
+  // 点击查询
+  queryClick = () => {
+    const page = Object.assign({}, this.state.page, { current: 1 });
+    this.setState(
+      {
+        page
+      },
+      () => this.getTableData()
+    );
+  };
+
+  // 获取表格数据
   getTableData = () => {
     const { current, pageSize } = this.state.page;
     const {
@@ -142,13 +155,12 @@ export default class WithdrawalVerifi extends Component {
       coinUser // 提币用户
     } = this.state.searchData;
     const param = {
-      current,
-      pageSize,
+      // 每次查询的起始位置，相当于页码
+      'listOptions.offset': (current - 1) * pageSize,
+      // 每次查询的数量
+      'listOptions.limit': pageSize,
       auditStatus
     };
-    this.setState({
-      tableLoading: true
-    });
     if (coin) param.coin = coin;
     if (withdrawDateStart) param.withdrawDateStart = withdrawDateStart;
     if (withdrawDateEnd) param.withdrawDateEnd = withdrawDateEnd;
@@ -196,9 +208,6 @@ export default class WithdrawalVerifi extends Component {
         }
       ]
     });
-    this.setState({
-      tableLoading: false
-    });
   };
 
   // 获取分页参数
@@ -214,7 +223,7 @@ export default class WithdrawalVerifi extends Component {
       total,
       onShowSizeChange: (current, pageSize) => {
         const obj = this.state.page;
-        obj.current = current;
+        obj.current = 1;
         obj.pageSize = pageSize;
         this.setState({
           page: obj
@@ -227,10 +236,12 @@ export default class WithdrawalVerifi extends Component {
   // 换页
   changePage = current => {
     const pageData = Object.assign({}, this.state.page, { current });
-    this.setState({
-      page: pageData
-    });
-    this.getTableData();
+    this.setState(
+      {
+        page: pageData
+      },
+      () => this.getTableData()
+    );
   };
 
   // tableCheck是否为空
@@ -279,8 +290,8 @@ export default class WithdrawalVerifi extends Component {
 
     return (
       <div className={styles.withdrawalVerifi}>
-        <section className={styles.title}>提币审核</section>
-        <section>
+        <section className="common_title">提币审核</section>
+        <section className="search_form">
           <div className={styles['search-item']}>
             <span>币种：</span>
             <Select
@@ -352,7 +363,7 @@ export default class WithdrawalVerifi extends Component {
               onChange={e => this.handlerChange('coinUser', e.target.value)}
             />
           </div>
-          <Button onClick={() => this.getTableData('isSearch')}>查询</Button>
+          <Button onClick={this.queryClick}>查询</Button>
           &emsp;
           <div className={styles['search-item']}>
             <Button type="primary" onClick={this.coinAudit}>
@@ -367,7 +378,6 @@ export default class WithdrawalVerifi extends Component {
         <LocaleProvider locale={zh_CN}>
           <Table
             bordered
-            loading={this.state.tableLoading}
             dataSource={this.state.tableData}
             pagination={this.getPaginationProps()}
             rowSelection={rowSelection}
