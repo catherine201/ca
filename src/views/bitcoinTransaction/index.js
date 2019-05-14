@@ -120,7 +120,7 @@ export default class BitcoinTransaction extends Component {
     */
     const tableData = await coinTransaction.getTableData(param);
     const page = Object.assign({}, this.state.page);
-    page.total = +tableData.paging.total;
+    page.total = (tableData.paging && +tableData.paging.total) || 0;
 
     tableData.datas &&
       tableData.datas.length &&

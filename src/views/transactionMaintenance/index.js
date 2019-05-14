@@ -71,7 +71,7 @@ export default class TransactionMaintenance extends Component {
     const tableData = await coinMaintenance.getTableData(param);
     const page = Object.assign({}, this.state.page);
 
-    page.total = +tableData.paging.total || 0;
+    page.total = (tableData.paging && +tableData.paging.total) || 0;
     tableData.datas &&
       tableData.datas.length &&
       tableData.datas.forEach(item => (item.key = item.id));
