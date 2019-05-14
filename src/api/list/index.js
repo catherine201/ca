@@ -200,7 +200,7 @@ const config = {
   },
   // 提币记录 拒绝转出
   rejectCoinTxWithdrawRequest: {
-    url: '/admin/reject/cointx/withdraw',
+    url: '/admin/cointx/reject/withdraw',
     method: 'put',
     options: {
       errorHandler: true
@@ -208,7 +208,7 @@ const config = {
   },
   // 提币记录 确认转出
   acceptCoinTxWithdraw: {
-    url: '/admin/accept/cointx/withdraw',
+    url: '/admin/cointx/accept/withdraw',
     method: 'put',
     options: {
       errorHandler: true
