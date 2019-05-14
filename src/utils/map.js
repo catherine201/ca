@@ -82,6 +82,7 @@ export const auctionOrderStatus = {
   AuctionOrderStatusUnknown: '状态',
   AuctionOrderStatusCreated: '已创建',
   AuctionOrderStatusAllocated: '已分配数量',
+  AuctionOrderStatusAgreed: '已确认',
   AuctionOrderStatusPayed: '已付款',
   AuctionOrderStatusCancelled: '已撤销',
   AuctionOrderStatusOverdue: '逾期，买家未付款',
